@@ -10,7 +10,7 @@ namespace Jobtastic.Data
 		public DbSet<Company> Companies { get; set; }
 		public DbSet<CompanyContact> CompanyContacts { get; set; }
 		public DbSet<JobApplicant> Applicants { get; set; }
-		//public DbSet<Volume> Volumes { get; set; }
+		public DbSet<Application> Applications { get; set; }
 
 		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
 			: base(options)
@@ -22,6 +22,7 @@ namespace Jobtastic.Data
 
             // Global Restrict für alle:
             foreach (var relationship in modelBuilder.Model.GetEntityTypes()
+                .Where(e => e.ClrType.Namespace == "Jobtastic.Models")
                 .SelectMany(e => e.GetForeignKeys()))
             {
                 relationship.DeleteBehavior = DeleteBehavior.Restrict;

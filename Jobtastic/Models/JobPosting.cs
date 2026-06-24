@@ -1,7 +1,4 @@
-﻿using Microsoft.CodeAnalysis;
-using NuGet.Protocol.Plugins;
-
-namespace Jobtastic.Models
+﻿namespace Jobtastic.Models
 {
     public enum Mode { OnSite, FullRemote, Hybrid }
     public enum Experience { Intern, Entry, Junior, Professionel, Senior }
@@ -15,7 +12,7 @@ namespace Jobtastic.Models
         public string JobTitle { get; set; }
         public string Header { get; set; }
         public string JobDescription { get; set; }
-        public Location JobLocation { get; set; } 
+        public string JobLocation { get; set; } 
         public double AnnualSalary { get; set; }
         public Boolean Fulltime { get; set; }
         public double? VolumeHours { get; set; }
