@@ -21,8 +21,8 @@
         public DateTime StartDate { get; set; }
         public bool IsOnline { get; set; }
         public int Klicks { get; set; }
-        public DateTime? UploadDate { get; set; }
-        public DateTime? ExpiryDate { get; set; }
+        public DateTime UploadDate { get; set; }
+        public DateTime ExpiryDate { get; set; }
 
         public List<Application> Applications { get; set; }
 
