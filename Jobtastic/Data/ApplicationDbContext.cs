@@ -45,12 +45,14 @@ namespace Jobtastic.Data
             modelBuilder.Entity<Application>()
                  .HasOne(a => a.Applicant)
                  .WithMany(a => a.Applications)
-                 .HasForeignKey(a => a.ApplicantID);
+                 .HasForeignKey(a => a.ApplicantID)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<CompanyContact>()
                 .HasOne(c => c.Company)
                 .WithMany(c => c.Contacts)
-                .HasForeignKey(c => c.CompanyID);
+                .HasForeignKey(c => c.CompanyID)
+                .OnDelete(DeleteBehavior.Cascade);
 
         }
     }
