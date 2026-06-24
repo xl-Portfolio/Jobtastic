@@ -30,7 +30,8 @@ namespace Jobtastic.Data
 			modelBuilder.Entity<JobPosting>()
 				.HasOne(j => j.Company)
 				.WithMany(c => c.Postings)
-				.HasForeignKey(j => j.CompanyID);
+				.HasForeignKey(j => j.CompanyID)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<JobPosting>()
                 .HasOne(j => j.Contact)
@@ -43,9 +44,9 @@ namespace Jobtastic.Data
                 .HasForeignKey(a => a.PostingID);
 
             modelBuilder.Entity<Application>()
-                 .HasOne(a => a.Applicant)
-                 .WithMany(a => a.Applications)
-                 .HasForeignKey(a => a.ApplicantID)
+                .HasOne(a => a.Applicant)
+                .WithMany(a => a.Applications)
+                .HasForeignKey(a => a.ApplicantID)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<CompanyContact>()
