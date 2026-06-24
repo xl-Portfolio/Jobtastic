@@ -9,9 +9,9 @@ namespace Jobtastic.Controllers
             return View();
         }
 
-        public IActionResult Form()
-        {
-           // return Form 
-        }
+        //public IActionResult Form()
+        //{
+        //    return Form 
+        //}
     }
 }
