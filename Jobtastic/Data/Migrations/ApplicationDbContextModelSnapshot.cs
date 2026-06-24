@@ -63,22 +63,19 @@ namespace Jobtastic.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LogoImageSource")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("NumberEmployees")
+                    b.Property<int?>("NumberEmployees")
                         .HasColumnType("int");
 
                     b.Property<string>("WebsiteURL")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
@@ -98,7 +95,6 @@ namespace Jobtastic.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Department")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserID")
@@ -158,7 +154,7 @@ namespace Jobtastic.Data.Migrations
                     b.Property<int>("Experience")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("ExpiryDate")
+                    b.Property<DateTime>("ExpiryDate")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("Fulltime")
@@ -192,7 +188,7 @@ namespace Jobtastic.Data.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("UploadDate")
+                    b.Property<DateTime>("UploadDate")
                         .HasColumnType("datetime2");
 
                     b.Property<double?>("VolumeHours")

@@ -65,10 +65,10 @@ namespace Jobtastic.Data.Migrations
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LogoImageSource = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    WebsiteURL = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    NumberEmployees = table.Column<int>(type: "int", nullable: false)
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LogoImageSource = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    WebsiteURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NumberEmployees = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -83,7 +83,7 @@ namespace Jobtastic.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CompanyID = table.Column<int>(type: "int", nullable: false),
-                    Department = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Department = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -122,8 +122,8 @@ namespace Jobtastic.Data.Migrations
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsOnline = table.Column<bool>(type: "bit", nullable: false),
                     Klicks = table.Column<int>(type: "int", nullable: false),
-                    UploadDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    UploadDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
