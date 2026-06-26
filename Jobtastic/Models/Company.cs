@@ -4,10 +4,10 @@
     {
         public int ID { get; set; }
         public string Name { get; set; }
-        public string Description { get; set; }
-        public string LogoImageSource { get; set; }
-        public string WebsiteURL { get; set; }
-        public int NumberEmployees { get; set; }
+        public string? Description { get; set; }
+        public string? LogoImageSource { get; set; }
+        public string? WebsiteURL { get; set; }
+        public int? NumberEmployees { get; set; }
         public List<JobPosting> Postings { get; set; }
         public List<CompanyContact> Contacts { get; set; }
     }
