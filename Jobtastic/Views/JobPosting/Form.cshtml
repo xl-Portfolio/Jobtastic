@@ -1,5 +1,15 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+﻿@model Jobtastic.Models
+@*
+    Hier wird ein Jobposting in einer Tabelle = Formular ausgegeben
+    mit hidden Input-Feld für ID (asp-for="ID")
+    mit input class="form-control" asp-for="Spalten"
 *@
 @{
+    ViewData["Title"] = "Job insereieren";
 }
+
+<form asp-controller="JobPosting" asp-action="CreateEditJob" method="post" enctype="multipart/form-data">
+    <input type="form-control" asp-for="JobDescription" required /> 
+
+        <input type="file" class="form-control" id="Logo" name="file" />    
+</form>
