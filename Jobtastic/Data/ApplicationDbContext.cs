@@ -10,7 +10,7 @@ namespace Jobtastic.Data
 		public DbSet<Company> Companies { get; set; }
 		public DbSet<CompanyContact> CompanyContacts { get; set; }
 		public DbSet<JobApplicant> Applicants { get; set; }
-		//public DbSet<Volume> Volumes { get; set; }
+		public DbSet<Application> Applications { get; set; }
 
 		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
 			: base(options)
@@ -22,6 +22,7 @@ namespace Jobtastic.Data
 
             // Global Restrict für alle:
             foreach (var relationship in modelBuilder.Model.GetEntityTypes()
+                .Where(e => e.ClrType.Namespace == "Jobtastic.Models")
                 .SelectMany(e => e.GetForeignKeys()))
             {
                 relationship.DeleteBehavior = DeleteBehavior.Restrict;
@@ -30,7 +31,8 @@ namespace Jobtastic.Data
 			modelBuilder.Entity<JobPosting>()
 				.HasOne(j => j.Company)
 				.WithMany(c => c.Postings)
-				.HasForeignKey(j => j.CompanyID);
+				.HasForeignKey(j => j.CompanyID)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<JobPosting>()
                 .HasOne(j => j.Contact)
@@ -43,9 +45,9 @@ namespace Jobtastic.Data
                 .HasForeignKey(a => a.PostingID);
 
             modelBuilder.Entity<Application>()
-                 .HasOne(a => a.Applicant)
-                 .WithMany(a => a.Applications)
-                 .HasForeignKey(a => a.ApplicantID)
+                .HasOne(a => a.Applicant)
+                .WithMany(a => a.Applications)
+                .HasForeignKey(a => a.ApplicantID)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<CompanyContact>()
