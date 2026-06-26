@@ -1,4 +1,5 @@
 using Jobtastic.Data;
+using Jobtastic.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,7 +17,7 @@ namespace Jobtastic
 				options.UseSqlServer(connectionString));
 			builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-			builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+			builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false)
 				.AddEntityFrameworkStores<ApplicationDbContext>();
 			builder.Services.AddControllersWithViews();
 

@@ -25,13 +25,14 @@ namespace Jobtastic.Controllers
 
         public IActionResult Form(int iD) //Ergänzen um Ownerprüfung
         {
-            if(iD != 0)
+            if (iD != 0)
             {
                 var particularJob = _context.JobPostings.SingleOrDefault(x => x.ID == iD);
                 return View(particularJob);
-            } else return View();
+            }
+            else return View();
         }
-        public IActionResult CreateEditJob(JobPosting job, IFormFile file) 
+        public IActionResult CreateEditJob(JobPosting job, IFormFile file)
         {
             job.OwnerName = User.Identity.Name; //ownername muss noch implementiert werden im model
             if (file != null)
@@ -42,12 +43,14 @@ namespace Jobtastic.Controllers
                     var byteArray = memoryStream.ToArray();
                     job.CompanyImage = byteArray; //muss in db angelegt werden (Logo?)
                 }
-            } else { return NotFound(); }
+            }
+            else { return NotFound(); }
 
             if (job.ID == 0)
             {
                 _context.JobPostings.Add(job);
-            } else
+            }
+            else
             {
                 var jobPostingbyID = _context.JobPostings.SingleOrDefault(x => x.ID == job.ID);
                 if (jobPostingbyID == null)
@@ -62,6 +65,6 @@ namespace Jobtastic.Controllers
             return RedirectToAction("Index");
         }
 
-        
+
     }
 }
