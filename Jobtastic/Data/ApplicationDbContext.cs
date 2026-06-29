@@ -24,6 +24,12 @@ namespace Jobtastic.Data
 				.HasForeignKey(j => j.CompanyID)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<JobPosting>()
+                .HasOne(j => j.Owner)
+                .WithMany(u => u.Postings)
+                .HasForeignKey(j => j.OwnerID)
+                .OnDelete(DeleteBehavior.SetNull);
+
             modelBuilder.Entity<JobContact>()
                 .HasOne(c => c.Company)
                 .WithMany(c => c.Contacts)

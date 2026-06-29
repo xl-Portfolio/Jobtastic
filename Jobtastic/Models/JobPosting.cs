@@ -21,8 +21,8 @@
         public int Klicks { get; set; }
         public DateTime UploadDate { get; set; }
         public DateTime ExpiryDate { get; set; }
-        public string OwnerId { get; set; }
-        public User Owner { get; set; }
+        public string? OwnerID { get; set; } //FK
+        public User? Owner { get; set; }
 
 
     }
