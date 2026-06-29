@@ -2,6 +2,7 @@ using Jobtastic.Data;
 using Jobtastic.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 
 namespace Jobtastic.Controllers
 {
@@ -16,17 +17,13 @@ namespace Jobtastic.Controllers
 			_context = context;
 		}
 
-		public IActionResult Index()
+		public async Task<IActionResult> Index()
 		{
-			var allJobs = _context.JobPostings.ToList();
+			var allJobs = await _context.Postings.ToListAsync();
 			return View(allJobs);
 		}
 
 		public IActionResult Privacy()
-		{
-			return View();
-		}
-		public IActionResult Beispiel()
 		{
 			return View();
 		}

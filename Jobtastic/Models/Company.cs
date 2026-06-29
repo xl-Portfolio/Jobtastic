@@ -9,6 +9,6 @@
         public string? WebsiteURL { get; set; }
         public int? NumberEmployees { get; set; }
         public List<JobPosting> Postings { get; set; }
-        public List<CompanyContact> Contacts { get; set; }
+        public List<JobContact> Contacts { get; set; }
     }
 }

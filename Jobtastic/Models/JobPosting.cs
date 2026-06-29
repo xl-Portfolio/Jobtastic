@@ -7,8 +7,6 @@
         public int ID { get; set; }
         public int CompanyID { get; set; } //(FK)
         public Company Company { get; set; }
-        public int ContactID {  get; set; } //FK
-        public CompanyContact Contact { get; set; }
         public string JobTitle { get; set; }
         public string Header { get; set; }
         public string JobDescription { get; set; }
@@ -23,8 +21,9 @@
         public int Klicks { get; set; }
         public DateTime UploadDate { get; set; }
         public DateTime ExpiryDate { get; set; }
+        public string OwnerId { get; set; }
+        public User Owner { get; set; }
 
-        //public List<Application> Applications { get; set; }
 
     }
 }

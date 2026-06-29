@@ -8,10 +8,12 @@
     @foreach(JobPosting job in Model)
     {
         <div class="d-flex w-100 justify-content-between">
-            <h5 class="wb-1">@job.JobTitle</h5>
+            <h5 class="wb-1">@job.JobTitle</h5> <!-- link hinzufügen zu Jobposting-->
             <small>@job.JobLocation</small>
         </div>
         <p class="mb-1">Firma: @job.Company.Name</p>
         <p class="mb-1">Email: @job.Contact.User.Email</p>
     }
+
+    <!--Suchfunktion-->
 </div>

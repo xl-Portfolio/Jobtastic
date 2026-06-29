@@ -12,6 +12,7 @@ namespace Jobtastic.Models
         public string LastName { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public string? ProfileImagePath { get; set; }
+        public List<JobContact> Contacts { get; set; }
 
 
         //public UserType UserType { get; set; }
