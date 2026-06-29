@@ -24,7 +24,7 @@
         public DateTime UploadDate { get; set; }
         public DateTime ExpiryDate { get; set; }
 
-        public List<Application> Applications { get; set; }
+        //public List<Application> Applications { get; set; }
 
     }
 }

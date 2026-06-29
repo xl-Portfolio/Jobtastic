@@ -9,8 +9,8 @@ namespace Jobtastic.Data
 		public DbSet<JobPosting> JobPostings { get; set; }
 		public DbSet<Company> Companies { get; set; }
 		public DbSet<CompanyContact> CompanyContacts { get; set; }
-		public DbSet<JobApplicant> Applicants { get; set; }
-		public DbSet<Application> Applications { get; set; }
+		//public DbSet<JobApplicant> Applicants { get; set; }
+		//public DbSet<Application> Applications { get; set; }
 
 		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
 			: base(options)
@@ -37,17 +37,7 @@ namespace Jobtastic.Data
             modelBuilder.Entity<JobPosting>()
                 .HasOne(j => j.Contact)
                 .WithMany(c => c.Postings)
-                .HasForeignKey(j => j.ContactID);
-
-            modelBuilder.Entity<Application>()
-                .HasOne(a => a.Posting)
-                .WithMany(p => p.Applications)
-                .HasForeignKey(a => a.PostingID);
-
-            modelBuilder.Entity<Application>()
-                .HasOne(a => a.Applicant)
-                .WithMany(a => a.Applications)
-                .HasForeignKey(a => a.ApplicantID)
+                .HasForeignKey(j => j.ContactID)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<CompanyContact>()
@@ -55,6 +45,18 @@ namespace Jobtastic.Data
                 .WithMany(c => c.Contacts)
                 .HasForeignKey(c => c.CompanyID)
                 .OnDelete(DeleteBehavior.Cascade);
+
+
+            //modelBuilder.Entity<Application>()
+            //    .HasOne(a => a.Posting)
+            //    .WithMany(p => p.Applications)
+            //    .HasForeignKey(a => a.PostingID);
+
+            //modelBuilder.Entity<Application>()
+            //    .HasOne(a => a.Applicant)
+            //    .WithMany(a => a.Applications)
+            //    .HasForeignKey(a => a.ApplicantID)
+            //    .OnDelete(DeleteBehavior.Cascade);
 
         }
     }
