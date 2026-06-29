@@ -20,7 +20,9 @@ namespace Jobtastic.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var AllJobs = await _context.Postings.ToListAsync();
+            var AllJobs = await _context.Postings
+                .Include(j => j.Company) //Hier weiter
+                .ToListAsync();
             return View(AllJobs);
         }
 
