@@ -19,62 +19,107 @@ namespace Jobtastic.Controllers
         {
             _context = context;
         }
-
+        private async Task<JobPosting?> GetJobByIdAsync(int id)
+        {
+            return await _context.Postings.SingleOrDefaultAsync(x => x.ID == id);
+        }
         public async Task<IActionResult> Index()
         {
-            var AllJobs = await _context.Postings
+            var allJobs = await _context.Postings
                 .Where(x => x.OwnerID == UserId)
                 .Include(j => j.Company)
                 .ToListAsync();
-            return View(AllJobs);
+            return View(allJobs);
         }
 
         public async Task<IActionResult> Form(int id) 
         {
             if (id == 0)
                 return View();
-            var particularJob = await _context.Postings.SingleOrDefaultAsync(x => x.ID == id);
-            if (particularJob == null)
+            var job = await GetJobByIdAsync(id);
+            if (job == null)
                 return NotFound();
-            if (particularJob.OwnerID != UserId && !User.IsInRole("Admin"))
+            if (job.OwnerID != UserId && !User.IsInRole("Admin"))
                 return Unauthorized();
-            return View(particularJob);
+            return View(job);
         }
-        //public IActionResult CreateEditJob(JobPosting job, IFormFile file)
-        //{
+        public async Task<IActionResult> CreateEditJob(JobPosting job, IFormFile file)
+        {
 
-        //    Uploaddate und Expirydate mit IsOnline verknüpfen
-        //    job.OwnerName = User.Identity.Name; //ownername muss noch implementiert werden im model
-        //    if (file != null)
-        //    {
-        //        using (var memoryStream = new MemoryStream()) //Bild als bytearray speichern in db
-        //        {
-        //            file.CopyTo(memoryStream);
-        //            var byteArray = memoryStream.ToArray();
-        //            job.CompanyImage = byteArray; //muss in db angelegt werden (Logo?)
-        //        }
-        //    }
-        //    else { return NotFound(); }
+            //Uploaddate und Expirydate mit IsOnline verknüpfen
+            if (!User.IsInRole("Admin"))
+                job.OwnerID = UserId; //Admin muss Owner irgendwo ändern können
+   
+            if (job.ID == 0)
+                await _context.Postings.AddAsync(job);
+            else
+            {
+                var postingById = await GetJobByIdAsync(job.ID);
+                if (postingById == null)
+                {
+                    return NotFound();
+                }
+                postingById //.konkrete Property = job. konkrete Property
+                    //für jede Property, die sinn macht
+                _context.SaveChanges();
+            }
+            //if (file != null) //Bild speichern
+            //{
+            //    using (var memoryStream = new MemoryStream()) //Bild als bytearray speichern in db
+            //    {
+            //        file.CopyTo(memoryStream);
+            //        var byteArray = memoryStream.ToArray();
+            //        job.CompanyImage = byteArray; //muss in db angelegt werden (Logo?)
+            //    }
+            //}
+            //else { return NotFound(); }
+            return RedirectToAction("Index");
+        }
 
-        //    if (job.ID == 0)
-        //    {
-        //        _context.JobPostings.Add(job);
-        //    }
-        //    else
-        //    {
-        //        var jobPostingbyID = _context.JobPostings.SingleOrDefault(x => x.ID == job.ID);
-        //        if (jobPostingbyID == null)
-        //        {
-        //            return NotFound();
-        //        }
-        //        jobPostingbyID //.konkrete Property = job. konkrete Property
-        //            //für jede Property, die sinn macht
-        //        _context.SaveChanges();
-        //    }
+        public IActionResult CreateEditJob(JobPosting job, IFormFile file)
+        {
+            // richtiger Benutzer
+            job.OwnerName = User.Identity.Name;
 
-        //    return RedirectToAction("Index");
-        //}
+            if (file != null)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    file.CopyTo(memoryStream);
+                    var byteArray = memoryStream.ToArray();
+                    job.CompanyImage = byteArray;
+                }
+            }
 
+            if (job == null)
+            {
+                return NotFound();
+            }
+
+            if (job.Id == 0)
+            {
+                _context.JobPostings.Add(job);
+            }
+            else
+            {
+                var jobPostingById = _context.JobPostings.SingleOrDefault(x => x.Id == job.Id);
+                if (jobPostingById == null)
+                {
+                    return NotFound();
+                }
+
+                jobPostingById.JobTitle = job.JobTitle;
+                jobPostingById.JobDescription = job.JobDescription;
+                jobPostingById.CompanyName = job.CompanyName;
+                jobPostingById.JobLocation = job.JobLocation;
+                jobPostingById.CompanyMail = job.CompanyMail;
+                jobPostingById.CompanyPhone = job.CompanyPhone;
+                jobPostingById.Salary = job.Salary;
+                //OwnerName nicht weil die Rolle des Besitzers würde geändert werden. 
+            }
+
+            return RedirectToAction("Index");
+        }
 
     }
 }
