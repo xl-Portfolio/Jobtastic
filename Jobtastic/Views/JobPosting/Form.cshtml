@@ -1,19 +1,17 @@
-﻿@model JobPosting
-@*
-    Hier wird ein Jobposting in einer Tabelle = Formular ausgegeben
-    mit hidden Input-Feld für ID (asp-for="ID")
- 
+﻿@*
+    Hier wird ein Jobposting in einer Tabelle = Formular ausgegeben 
 *@
 @{
     ViewData["Title"] = "Job inserieren";
 }
+@model JobPosting
 
  <form asp-controller="JobPosting" asp-action="CreateEditJob" method="post" enctype="multipart/form-data">
     
      <div class="list-group">
 
-       @*  <input class="form-control" hidden  asp-for="ID"/>
-        <input class="form-control" hidden asp-for="Owner.Id"/> *@
+        <input class="form-control" hidden  asp-for="ID"/>
+       @* <input class="form-control" hidden asp-for="Owner.Id"/> *@
 
         <input class="form-control" asp-for="JobTitle" required placeholder="Stellenbezeichnung"/>
         <select class="form-control" asp-for="Experience" required asp-items="Html.GetEnumSelectList<Experience>()">
