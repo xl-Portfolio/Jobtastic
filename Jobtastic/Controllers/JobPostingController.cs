@@ -37,6 +37,8 @@ namespace Jobtastic.Controllers
         }
         //public IActionResult CreateEditJob(JobPosting job, IFormFile file)
         //{
+
+        // Uploaddate und Expirydate mit IsOnline verknüpfen
         //    job.OwnerName = User.Identity.Name; //ownername muss noch implementiert werden im model
         //    if (file != null)
         //    {
