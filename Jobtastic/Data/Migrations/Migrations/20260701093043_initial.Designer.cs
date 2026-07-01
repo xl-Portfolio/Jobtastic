@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Jobtastic.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260629105922_Initial")]
-    partial class Initial
+    [Migration("20260701093043_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -94,6 +94,9 @@ namespace Jobtastic.Migrations
                     b.Property<int>("CompanyID")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ContactID")
+                        .HasColumnType("int");
+
                     b.Property<int>("Experience")
                         .HasColumnType("int");
 
@@ -144,6 +147,8 @@ namespace Jobtastic.Migrations
 
                     b.HasIndex("CompanyID");
 
+                    b.HasIndex("ContactID");
+
                     b.HasIndex("OwnerID");
 
                     b.ToTable("Postings");
@@ -155,6 +160,9 @@ namespace Jobtastic.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CompanyID")
                         .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -172,11 +180,9 @@ namespace Jobtastic.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
@@ -216,6 +222,8 @@ namespace Jobtastic.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyID");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -376,7 +384,7 @@ namespace Jobtastic.Migrations
                     b.HasOne("Jobtastic.Models.User", "User")
                         .WithMany("Contacts")
                         .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Company");
 
@@ -388,17 +396,33 @@ namespace Jobtastic.Migrations
                     b.HasOne("Jobtastic.Models.Company", "Company")
                         .WithMany("Postings")
                         .HasForeignKey("CompanyID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("Jobtastic.Models.JobContact", "Contact")
+                        .WithMany("Postings")
+                        .HasForeignKey("ContactID")
+                        .OnDelete(DeleteBehavior.ClientNoAction);
 
                     b.HasOne("Jobtastic.Models.User", "Owner")
                         .WithMany("Postings")
                         .HasForeignKey("OwnerID")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Company");
 
+                    b.Navigation("Contact");
+
                     b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("Jobtastic.Models.User", b =>
+                {
+                    b.HasOne("Jobtastic.Models.Company", "Company")
+                        .WithMany("Users")
+                        .HasForeignKey("CompanyID");
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -456,6 +480,13 @@ namespace Jobtastic.Migrations
                 {
                     b.Navigation("Contacts");
 
+                    b.Navigation("Postings");
+
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("Jobtastic.Models.JobContact", b =>
+                {
                     b.Navigation("Postings");
                 });
 

@@ -4,7 +4,6 @@ using Jobtastic.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -12,11 +11,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Jobtastic.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260701084455_Anpassung1")]
-    partial class Anpassung1
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -384,7 +381,7 @@ namespace Jobtastic.Migrations
                     b.HasOne("Jobtastic.Models.User", "User")
                         .WithMany("Contacts")
                         .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Company");
 
@@ -396,18 +393,18 @@ namespace Jobtastic.Migrations
                     b.HasOne("Jobtastic.Models.Company", "Company")
                         .WithMany("Postings")
                         .HasForeignKey("CompanyID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Jobtastic.Models.JobContact", "Contact")
                         .WithMany("Postings")
                         .HasForeignKey("ContactID")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.ClientNoAction);
 
                     b.HasOne("Jobtastic.Models.User", "Owner")
                         .WithMany("Postings")
                         .HasForeignKey("OwnerID")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Company");
 
@@ -420,8 +417,7 @@ namespace Jobtastic.Migrations
                 {
                     b.HasOne("Jobtastic.Models.Company", "Company")
                         .WithMany("Users")
-                        .HasForeignKey("CompanyID")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("CompanyID");
 
                     b.Navigation("Company");
                 });
