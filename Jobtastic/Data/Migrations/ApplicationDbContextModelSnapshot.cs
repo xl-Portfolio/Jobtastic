@@ -48,7 +48,7 @@ namespace Jobtastic.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Companies");
+                    b.ToTable("Companies", (string)null);
                 });
 
             modelBuilder.Entity("Jobtastic.Models.JobContact", b =>
@@ -74,7 +74,7 @@ namespace Jobtastic.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Contacts");
+                    b.ToTable("Contacts", (string)null);
                 });
 
             modelBuilder.Entity("Jobtastic.Models.JobPosting", b =>
@@ -148,7 +148,7 @@ namespace Jobtastic.Migrations
 
                     b.HasIndex("OwnerID");
 
-                    b.ToTable("Postings");
+                    b.ToTable("Postings", (string)null);
                 });
 
             modelBuilder.Entity("Jobtastic.Models.User", b =>
