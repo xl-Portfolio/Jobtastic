@@ -15,6 +15,7 @@ namespace Jobtastic.Controllers
         private readonly ApplicationDbContext _context;
         private string? UserId => User.FindFirstValue(ClaimTypes.NameIdentifier);
         private bool IsAuthorized(JobPosting job) => job.OwnerID == UserId || User.IsInRole("Admin");
+        private bool IsAuthorized(User user) => user.Id == UserId || User.IsInRole("Admin");
 
         public JobPostingController(ApplicationDbContext context)
         {
@@ -98,6 +99,23 @@ namespace Jobtastic.Controllers
             //else { return NotFound(); }
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> Settings(User user)
+        {
+            var userData = await _context.Users.SingleOrDefaultAsync(x => x.Id == user.Id);
+            if (userData == null)
+                return NotFound();
+            if (!IsAuthorized(user))
+                return Unauthorized();
+            return View(userData);
+
+        }
+        public async Task<IActionResult> EditAccount(User user)
+        {
+            var userData = await _context.Users.SingleOrDefaultAsync(x => x.Id == user.Id);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Settings");
         }
 
     }
