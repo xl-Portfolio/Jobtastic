@@ -2,7 +2,10 @@
 
 namespace Jobtastic.Models
 {
-    public class User : IdentityUser
+    /// <summary>
+    /// Systemkonto
+    /// </summary>
+    public class User : IdentityUser 
     {
         public string? FirstName { get; set; }
         public string? LastName { get; set; }

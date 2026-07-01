@@ -24,7 +24,7 @@ namespace Jobtastic.Data
                 .HasForeignKey(u => u.CompanyID)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            modelBuilder.Entity<JobPosting>()
+            modelBuilder.Entity<JobPosting>() //Company weg -> Postings weg
 				.HasOne(j => j.Company)
 				.WithMany(c => c.Postings)
 				.HasForeignKey(j => j.CompanyID)
@@ -46,7 +46,7 @@ namespace Jobtastic.Data
                 .HasOne(c => c.Company)
                 .WithMany(c => c.Contacts)
                 .HasForeignKey(c => c.CompanyID)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<JobContact>() //1 Kontakt gehört zu einem User. 1 User kann (zeitweise) mehrere Kontaktseiten betreuen
                 .HasOne(j => j.User)

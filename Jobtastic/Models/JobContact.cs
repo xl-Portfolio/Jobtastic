@@ -1,5 +1,9 @@
 ﻿namespace Jobtastic.Models
 {
+    /// <summary>
+    /// fachlicher Ansprechpartner
+    /// JobContact = reine Datenstruktur (Appendix / Value-ähnliches Entity), kein “Domänen-Akteur”
+    /// </summary>
     public class JobContact
     {
         public int ID { get; set; }
