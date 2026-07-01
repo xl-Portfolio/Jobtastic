@@ -10,5 +10,6 @@
         public int? NumberEmployees { get; set; }
         public List<JobPosting> Postings { get; set; }
         public List<JobContact> Contacts { get; set; }
+        public List<User> Users { get; set; }
     }
 }

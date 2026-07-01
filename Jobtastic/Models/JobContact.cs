@@ -8,6 +8,7 @@
         public int CompanyID { get; set; } //FK
         public Company Company { get; set; }
         public string? Department { get; set; }
+        public List<JobPosting> Postings { get; set; }
         
     }
 }

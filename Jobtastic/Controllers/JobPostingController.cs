@@ -14,6 +14,7 @@ namespace Jobtastic.Controllers
 
         private readonly ApplicationDbContext _context;
         private string? UserId => User.FindFirstValue(ClaimTypes.NameIdentifier);
+        private bool IsAuthorized(JobPosting job) => job.OwnerID == UserId || User.IsInRole("Admin");
 
         public JobPostingController(ApplicationDbContext context)
         {
@@ -32,26 +33,29 @@ namespace Jobtastic.Controllers
             return View(allJobs);
         }
 
-        public async Task<IActionResult> Form(int id) 
+        public async Task<IActionResult> Form(int id) //View
         {
             if (id == 0)
                 return View();
             var job = await GetJobByIdAsync(id);
             if (job == null)
                 return NotFound();
-            if (job.OwnerID != UserId && !User.IsInRole("Admin"))
+            if (!IsAuthorized(job))
                 return Unauthorized();
             return View(job);
         }
-        public async Task<IActionResult> CreateEditJob(JobPosting job, IFormFile file)
+        public async Task<IActionResult> CreateEditJob(JobPosting job, IFormFile file) //Interaktion Speichern+Ändern
         {
-
             //Uploaddate und Expirydate mit IsOnline verknüpfen
-            if (!User.IsInRole("Admin"))
-                job.OwnerID = UserId; //Admin muss Owner irgendwo ändern können
-   
+            //Admin und Owner muss Owner irgendwo ändern können
+            
+
             if (job.ID == 0)
+            {
+                job.OwnerID = UserId;
+                //job.Company = ??
                 await _context.Postings.AddAsync(job);
+            }
             else
             {
                 var postingById = await GetJobByIdAsync(job.ID);
@@ -59,9 +63,28 @@ namespace Jobtastic.Controllers
                 {
                     return NotFound();
                 }
-                postingById //.konkrete Property = job. konkrete Property
-                    //für jede Property, die sinn macht
-                _context.SaveChanges();
+                if (!IsAuthorized(postingById))
+                    return Unauthorized();
+
+                postingById.JobTitle = job.JobTitle;
+                postingById.Experience = job.Experience;
+                postingById.StartDate = job.StartDate;
+                postingById.Header = job.Header;
+                postingById.JobDescription = job.JobDescription;
+                postingById.JobLocation = job.JobLocation;
+                postingById.AnnualSalary = job.AnnualSalary;
+                postingById.Fulltime = job.Fulltime;
+                postingById.VolumeHours = job.VolumeHours;
+                postingById.Mode = job.Mode;
+                postingById.IsOnline = job.IsOnline;
+                postingById.UploadDate = System.DateTime.Now;
+                postingById.ExpiryDate = postingById.UploadDate.AddMonths(6);
+                    
+                    
+                    //CompanyId (FK) ??
+
+                
+                
             }
             //if (file != null) //Bild speichern
             //{
@@ -73,51 +96,7 @@ namespace Jobtastic.Controllers
             //    }
             //}
             //else { return NotFound(); }
-            return RedirectToAction("Index");
-        }
-
-        public IActionResult CreateEditJob(JobPosting job, IFormFile file)
-        {
-            // richtiger Benutzer
-            job.OwnerName = User.Identity.Name;
-
-            if (file != null)
-            {
-                using (var memoryStream = new MemoryStream())
-                {
-                    file.CopyTo(memoryStream);
-                    var byteArray = memoryStream.ToArray();
-                    job.CompanyImage = byteArray;
-                }
-            }
-
-            if (job == null)
-            {
-                return NotFound();
-            }
-
-            if (job.Id == 0)
-            {
-                _context.JobPostings.Add(job);
-            }
-            else
-            {
-                var jobPostingById = _context.JobPostings.SingleOrDefault(x => x.Id == job.Id);
-                if (jobPostingById == null)
-                {
-                    return NotFound();
-                }
-
-                jobPostingById.JobTitle = job.JobTitle;
-                jobPostingById.JobDescription = job.JobDescription;
-                jobPostingById.CompanyName = job.CompanyName;
-                jobPostingById.JobLocation = job.JobLocation;
-                jobPostingById.CompanyMail = job.CompanyMail;
-                jobPostingById.CompanyPhone = job.CompanyPhone;
-                jobPostingById.Salary = job.Salary;
-                //OwnerName nicht weil die Rolle des Besitzers würde geändert werden. 
-            }
-
+            await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 

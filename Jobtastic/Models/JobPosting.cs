@@ -47,6 +47,8 @@ namespace Jobtastic.Models
         public DateTime ExpiryDate { get; set; }
         public string? OwnerID { get; set; } //FK
         public User? Owner { get; set; }
+        public int? ContactID { get; set; } //FK
+        public JobContact? Contact { get; set; }
 
 
     }

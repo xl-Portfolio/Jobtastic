@@ -18,7 +18,13 @@ namespace Jobtastic.Data
         {
             base.OnModelCreating(modelBuilder);
 
-			modelBuilder.Entity<JobPosting>()
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.Company)
+                .WithMany(c => c.Users)
+                .HasForeignKey(u => u.CompanyID)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<JobPosting>()
 				.HasOne(j => j.Company)
 				.WithMany(c => c.Postings)
 				.HasForeignKey(j => j.CompanyID)
@@ -30,13 +36,19 @@ namespace Jobtastic.Data
                 .HasForeignKey(j => j.OwnerID)
                 .OnDelete(DeleteBehavior.SetNull);
 
+            modelBuilder.Entity<JobPosting>()
+                .HasOne(j => j.Contact)
+                .WithMany(c => c.Postings)
+                .HasForeignKey(j => j.ContactID)
+                .OnDelete(DeleteBehavior.SetNull);
+
             modelBuilder.Entity<JobContact>()
                 .HasOne(c => c.Company)
                 .WithMany(c => c.Contacts)
                 .HasForeignKey(c => c.CompanyID)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<JobContact>()
+            modelBuilder.Entity<JobContact>() //1 Kontakt gehört zu einem User. 1 User kann (zeitweise) mehrere Kontaktseiten betreuen
                 .HasOne(j => j.User)
                 .WithMany(u => u.Contacts)
                 .HasForeignKey(j => j.UserID)
