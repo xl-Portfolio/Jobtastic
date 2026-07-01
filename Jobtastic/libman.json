@@ -9,6 +9,11 @@
     {
       "library": "datatables.net-dt@2.3.4",
       "destination": "wwwroot/lib/datatables.net-dt/"
+    },
+    {
+      "provider": "cdnjs",
+      "library": "sweetalert2@11.23.0",
+      "destination": "wwwroot/lib/sweetalert2/"
     }
   ]
 }
