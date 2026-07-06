@@ -1,5 +1,6 @@
 using Jobtastic.Data;
 using Jobtastic.Models;
+using Jobtastic.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,7 +8,7 @@ namespace Jobtastic
 {
 	public class Program
 	{
-		public static void Main(string[] args)
+		public static async Task Main(string[] args)
 		{
 			var builder = WebApplication.CreateBuilder(args);
 
@@ -18,10 +19,18 @@ namespace Jobtastic
 			builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 			builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false)
+				.AddRoles<IdentityRole>()
 				.AddEntityFrameworkStores<ApplicationDbContext>();
+			builder.Services.AddScoped<SetupService>();
 			builder.Services.AddControllersWithViews();
 
 			var app = builder.Build();
+
+			using (var scope = app.Services.CreateScope())
+			{
+				var setupService = scope.ServiceProvider.GetRequiredService<SetupService>();
+				await setupService.SeedRolesAsync();
+			}
 
 			// Configure the HTTP request pipeline.
 			if (app.Environment.IsDevelopment())
