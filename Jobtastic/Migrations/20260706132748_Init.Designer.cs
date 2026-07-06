@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Jobtastic.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260701101043_Contacts")]
-    partial class Contacts
+    [Migration("20260706132748_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
