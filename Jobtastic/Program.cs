@@ -23,8 +23,9 @@ namespace Jobtastic
 				.AddEntityFrameworkStores<ApplicationDbContext>();
 			builder.Services.AddScoped<SetupService>();
 			builder.Services.AddControllersWithViews();
+            builder.Services.AddHttpContextAccessor();
 
-			var app = builder.Build();
+            var app = builder.Build();
 
 			using (var scope = app.Services.CreateScope())
 			{

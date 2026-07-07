@@ -1,5 +1,6 @@
 ﻿using Jobtastic.Data;
 using Jobtastic.Models;
+using Jobtastic.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,60 +12,45 @@ namespace Jobtastic.Controllers
 
     public class JobPostingController : Controller
     {
-
-        private readonly ApplicationDbContext _context;
-        private string? UserId => User.FindFirstValue(ClaimTypes.NameIdentifier);
-        private bool IsAuthorized(JobPosting job) => job.OwnerID == UserId || User.IsInRole("Admin");
-        private bool IsAuthorized(User user) => user.Id == UserId || User.IsInRole("Admin");
-
-        public JobPostingController(ApplicationDbContext context)
+        private readonly PostingService _postingService;
+        
+        public JobPostingController(PostingService service)
         {
-            _context = context;
-        }
-        private async Task<JobPosting?> GetJobByIdAsync(int id)
-        {
-            return await _context.Postings.SingleOrDefaultAsync(x => x.ID == id);
+            _postingService = service;
         }
         public async Task<IActionResult> Index()
         {
-            var allJobs = await _context.Postings
-                .Where(x => x.OwnerID == UserId)
-                .Include(j => j.Company)
-                .ToListAsync();
-            return View(allJobs);
+            var jobs = await _postingService.GetOwnedPostings();
+            return View(jobs);
         }
-
-        public async Task<IActionResult> Form(int id) //View
+        public async Task<IActionResult> Form(int id)
         {
             if (id == 0)
                 return View();
-            var job = await GetJobByIdAsync(id);
+            var job = await _postingService.GetJobById(id);
             if (job == null)
                 return NotFound();
-            if (!IsAuthorized(job))
+            if (!_postingService.IsAuthorized(job))
                 return Unauthorized();
             return View(job);
         }
+
         public async Task<IActionResult> CreateEditJob(JobPosting job, IFormFile file) //Interaktion Speichern+Ändern
         {
-            //Uploaddate und Expirydate mit IsOnline verknüpfen
-            //Admin und Owner muss Owner irgendwo ändern können
-            
-
             if (job.ID == 0)
             {
-                job.OwnerID = UserId;
-                //job.Company = ??
-                await _context.Postings.AddAsync(job);
+                var jobAdded = await _postingService.AddJob_Successfully(job, file);
+                if (!jobAdded)
+                    return BadRequest();
             }
             else
             {
-                var postingById = await GetJobByIdAsync(job.ID);
+                var postingById = await _postingService.GetJobById(job.ID);
                 if (postingById == null)
                 {
                     return NotFound();
                 }
-                if (!IsAuthorized(postingById))
+                if (!_postingService.IsAuthorized(postingById))
                     return Unauthorized();
 
                 postingById.JobTitle = job.JobTitle;
@@ -97,7 +83,10 @@ namespace Jobtastic.Controllers
             //    }
             //}
             //else { return NotFound(); }
-            await _context.SaveChangesAsync();
+            
+
+
+
             return RedirectToAction("Index");
         }
 
