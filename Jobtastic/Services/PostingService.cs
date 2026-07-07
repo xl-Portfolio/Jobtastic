@@ -42,38 +42,26 @@ namespace Jobtastic.Services
             var entitiesCreated = await _context.SaveChangesAsync();
             return entitiesCreated >= 1 ? true : false;
         }
-
-
-            else
-            {
-                var postingById = await _postingService.GetJobById(job.ID);
-                if (postingById == null)
-                {
-                    return NotFound();
-                }
-                if (!_postingService.IsAuthorized(postingById))
-                    return Unauthorized();
-
-                postingById.JobTitle = job.JobTitle;
-                postingById.Experience = job.Experience;
-                postingById.StartDate = job.StartDate;
-                postingById.Header = job.Header;
-                postingById.JobDescription = job.JobDescription;
-                postingById.JobLocation = job.JobLocation;
-                postingById.AnnualSalary = job.AnnualSalary;
-                postingById.Fulltime = job.Fulltime;
-                postingById.VolumeHours = job.VolumeHours;
-                postingById.Mode = job.Mode;
-                postingById.IsOnline = job.IsOnline;
-                postingById.UploadDate = System.DateTime.Now;
-                postingById.ExpiryDate = postingById.UploadDate.AddMonths(6);
-
-
-                //CompanyId (FK) ??
-
-
-
-            }
+        public async Task<JobPosting?> FindPosting(JobPosting job)
+        {
+            return await GetJobById(job.ID);
+        }
+        public async Task<bool> EditJob_Successfully(JobPosting formJob, IFormFile file, JobPosting dbJob)
+        {
+            dbJob.JobTitle = formJob.JobTitle;
+            dbJob.Experience = formJob.Experience;
+            dbJob.StartDate = formJob.StartDate;
+            dbJob.Header = formJob.Header;
+            dbJob.JobDescription = formJob.JobDescription;
+            dbJob.JobLocation = formJob.JobLocation;
+            dbJob.AnnualSalary = formJob.AnnualSalary;
+            dbJob.Fulltime = formJob.Fulltime;
+            dbJob.VolumeHours = formJob.VolumeHours;
+            dbJob.Mode = formJob.Mode;
+            dbJob.IsOnline = formJob.IsOnline;
+            dbJob.UploadDate = DateTime.Now;
+            dbJob.ExpiryDate = dbJob.UploadDate.AddMonths(6);
+            //CompanyId (FK) ??
             //if (file != null) //Bild speichern
             //{
             //    using (var memoryStream = new MemoryStream()) //Bild als bytearray speichern in db
@@ -84,8 +72,11 @@ namespace Jobtastic.Services
             //    }
             //}
             //else { return NotFound(); }
-            await _context.SaveChangesAsync();
-            
+            var entitiesChanged = await _context.SaveChangesAsync();
+            return entitiesChanged >= 1 ? true : false;
         }
+
+         
+         
     }
 }
