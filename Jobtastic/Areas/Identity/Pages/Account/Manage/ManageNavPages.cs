@@ -13,6 +13,12 @@ namespace  Jobtastic.Areas.Identity.Pages.Account.Manage
     /// </summary>
     public static class ManageNavPages
     {
+        public static string CompanyMandate => "CompanyMandate";
+        public static string ManagedContacts => "ManagedContacts";
+
+        public static string CompanyMandateNavClass(ViewContext viewContext) => PageNavClass(viewContext, CompanyMandate);
+        public static string ManagedContactsNavClass(ViewContext viewContext) => PageNavClass(viewContext, ManagedContacts);
+
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
