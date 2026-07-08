@@ -19,6 +19,11 @@ namespace Jobtastic.Services
         private string? UserId => User?.FindFirstValue(ClaimTypes.NameIdentifier);
         public bool IsAuthorized(JobPosting job) => job.OwnerID == UserId || (User?.IsInRole("Admin") ?? false);
         public bool IsAuthorized(User user) => user.Id == UserId || (User?.IsInRole("Admin") ?? false);
+        public async Task<bool> ProfileIsComplete()
+        {
+            var user = await _context.Users.SingleOrDefaultAsync(u => u.Id == UserId);
+            return user?.CompanyID != null;
+        }
 
         public async Task<JobPosting?> GetJobById(int id)
         {

@@ -25,6 +25,8 @@ namespace Jobtastic.Controllers
         }
         public async Task<IActionResult> Form(int id)
         {
+            if (!await _postingService.ProfileIsComplete())
+                return RedirectToPage("/Account/Manage/Index", new { area = "Identity" });
             if (id == 0)
                 return View();
             var job = await _postingService.GetJobById(id);
@@ -34,6 +36,7 @@ namespace Jobtastic.Controllers
                 return Unauthorized();
             return View(job);
         }
+        [HttpPost]
         public async Task<IActionResult> CreateEditJob(JobPosting job, IFormFile file) //Interaktion Speichern+Ändern
         {
             if (job.ID == 0)

@@ -22,7 +22,8 @@ namespace Jobtastic
 				.AddRoles<IdentityRole>()
 				.AddEntityFrameworkStores<ApplicationDbContext>();
 			builder.Services.AddScoped<SetupService>();
-			builder.Services.AddControllersWithViews();
+            builder.Services.AddScoped<PostingService>();
+            builder.Services.AddControllersWithViews();
             builder.Services.AddHttpContextAccessor();
 
             var app = builder.Build();

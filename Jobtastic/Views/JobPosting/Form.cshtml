@@ -9,7 +9,6 @@
      <div class="list-group">
 
         <input class="form-control" hidden  asp-for="ID"/>
-        <input class="form-control" hidden asp-for="Owner.Id"/>
 
         <input class="form-control" asp-for="JobTitle" required placeholder="Stellenbezeichnung"/>
         <select class="form-control" asp-for="Experience" required asp-items="Html.GetEnumSelectList<Experience>()">
@@ -53,5 +52,6 @@
             </div>
         </div>
     </div>
+    <button type="submit" class="btn btn-primary mt-3">Speichern</button>
        @*  <input type="file" class="form-control" id="Logo" name="file" />  ...muss erst included werden in controller aus companies-table  *@  
 </form> 
