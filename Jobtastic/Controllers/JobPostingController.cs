@@ -26,7 +26,7 @@ namespace Jobtastic.Controllers
         public async Task<IActionResult> Form(int id)
         {
             if (!await _postingService.ProfileIsComplete())
-                return RedirectToPage("/Account/Manage/Index", new { area = "Identity" });
+                return View("ProfileIncomplete");
             if (id == 0)
                 return View();
             var job = await _postingService.GetJobById(id);
