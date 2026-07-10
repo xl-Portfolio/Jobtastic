@@ -34,8 +34,12 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
         }
         public class PasswordInputModel
         {
+            [Required]
             public string Password { get; set; }
+            [Required]
             public string NewPassword { get; set; }
+            [Required]
+            [Compare("NewPassword")]
             public string ConfirmedPassword { get; set; }
         }
         public async Task<IActionResult> OnGetAsync()
@@ -58,6 +62,17 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
         }
         public async Task<IActionResult> OnPostEditDataAsync()
         {
+            var user = await _userManager.GetUserAsync(User); //redundant???!!!
+            if (user == null)
+                return NotFound();
+
+            var result = await _userManager.SetEmailAsync(user, Input.Email);
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+                result = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+
             return Page();
         }
         public async Task<IActionResult> OnPostEditPasswordAsync()
@@ -66,12 +81,16 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
             if (user == null)
                 return NotFound();
 
+            if (!ModelState.IsValid)
+                return BadRequest();
+
             var result = await _userManager.ChangePasswordAsync(
                 user,
                 PasswordInput.Password,
                 PasswordInput.NewPassword);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
+
             return Page();
         }
     }
