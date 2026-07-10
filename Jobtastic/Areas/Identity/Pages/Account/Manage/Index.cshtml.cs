@@ -16,82 +16,63 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
     public class IndexModel : PageModel
     {
         private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
-
-        public IndexModel(
-            UserManager<User> userManager,
-            SignInManager<User> signInManager)
-        {
-            _userManager = userManager;
-            _signInManager = signInManager;
-        }
-        public string Username { get; set; }
-
-        [TempData]
-        public string StatusMessage { get; set; }
 
         [BindProperty]
-        public InputModel Input { get; set; }
+        public InputModel Input {  get; set; }
 
+        [BindProperty]
+        public PasswordInputModel PasswordInput { get; set; }
+        
+        public IndexModel(UserManager<User> userManager)
+        {
+            _userManager = userManager;
+        }
         public class InputModel
         {
-            [Phone]
-            public string PhoneNumber { get; set; }
+            public string Email { get; set; }
+            public string? PhoneNumber { get; set; }
         }
-
-        private async Task LoadAsync(User user)
+        public class PasswordInputModel
         {
-            var eMail = await _userManager.GetEmailAsync(user);
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-
-            Username = userName;
-
-            Input = new InputModel
-            {
-                PhoneNumber = phoneNumber
-            };
+            public string Password { get; set; }
+            public string NewPassword { get; set; }
+            public string ConfirmedPassword { get; set; }
         }
-
         public async Task<IActionResult> OnGetAsync()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
-            {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
+                return NotFound();
 
-            await LoadAsync(user);
+            Input = new InputModel
+            {
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+            };
+            PasswordInput = new PasswordInputModel
+            {
+
+            };
+
             return Page();
         }
-
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostEditDataAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            return Page();
+        }
+        public async Task<IActionResult> OnPostEditPasswordAsync()
+        {
+            var user = await _userManager.GetUserAsync(User); //redundant???!!!
             if (user == null)
-            {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
+                return NotFound();
 
-            if (!ModelState.IsValid)
-            {
-                await LoadAsync(user);
-                return Page();
-            }
-
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-            if (Input.PhoneNumber != phoneNumber)
-            {
-                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
-                if (!setPhoneResult.Succeeded)
-                {
-                    StatusMessage = "Unexpected error when trying to set phone number.";
-                    return RedirectToPage();
-                }
-            }
-
-            await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your profile has been updated";
-            return RedirectToPage();
+            var result = await _userManager.ChangePasswordAsync(
+                user,
+                PasswordInput.Password,
+                PasswordInput.NewPassword);
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+            return Page();
         }
     }
 }
