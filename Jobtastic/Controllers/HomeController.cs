@@ -16,7 +16,10 @@ namespace Jobtastic.Controllers
 			_logger = logger;
 			_context = context;
 		}
-
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
 		public async Task<IActionResult> Index()
 		{
 			var allJobs = await _context.Postings

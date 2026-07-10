@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 
-namespace Jobtastic.Areas.Identity.Pages.Account.Manage
+namespace Jobtastic.Areas.Identity.Pages.Account.Manage.toBeDeleted
 {
     public class ChangePasswordModel : PageModel
     {

@@ -10,7 +10,6 @@
 
 <h4>User</h4>    
 <div class="list-group">
-    <input class="form-control" hidden asp-for="Id"/>
     <label>Username: @Model.UserName</label>
     <label>Email: @Model.Email</label>
     <label>Tel: @(string.IsNullOrEmpty(Model.PhoneNumber) ? "" : Model.PhoneNumber)</label>
