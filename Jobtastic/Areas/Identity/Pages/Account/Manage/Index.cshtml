@@ -16,23 +16,23 @@
     <div id="displayData" class="list-group">
         <label>Email: @Model.Input.Email</label>
         <label>Tel: @(Model.Input.PhoneNumber ?? "")</label>
-        <button type="button" class="btn btn-primary">Bearbeiten</button>
+        <button id="editDataBtn" type="button" class="btn btn-primary">Bearbeiten</button>
     </div>
     <div id="editData" class="list-group d-none">
         <!--inline editing-->
         <input class="form-control" asp-for="Input.Email" placeholder="@Model.Input.Email" />
         <input class="form-control" asp-for="Input.PhoneNumber" placeholder="@(Model.Input.PhoneNumber ?? "")" />
-        <button type="submit" class="btn btn-primary">Speichern</button>
+        <button id="saveDataBtn" type="submit" class="btn btn-primary">Speichern</button>
     </div>
 </form>
 <hr />
 <form method="post" asp-page-handler="EditPassword">
-    <button id="displayEditPasswordBtn" type="button" class="btn btn-primary">Passwort ändern</button>
+    <button id="EditPasswordBtn" type="button" class="btn btn-primary">Passwort ändern</button>
     <div id="editPassword" class="list-group d-none">
         <input class="form-control" asp-for="PasswordInput.Password"/>
         <input class="form-control" asp-for="PasswordInput.NewPassword" />
         <input class="form-control" asp-for="PasswordInput.ConfirmedPassword" />
-        <button type="submit" class="btn btn-primary d-none">Speichern</button>
+        <button id="savePasswordBtn" type="submit" class="btn btn-primary d-none">Speichern</button>
     </div>
 </form>
 
