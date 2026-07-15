@@ -27,12 +27,12 @@
 </form>
 <hr />
 <form method="post" asp-page-handler="EditPassword">
-    <button id="EditPasswordBtn" type="button" class="btn btn-primary">Passwort ändern</button>
+    <button id="editPasswordBtn" type="button" class="btn btn-primary">Passwort ändern</button>
     <div id="editPassword" class="list-group d-none">
-        <input class="form-control" asp-for="PasswordInput.Password"/>
-        <input class="form-control" asp-for="PasswordInput.NewPassword" />
-        <input class="form-control" asp-for="PasswordInput.ConfirmedPassword" />
-        <button id="savePasswordBtn" type="submit" class="btn btn-primary d-none">Speichern</button>
+        <input class="form-control" asp-for="PasswordInput.Password" placeholder="altes Passwort"/>
+        <input class="form-control" asp-for="PasswordInput.NewPassword" placeholder="neues Passwort"/>
+        <input class="form-control" asp-for="PasswordInput.ConfirmedPassword" placeholder="Passwort wiederholen"/>
+        <button id="savePasswordBtn" type="submit" class="btn btn-primary">Speichern</button>
     </div>
 </form>
 
