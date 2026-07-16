@@ -12,3 +12,11 @@ editPasswordBtn.addEventListener("click", function () {
     editPassword.classList.remove("d-none");
     editPasswordBtn.classList.add("d-none");
 });
+
+var passwordInput = document.getElementById("passwordInput");
+var visibilityIconOld = document.getElementById("visibilityIcon_Old");
+
+visibilityIconOld.addEventListener("click", function () {
+    visibilityIconOld.classList.replace("bi-eye-slash", "bi-eye");
+    passwordInput.type = "text";
+})

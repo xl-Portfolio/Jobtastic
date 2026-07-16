@@ -14,6 +14,16 @@
       "provider": "cdnjs",
       "library": "sweetalert2@11.23.0",
       "destination": "wwwroot/lib/sweetalert2/"
+    },
+    {
+      "provider": "cdnjs",
+      "library": "bootstrap-icons@1.13.1",
+      "destination": "wwwroot/lib/bootstrap-icons",
+      "files": [
+        "font/bootstrap-icons.css",
+        "font/fonts/bootstrap-icons.woff",
+        "font/fonts/bootstrap-icons.woff2"
+      ]
     }
   ]
 }
