@@ -17,6 +17,40 @@ var passwordInput = document.getElementById("passwordInput");
 var visibilityIconOld = document.getElementById("visibilityIcon_Old");
 
 visibilityIconOld.addEventListener("click", function () {
-    visibilityIconOld.classList.replace("bi-eye-slash", "bi-eye");
-    passwordInput.type = "text";
+    if (visibilityIconOld.classList.contains("bi-eye-slash")) {
+        visibilityIconOld.classList.replace("bi-eye-slash", "bi-eye");
+        passwordInput.type = "text";
+    } else {
+        visibilityIconOld.classList.replace("bi-eye", "bi-eye-slash");
+        passwordInput.type = "password";
+    }
+    
+})
+
+var newPasswordInput = document.getElementById("newPasswordInput");
+var visibilityIconNew = document.getElementById("visibilityIcon_New");
+
+visibilityIconNew.addEventListener("click", function () {
+    if (visibilityIconNew.classList.contains("bi-eye-slash")) {
+        visibilityIconNew.classList.replace("bi-eye-slash", "bi-eye");
+        newPasswordInput.type = "text";
+    } else {
+        visibilityIconNew.classList.replace("bi-eye", "bi-eye-slash");
+        newPasswordInput.type = "password";
+    }
+
+})
+
+var confirmPasswordInput = document.getElementById("confirmPasswordInput");
+var visibilityIconConfirm = document.getElementById("visibilityIcon_Confirm");
+
+visibilityIconConfirm.addEventListener("click", function () {
+    if (visibilityIconConfirm.classList.contains("bi-eye-slash")) {
+        visibilityIconConfirm.classList.replace("bi-eye-slash", "bi-eye");
+        confirmPasswordInput.type = "text";
+    } else {
+        visibilityIconConfirm.classList.replace("bi-eye", "bi-eye-slash");
+        confirmPasswordInput.type = "password";
+    }
+
 })

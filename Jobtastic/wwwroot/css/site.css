@@ -28,7 +28,23 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 600;
 }
 
-eyeIcon {
-    cursor: pointer;
+.password-field {
+    position: relative;
 }
 
+.password-field .form-control {
+    padding-right: 2.5rem;
+}
+
+.password-field .eyeIcon {
+    position: absolute;
+    top: 50%;
+    right: 0.75rem;
+    transform: translateY(-50%);
+    color: #6c757d;
+    z-index: 2;
+}
+
+.password-field .eyeIcon:hover {
+    color: #495057;
+}
