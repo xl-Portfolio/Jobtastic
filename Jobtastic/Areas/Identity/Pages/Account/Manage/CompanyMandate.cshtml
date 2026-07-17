@@ -1,4 +1,27 @@
 ﻿@page
 @model Jobtastic.Areas.Identity.Pages.Account.Manage.CompanyMandateModel
 @{
+    ViewData["Title"] = "Meine Mandate";
+    ViewData["ActivePage"] = ManageNavPages.CompanyMandate;
 }
+<!--Mandate können, wie postings, geändert, gelöscht und hinzugefügt werden-->
+
+<h5>@ViewData["Title"]</h5>
+<form method="post" asp-page-handler="EditMandates">
+    <div id="displayMandates" class="list-group">
+       @*  <label>Email: @Model.Input.Email</label>
+        <label>Tel: @(Model.Input.PhoneNumber ?? "")</label> *@
+        <button id="editDataBtn" type="button" class="btn btn-primary">Bearbeiten</button>
+    </div>
+    <div id="editMandate" class="list-group d-none">
+        <!--inline editing-->
+      @*   <input class="form-control" asp-for="Input.Email" placeholder="@Model.Input.Email" />
+        <input class="form-control" asp-for="Input.PhoneNumber" placeholder="@(Model.Input.PhoneNumber ?? "Telefonnummer hinzufügen")" />
+        *@ <button id="saveMandateChanges" type="submit" class="btn btn-primary">Änderungen speichern</button>
+    </div>
+</form>
+<hr />
+<form method="post" asp-page-handler="AddMandate">
+    <button id="createMandate" type="button" class="btn btn-primary">Mandat hinzufügen</button>
+    <button id="AddMandate" type="button" class="btn btn-primary">Mandat Speichern</button>
+</form>
