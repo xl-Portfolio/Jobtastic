@@ -16,21 +16,25 @@
 </div>
 
 <h4>Mandat Firma</h4>
-@if (Model.Company == null)
+@if (!Model.Companies.Any())
 {
     <label>kein Mandat hinterlegt</label>
 }
 else
 {
-    if (!string.IsNullOrEmpty(Model.Company.LogoImageSource))
-    {<img src="@Model.Company.LogoImageSource" alt="Logo" />}
-    <div class="list-group">
-        <input class="form-control" hidden asp-for="@Model.CompanyID" />
-        <label>Firmenname: @Model.Company.Name</label>
-        <label>Beschreibung: @Model.Company.Description</label>
-        <label>Webseite: <a href="@Model.Company.WebsiteURL">@Model.Company.WebsiteURL</a></label>
-        <label>Beschäftigte: @Model.Company.NumberEmployees</label>
-    </div>
+    foreach (var company in Model.Companies)
+    {
+        <div class="list-group">
+        @if (!string.IsNullOrEmpty(company.LogoImageSource))
+        {
+            <img src="@company.LogoImageSource" alt="Logo" />
+        }
+            <label>Firmenname: @company.Name</label>
+            <label>Beschreibung: @company.Description</label>
+            <label>Webseite: <a href="@company.WebsiteURL">@company.WebsiteURL</a></label>
+            <label>Beschäftigte: @company.NumberEmployees</label>
+        </div>
+    }
 }
 
 <h4>Assoziierte Kontakte</h4>

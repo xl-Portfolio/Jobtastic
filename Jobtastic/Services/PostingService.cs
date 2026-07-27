@@ -21,8 +21,10 @@ namespace Jobtastic.Services
         public bool IsAuthorized(User user) => user.Id == UserId || (User?.IsInRole("Admin") ?? false);
         public async Task<bool> ProfileIsComplete()
         {
-            var user = await _context.Users.SingleOrDefaultAsync(u => u.Id == UserId);
-            return user?.CompanyID != null;
+            var user = await _context.Users
+                .Include(u => u.Companies)
+                .SingleOrDefaultAsync(u => u.Id == UserId);
+            return user?.Companies.Any() == true;
         }
 
         public async Task<JobPosting?> GetJobById(int id)

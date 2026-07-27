@@ -8,8 +8,8 @@
         public string? LogoImageSource { get; set; }
         public string? WebsiteURL { get; set; }
         public int? NumberEmployees { get; set; }
-        public List<JobPosting> Postings { get; set; }
-        public List<JobContact> Contacts { get; set; }
-        public List<User> Users { get; set; }
+        public List<JobPosting> Postings { get; set; } = new();
+        public List<JobContact> Contacts { get; set; } = new();
+        public List<User> Users { get; set; } = new();
     }
 }

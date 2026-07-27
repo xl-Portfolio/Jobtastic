@@ -22,6 +22,21 @@ namespace Jobtastic.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("CompanyUser", b =>
+                {
+                    b.Property<int>("CompaniesID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UsersId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("CompaniesID", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("CompanyUser");
+                });
+
             modelBuilder.Entity("Jobtastic.Models.Company", b =>
                 {
                     b.Property<int>("ID")
@@ -180,9 +195,6 @@ namespace Jobtastic.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CompanyID")
-                        .HasColumnType("int");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -231,8 +243,6 @@ namespace Jobtastic.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CompanyID");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -382,6 +392,21 @@ namespace Jobtastic.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("CompanyUser", b =>
+                {
+                    b.HasOne("Jobtastic.Models.Company", null)
+                        .WithMany()
+                        .HasForeignKey("CompaniesID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Jobtastic.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Jobtastic.Models.JobContact", b =>
                 {
                     b.HasOne("Jobtastic.Models.Company", "Company")
@@ -423,15 +448,6 @@ namespace Jobtastic.Migrations
                     b.Navigation("Contact");
 
                     b.Navigation("Owner");
-                });
-
-            modelBuilder.Entity("Jobtastic.Models.User", b =>
-                {
-                    b.HasOne("Jobtastic.Models.Company", "Company")
-                        .WithMany("Users")
-                        .HasForeignKey("CompanyID");
-
-                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -490,8 +506,6 @@ namespace Jobtastic.Migrations
                     b.Navigation("Contacts");
 
                     b.Navigation("Postings");
-
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Jobtastic.Models.JobContact", b =>

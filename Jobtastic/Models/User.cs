@@ -7,12 +7,10 @@ namespace Jobtastic.Models
     /// </summary>
     public class User : IdentityUser 
     {
-        public int? CompanyID { get; set; } //FK
-        public Company? Company { get; set; }
-        public List<JobContact> Contacts { get; set; }
-        public List<JobPosting> Postings { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
+        public List<JobContact> Contacts { get; set; } = new();
+        public List<JobPosting> Postings { get; set; } = new();
+        public List<Company> Companies { get; set; } = new();
 
     }
 }

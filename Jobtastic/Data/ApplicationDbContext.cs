@@ -19,10 +19,8 @@ namespace Jobtastic.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<User>()
-                .HasOne(u => u.Company)
-                .WithMany(c => c.Users)
-                .HasForeignKey(u => u.CompanyID)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .HasMany(u => u.Companies)
+                .WithMany(c => c.Users);
 
             modelBuilder.Entity<JobPosting>()
 				.HasOne(j => j.Company)

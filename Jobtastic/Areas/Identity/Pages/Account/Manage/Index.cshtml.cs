@@ -62,14 +62,14 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
         }
         public async Task<IActionResult> OnPostEditDataAsync()
         {
-            var user = await _userManager.GetUserAsync(User); //redundant???!!!
+            var user = await _userManager.GetUserAsync(User);
             if (user == null)
                 return NotFound();
 
             var result = await _userManager.SetEmailAsync(user, Input.Email);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
-                result = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
+            result = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
 
@@ -77,7 +77,7 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
         }
         public async Task<IActionResult> OnPostEditPasswordAsync()
         {
-            var user = await _userManager.GetUserAsync(User); //redundant???!!!
+            var user = await _userManager.GetUserAsync(User);
             if (user == null)
                 return NotFound();
 
