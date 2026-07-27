@@ -5,38 +5,6 @@
 }
 @model User
 
-<@*form asp-controller="JobPosting" asp-area="Identity" asp-action="EditAccount" method="post" enctype="multipart/form-data">*@
-<h2>Account Einstellungen</h2>
-
-<h4>User</h4>    
-<div class="list-group">
-    <label>Username: @Model.UserName</label>
-    <label>Email: @Model.Email</label>
-    <label>Tel: @(string.IsNullOrEmpty(Model.PhoneNumber) ? "" : Model.PhoneNumber)</label>
-</div>
-
-<h4>Mandat Firma</h4>
-@if (!Model.Companies.Any())
-{
-    <label>kein Mandat hinterlegt</label>
-}
-else
-{
-    foreach (var company in Model.Companies)
-    {
-        <div class="list-group">
-        @if (!string.IsNullOrEmpty(company.LogoImageSource))
-        {
-            <img src="@company.LogoImageSource" alt="Logo" />
-        }
-            <label>Firmenname: @company.Name</label>
-            <label>Beschreibung: @company.Description</label>
-            <label>Webseite: <a href="@company.WebsiteURL">@company.WebsiteURL</a></label>
-            <label>Beschäftigte: @company.NumberEmployees</label>
-        </div>
-    }
-}
-
 <h4>Assoziierte Kontakte</h4>
     <div class="list-group">
     @foreach (JobContact contact in Model.Contacts)
