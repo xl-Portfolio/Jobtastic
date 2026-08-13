@@ -26,6 +26,13 @@ namespace Jobtastic.Services
                 .SingleOrDefaultAsync(u => u.Id == UserId);
             return user?.Companies.Any() == true;
         }
+        public async Task<List<Company>> GetCompanyMandatesAsync()
+        {
+            var user = await _context.Users
+                .Include(u => u.Companies)
+                .SingleOrDefaultAsync(u => u.Id == UserId);
+            return user!.Companies.ToList();
+        }
 
         public async Task<JobPosting?> GetJobById(int id)
         {
@@ -44,7 +51,7 @@ namespace Jobtastic.Services
             //Uploaddate und Expirydate mit IsOnline verknüpfen
             //Admin und Owner muss Owner irgendwo ändern können
             job.OwnerID = UserId;
-            //job.Company = ??
+            //job.Company = User.
             await _context.Postings.AddAsync(job);
             var entitiesCreated = await _context.SaveChangesAsync();
             return entitiesCreated >= 1 ? true : false;

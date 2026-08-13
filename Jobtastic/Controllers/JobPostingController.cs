@@ -2,6 +2,7 @@
 using Jobtastic.Models;
 using Jobtastic.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -27,6 +28,7 @@ namespace Jobtastic.Controllers
         {
             if (!await _postingService.ProfileIsComplete())
                 return View("ProfileIncomplete");
+            ViewBag.Mandates = await _postingService.GetCompanyMandatesAsync();
             if (id == 0)
                 return View();
             var job = await _postingService.GetJobById(id);
