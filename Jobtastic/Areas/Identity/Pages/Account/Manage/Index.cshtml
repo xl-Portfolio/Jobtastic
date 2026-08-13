@@ -1,0 +1,50 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Mein Profil";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+}
+
+
+@if (User.IsInRole("Admin"))
+{
+    <h3>Hallo Admin</h3>
+} 
+
+<h5>@ViewData["Title"]</h5>
+<form method="post" asp-page-handler="EditData">
+    <div id="displayData" class="list-group">
+        <label>Email: @Model.Input.Email</label>
+        <label>Tel: @(Model.Input.PhoneNumber ?? "")</label>
+        <button id="editDataBtn" type="button" class="btn btn-primary">Bearbeiten</button>
+    </div>
+    <div id="editData" class="list-group d-none">
+        <!--inline editing-->
+        <input class="form-control" asp-for="Input.Email" placeholder="@Model.Input.Email" />
+        <input class="form-control" asp-for="Input.PhoneNumber" placeholder="@(Model.Input.PhoneNumber ?? "Telefonnummer hinzufügen")" />
+        <button id="saveDataBtn" type="submit" class="btn btn-primary">Speichern</button>
+    </div>
+</form>
+<hr />
+<form method="post" asp-page-handler="EditPassword">
+    <button id="editPasswordBtn" type="button" class="btn btn-primary">Passwort ändern</button>
+    <div id="editPassword" class="list-group d-none">
+        <div class="password-field mb-3">
+            <input id="passwordInput" type="password" class="form-control" asp-for="PasswordInput.Password" placeholder="altes Passwort" />
+            <span id="visibilityIcon_Old" class="bi bi-eye-slash eyeIcon"></span>
+        </div>
+        <div class="password-field mb-3">
+            <input id="newPasswordInput" type="password" class="form-control" asp-for="PasswordInput.NewPassword" placeholder="neues Passwort"/>
+            <span id="visibilityIcon_New" class="bi bi-eye-slash eyeIcon" ></span>
+        </div>
+        <div class="password-field mb-3">
+            <input id="confirmPasswordInput" type="password" class="form-control" asp-for="PasswordInput.ConfirmedPassword" placeholder="Passwort wiederholen"/>
+            <span id="visibilityIcon_Confirm" class="bi bi-eye-slash eyeIcon" ></span>
+        </div>
+        <button id="savePasswordBtn" type="submit" class="btn btn-primary">Speichern</button>
+    </div>
+</form>
+
+@section Scripts {
+    <script src="~/js/manageIndex.js"></script>
+}

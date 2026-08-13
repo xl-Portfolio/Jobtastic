@@ -1,0 +1,58 @@
+﻿@page
+@model Jobtastic.Areas.Identity.Pages.Account.Manage.CompanyMandateModel
+@{
+    ViewData["Title"] = "Meine Mandate";
+    ViewData["ActivePage"] = ManageNavPages.CompanyMandate;
+}
+<!--Mandate können, wie postings, geändert, gelöscht und hinzugefügt werden-->
+
+<h5>@ViewData["Title"]</h5>
+<button id="createMandateBtn" type="button" class="btn btn-primary">Mandat hinzufügen</button>
+<form method="post" asp-page-handler="AddMandate">
+    <div id="addMandate" class="list-group d-none">
+        <input class="form-control" asp-for="Input.Name" placeholder="Firmenname" />
+        <input class="form-control" asp-for="Input.Description" placeholder="Beschreibung" />
+        <input class="form-control" asp-for="Input.LogoImageSource" placeholder="Logo (URL)" />
+        <input class="form-control" asp-for="Input.WebsiteURL" placeholder="Webseite" />
+        <input class="form-control" asp-for="Input.NumberEmployees" placeholder="Anzahl der Beschäftigten" />
+        <button id="addMandateBtn" type="submit" class="btn btn-primary">Mandat Speichern</button>
+    </div>
+</form>
+<hr/>
+
+@if (!Model.Companies.Any())
+{
+    <label>kein Mandat hinterlegt</label>
+}
+else
+{
+    foreach (var company in Model.Companies)
+    {
+        <form method="post" asp-page-handler="EditMandate">
+            <div id="displayMandates_@company.ID" class="list-group mandateDisplay">
+                @if (!string.IsNullOrEmpty(company.LogoImageSource))
+                {
+                    <img src="@company.LogoImageSource" alt="Logo" />
+                }
+                <label>Firmenname: @company.Name</label>
+                <label>Beschreibung: @company.Description</label>
+                <label>Webseite: <a href="@company.WebsiteURL">@company.WebsiteURL</a></label>
+                <label>Beschäftigte: @company.NumberEmployees</label>
+                <button id="editMandateBtn_@company.ID" type="button" class="btn btn-primary editMandateBtn">Bearbeiten</button>
+            </div>
+            <div id="editMandate_@company.ID" class="list-group d-none mandateForm">
+                <!--inline editing-->
+                <input class="form-control" asp-for="CompanyId" value="@company.ID" type="hidden"/>
+                <input class="form-control" asp-for="Input.Name" value="@company.Name" placeholder="@company.Name" />
+                <input class="form-control" asp-for="Input.Description" value="@company.Description" placeholder="@(company.Description ?? "Beschreibung")" />
+                <input class="form-control" asp-for="Input.LogoImageSource" value="@company.LogoImageSource" placeholder="@(company.LogoImageSource ?? "Logo (URL)")" />
+                <input class="form-control" asp-for="Input.WebsiteURL" value="@company.WebsiteURL" placeholder="@(company.WebsiteURL ?? "Webseite")" />
+                <input class="form-control" asp-for="Input.NumberEmployees" value="@company.NumberEmployees" placeholder="@(company.NumberEmployees.ToString() ?? "Anzahl der Beschäftigten")" />
+                <button id="saveMandateChangesBtn_@company.ID" type="submit" class="btn btn-primary saveMandateChangesBtn">Änderungen speichern</button>
+            </div>
+        </form>
+    }
+}
+@section Scripts {
+    <script src="~/js/manageMandates.js"></script>
+}

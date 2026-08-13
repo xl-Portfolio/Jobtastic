@@ -1,0 +1,39 @@
+﻿<!--Index-Seite JobPostingController = übersicht Jobpostings->
+
+<!--dieses mit datatables.net umbauen-->
+
+@{
+    ViewData["Title"] = "Meine Inserate";
+}
+
+@model List<JobPosting>
+
+<h1>@ViewData["Title"]</h1>
+<a class="btn btn-primary" asp-area="" asp-controller="JobPosting" asp-action="Form">Jobangebot posten</a>
+<div class="list-group">
+    @foreach (JobPosting job in Model)
+    {
+        <div class="d-flex w-100 justify-content-between">
+            <h5 class="wb-1">@job.JobTitle</h5> <!-- link hinzufügen zu Jobposting-->
+            <small>@job.JobLocation</small>
+        </div>
+        <p class="mb-1">Firma: @job.Company.Name</p>
+        <p class="mb-1">Startdatum: @job.StartDate</p>
+        <a class="btn btn-primary" asp-area="" asp-controller="JobPosting" asp-action="Form(@job.ID)">bearbeiten</a>
+    }
+
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/lib/datatables.net-dt/css/dataTables.dataTables.min.css" />
+}
+
+@section Scripts {
+    <script src="~/lib/datatables.net-dt/js/dataTables.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            new DataTable('#allPostings');
+        });
+    </script>
+}

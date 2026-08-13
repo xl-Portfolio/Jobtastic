@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34902.65
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jobtastic", "Jobtastic\Jobtastic.csproj", "{A3199D97-F307-4C0A-801A-D9B249E0EBED}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestJobtastic", "TestJobtastic\TestJobtastic.csproj", "{1C81BF1C-1D1B-49EF-9B8C-35FE48A2BCDB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A3199D97-F307-4C0A-801A-D9B249E0EBED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3199D97-F307-4C0A-801A-D9B249E0EBED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3199D97-F307-4C0A-801A-D9B249E0EBED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3199D97-F307-4C0A-801A-D9B249E0EBED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C81BF1C-1D1B-49EF-9B8C-35FE48A2BCDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C81BF1C-1D1B-49EF-9B8C-35FE48A2BCDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C81BF1C-1D1B-49EF-9B8C-35FE48A2BCDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C81BF1C-1D1B-49EF-9B8C-35FE48A2BCDB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {69E6FA22-F21B-458D-BEC2-C6A90D8D943D}
+	EndGlobalSection
+EndGlobal
