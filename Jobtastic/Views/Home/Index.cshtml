@@ -1,19 +1,47 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Alle Jobs";
 }
 @model List<JobPosting>
 
 <h1>Entdecke Jobs</h1>
-<div class="list-group">
-    @foreach(JobPosting job in Model)
-    {
-        <div class="d-flex w-100 justify-content-between">
-            <h5 class="wb-1">@job.JobTitle</h5> <!-- link hinzufügen zu Jobposting-->
-            <small>@job.JobLocation</small>
-        </div>
-        <p class="mb-1">Firma: @job.Company.Name</p>
-        <p class="mb-1">Startdatum: @job.StartDate</p>
-    }
 
-    <!--Suchfunktion-->
-</div>
+<table id="allPostings" class="table table-striped" style="width:100%">
+    <thead>
+        <tr>
+            <th>Titel</th>
+            <th>Firma</th>
+            <th>Ort</th>
+            <th>Startdatum</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (JobPosting job in Model)
+        {
+            <tr>
+                <td>
+                    <a class="nav-link text-dark" asp-controller="Home" asp-action="JobDetails" asp-route-id="@job.ID">
+                        @job.JobTitle
+                    </a>
+                </td>
+                <td>@job.Company.Name</td>
+                <td>@job.JobLocation</td>
+                <td>@job.StartDate.ToString("dd.MM.yyyy")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Styles {
+    <link rel="stylesheet" href="~/lib/datatables.net-dt/css/dataTables.dataTables.min.css" />
+}
+
+@section Scripts {
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    <script src="~/lib/datatables.net/dataTables.min.js"></script>
+    <script src="~/lib/datatables.net-dt/js/dataTables.dataTables.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            new DataTable('#allPostings');
+        });
+    </script>
+}

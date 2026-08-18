@@ -10,7 +10,6 @@ using System.Security.Claims;
 namespace Jobtastic.Controllers
 {
     [Authorize]
-
     public class JobPostingController : Controller
     {
         private readonly PostingService _postingService;
@@ -39,7 +38,7 @@ namespace Jobtastic.Controllers
             return View(job);
         }
         [HttpPost]
-        public async Task<IActionResult> CreateEditJob(JobPosting job, IFormFile file) //Interaktion Speichern+Ändern
+        public async Task<IActionResult> CreateEditJob(JobPosting job, IFormFile file)
         {
             if (job.ID == 0)
             {
@@ -52,9 +51,8 @@ namespace Jobtastic.Controllers
                 var postingById = await _postingService.FindPosting(job);
                 if (postingById == null)
                     return NotFound();
-                if (!_postingService.IsAuthorized(job))
+                if (!_postingService.IsAuthorized(postingById)) 
                     return Unauthorized();
-
                 var jobEdited = await _postingService.EditJob_Successfully(job, file, postingById);
                 if (!jobEdited)
                     return BadRequest();
