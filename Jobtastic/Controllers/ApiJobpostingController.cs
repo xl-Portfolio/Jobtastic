@@ -14,12 +14,22 @@ namespace Jobtastic.Controllers
             _service = service;
         }
 
-        [HttpGet]
+        [HttpGet("GetAll")]
         public IActionResult GetAllPostings() 
         {
             var postings = _service.GetAllPostings();
+            if (postings == null)
+                return NotFound();
             return Ok(postings);
         }
 
+        [HttpGet("GetById")]
+        public IActionResult GetPostingById(int id) 
+        {
+            var posting = _service.GetPostingById(id);
+            if (posting == null) 
+                return NotFound();
+            return Ok(posting);
+        }
     }
 }
