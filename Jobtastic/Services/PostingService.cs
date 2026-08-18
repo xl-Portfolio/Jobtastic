@@ -76,16 +76,6 @@ namespace Jobtastic.Services
             dbJob.UploadDate = DateTime.Now;
             dbJob.ExpiryDate = dbJob.UploadDate.AddMonths(6);
             //CompanyId (FK) ??
-            //if (file != null) //Bild speichern
-            //{
-            //    using (var memoryStream = new MemoryStream()) //Bild als bytearray speichern in db
-            //    {
-            //        file.CopyTo(memoryStream);
-            //        var byteArray = memoryStream.ToArray();
-            //        job.CompanyImage = byteArray; //muss in db angelegt werden (Logo?)
-            //    }
-            //}
-            //else { return NotFound(); }
             var entitiesChanged = await _context.SaveChangesAsync();
             return entitiesChanged >= 1 ? true : false;
         }
