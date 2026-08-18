@@ -7,6 +7,10 @@
       "destination": "wwwroot/lib/jquery/"
     },
     {
+      "library": "datatables.net@2.3.4",
+      "destination": "wwwroot/lib/datatables.net/"
+    },
+    {
       "library": "datatables.net-dt@2.3.4",
       "destination": "wwwroot/lib/datatables.net-dt/"
     },
