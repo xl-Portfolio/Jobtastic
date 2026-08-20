@@ -1,4 +1,5 @@
-﻿using Jobtastic.Services;
+﻿using Jobtastic.Filters;
+using Jobtastic.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,6 +7,7 @@ namespace Jobtastic.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ApiKeyAuthorizationAttribute]
     public class ApiJobpostingController : ControllerBase
     {
         private readonly ApiJobpostingService _service;
@@ -15,9 +17,9 @@ namespace Jobtastic.Controllers
         }
 
         [HttpGet("GetAll")]
-        public IActionResult GetAllPostings() 
+        public async Task<IActionResult> GetAllPostings() 
         {
-            var postings = _service.GetAllPostings();
+            var postings = await _service.GetAllPostings();
             if (postings == null)
                 return NotFound();
             return Ok(postings);

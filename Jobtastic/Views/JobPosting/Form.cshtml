@@ -1,64 +1,94 @@
-﻿<!--CreateEditJob Formular-->
-@{
+﻿@{
     ViewData["Title"] = "Job inserieren";
 }
 @model JobPosting
+<form asp-controller="JobPosting" asp-action="CreateEditJob" method="post" enctype="multipart/form-data"
+      class="mx-auto" style="max-width: 800px;">
 
- <form asp-controller="JobPosting" asp-action="CreateEditJob" method="post" enctype="multipart/form-data">
-    
-     <div class="list-group">
+    <input class="form-control" hidden asp-for="ID" />
 
-        <input class="form-control" hidden  asp-for="ID"/>
-
-        <select class="form-control" asp-for="CompanyID" required asp-items="@(new SelectList(ViewBag.Mandates, "Id", "Name"))">
-            <option value="">Firma (bitte wählen)</option>
-        </select>
-        <input class="form-control" asp-for="JobTitle" required placeholder="Stellenbezeichnung"/>
-        <select class="form-control" asp-for="Experience" required asp-items="Html.GetEnumSelectList<Experience>()">
-            <option value="">Berufserfahrung (bitte wählen)</option>
-        </select>
-
-        <label asp-for="StartDate">Startdatum</label>
-        <input class="form-control" asp-for="StartDate" type="date" />
-        <hr/>
-        <input class="form-control" asp-for="Header" required placeholder="Betiteln Sie Ihr Jobangebot" />
-        <input class="form-control" asp-for="JobDescription" required placeholder="Beschreiben Sie den Job ausführlicher"/>
-        <hr/>
-        <input class="form-control" asp-for="JobLocation" required placeholder="Stadt" />
-        <input class="form-control" asp-for="AnnualSalary" required placeholder="Jahresgehalt" />
-
-        <div class="list-group">
-            <label>Vollzeit?</label>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" asp-for="Fulltime" value="True" id="FulltimeYes" />
-                <label class="form-check-label" for="FulltimeYes">Ja</label>
+    <div class="row g-3">
+        <div class="col-md-6">
+            @{
+                var mandates = (List<Company>)ViewBag.Mandates;
+            }
+            @if (mandates.Count == 1)
+            {
+                <input type="hidden" asp-for="CompanyID" value="@mandates[0].ID" />
+                <label class="form-control-plaintext fw-bold" style="font-size: calc(1rem + 1pt);">@mandates[0].Name</label>
+            }
+            else
+            {
+                <select class="form-control text-muted" asp-for="CompanyID" required asp-items="@(new SelectList(mandates, "ID", "Name"))">
+                    <option value="">Firma (bitte wählen)</option>
+                </select>
+            }
+        </div>
+        <div class="col-md-6">
+            <div class="row align-items-center">
+                <label asp-for="StartDate" class="col-md-4 col-form-label">Startdatum:</label>
+                <div class="col-md-8">
+                    <input class="form-control" asp-for="StartDate" type="date" />
+                </div>
             </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" asp-for="Fulltime" value="False" id="FulltimeNo" />
-                <label class="form-check-label" for="FulltimeNo">Nein</label>
+        </div>
+        <hr />
+
+        <div class="col-md-6">
+            <input class="form-control" asp-for="JobTitle" required placeholder="Stellenbezeichnung" />
+        </div>
+        <div class="col-md-6">
+            <select class="form-control text-muted" asp-for="Experience" required asp-items="Html.GetEnumSelectList<Experience>()">
+                <option value="">Erfahrung</option>
+            </select>
+        </div>
+        
+
+        <div class="col-md-6">
+            <input class="form-control" asp-for="JobLocation" required placeholder="Stadt" />
+        </div>
+        <div class="col-md-6">
+            <input class="form-control" asp-for="AnnualSalary" type="number" min="1000" required placeholder="Jahresgehalt" />
+        </div>
+
+        <div class="col-6 d-flex align-items-center flex-wrap gap-3">
+            <input id="VolumeHours" class="form-control" asp-for="VolumeHours"
+                   type="number" min="0" max="99" placeholder="Wochenstunden" style="width: 17ch;" />
+            <div class="btn-group" role="group">
+                <input type="radio" class="btn-check" asp-for="Fulltime" value="True" id="FulltimeYes" autocomplete="off" />
+                <label class="btn btn-outline-primary" for="FulltimeYes">Vollzeit</label>
+                <input type="radio" class="btn-check" asp-for="Fulltime" value="False" id="FulltimeNo" autocomplete="off" />
+                <label class="btn btn-outline-primary" for="FulltimeNo">Teilzeit</label>
             </div>
         </div>
 
-        <input id="VolumeHours" class="form-control" asp-for="VolumeHours" placeholder="Wochenstunden" />
-        <select class="form-control" asp-for="Mode" required asp-items="Html.GetEnumSelectList<Mode>()">
-            <option value="">Präsenzmodus (bitte wählen)</option>
-        </select>
-
-        <div class="list-group">
-            <label>Anzeige aktivieren?</label>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" asp-for="IsOnline" value="True" id="IsOnlineYes" />
-                <label class="form-check-label" for="IsOnlineYes">Ja</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" asp-for="IsOnline" value="False" id="IsOnlineNo" />
-                <label class="form-check-label" for="IsOnlineNo">Nein</label>
+        <div class="col-md-6">
+            <select class="form-control text-muted" asp-for="Mode" required asp-items="Html.GetEnumSelectList<Mode>()">
+                <option value="">Präsenzmodus (bitte wählen)</option>
+            </select>
+        </div>
+        <hr/>
+        <div class="col-12">
+            <input class="form-control" asp-for="Header" required placeholder="Formulieren Sie einen aussagekräftigen Header" />
+        </div>
+        <div class="col-12">
+            <input class="form-control" asp-for="JobDescription" required placeholder="Beschreiben Sie die Stelle" />
+        </div>
+        <hr/>
+        <div class="col-md-6 d-flex align-items-center gap-3">
+            <label class="mb-0">Anzeige aktivieren?</label>
+            <div class="btn-group" role="group">
+                <input type="radio" class="btn-check" asp-for="IsOnline" value="True" id="IsOnlineYes" autocomplete="off" />
+                <label class="btn btn-outline-primary" for="IsOnlineYes">Sofort</label>
+                <input type="radio" class="btn-check" asp-for="IsOnline" value="False" id="IsOnlineNo" autocomplete="off" />
+                <label class="btn btn-outline-primary" for="IsOnlineNo">Später</label>
             </div>
         </div>
     </div>
+
     <button type="submit" class="btn btn-primary mt-3">Speichern</button>
-       @*  <input type="file" class="form-control" id="Logo" name="file" />  ...muss erst included werden in controller aus companies-table  *@  
-</form> 
+</form>
+
 @section Scripts {
     <script src="~/js/manageJobPostingForm.js"></script>
 }

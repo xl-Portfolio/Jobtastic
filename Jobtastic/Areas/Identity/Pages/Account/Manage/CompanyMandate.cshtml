@@ -8,17 +8,30 @@
 
 <h5>@ViewData["Title"]</h5>
 <button id="createMandateBtn" type="button" class="btn btn-primary">Mandat hinzufügen</button>
-<form method="post" asp-page-handler="AddMandate">
-    <div id="addMandate" class="list-group d-none">
-        <input class="form-control" asp-for="Input.Name" placeholder="Firmenname" />
-        <input class="form-control" asp-for="Input.Description" placeholder="Beschreibung" />
-        <input class="form-control" asp-for="Input.LogoImageSource" placeholder="Logo (URL)" />
-        <input class="form-control" asp-for="Input.WebsiteURL" placeholder="Webseite" />
-        <input class="form-control" asp-for="Input.NumberEmployees" placeholder="Anzahl der Beschäftigten" />
-        <button id="addMandateBtn" type="submit" class="btn btn-primary">Mandat Speichern</button>
+
+<form method="post" asp-page-handler="AddMandate" class="mx-auto mt-3" style="max-width: 800px;">
+    <div id="addMandate" class="row g-3 d-none">
+        <div class="col-md-6">
+            <input class="form-control" asp-for="Input.Name" placeholder="Firmenname" />
+        </div>
+        <div class="col-md-6">
+            <input class="form-control" asp-for="Input.Description" placeholder="Beschreibung" />
+        </div>
+        <div class="col-md-6">
+            <input class="form-control" asp-for="Input.LogoImageSource" placeholder="Logo (URL)" />
+        </div>
+        <div class="col-md-6">
+            <input class="form-control" asp-for="Input.WebsiteURL" placeholder="Webseite" />
+        </div>
+        <div class="col-md-6">
+            <input class="form-control" asp-for="Input.NumberEmployees" placeholder="Anzahl der Beschäftigten" />
+        </div>
+        <div class="col-12">
+            <button id="addMandateBtn" type="submit" class="btn btn-primary mt-3">Mandat Speichern</button>
+        </div>
     </div>
 </form>
-<hr/>
+<hr />
 
 @if (!Model.Companies.Any())
 {
