@@ -6,45 +6,54 @@
 <h1>@ViewData["Title"]</h1>
 <a class="btn btn-primary mb-3" asp-area="" asp-controller="JobPosting" asp-action="Form" asp-route-id="0">Jobangebot posten</a>
 
-<table id="allPostings" class="table table-striped" style="width:100%">
-    <thead>
-        <tr>
-            <th>Titel</th>
-            <th>Firma</th>
-            <th>Ort</th>
-            <th>Startdatum</th>
-            <th>Aktionen</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (JobPosting job in Model)
-        {
+@if (Model == null || !Model.Any())
+{
+    <p>Sie haben noch kein Inserat gepostet.</p>
+}
+else
+{
+    <table id="allPostings" class="table table-striped" style="width:100%">
+        <thead>
             <tr>
-                <td>
-                    <a asp-area="" asp-controller="Home" asp-action="JobDetails" asp-route-id="@job.ID">
-                        @job.JobTitle
-                    </a>
-                </td>
-                <td>
-                    @job.Company.Name
-                    @if (!string.IsNullOrWhiteSpace(job.Company.WebsiteURL))
-                    {
-                        <a href="@job.Company.WebsiteURL" target="_blank" rel="noopener noreferrer" title="Firmenwebsite">
-                            <i class="bi bi-box-arrow-up-right"></i>
-                        </a>
-                    }
-                </td>
-                <td>@job.JobLocation</td>
-                <td>@job.StartDate.ToString("dd.MM.yyyy")</td>
-                <td>
-                    <a class="btn btn-sm btn-primary" asp-area="" asp-controller="JobPosting" asp-action="Form" asp-route-id="@job.ID">
-                        bearbeiten
-                    </a>
-                </td>
+                <th>Titel</th>
+                <th>Firma</th>
+                <th>Ort</th>
+                <th>Startdatum</th>
+                <th>Jahresgehalt</th>
+                <th>Aktionen</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (JobPosting job in Model)
+            {
+                <tr>
+                    <td>
+                        <a asp-area="" asp-controller="Home" asp-action="JobDetails" asp-route-id="@job.ID">
+                            @job.JobTitle
+                        </a>
+                    </td>
+                    <td>
+                        @job.Company.Name
+                        @if (!string.IsNullOrWhiteSpace(job.Company.WebsiteURL))
+                        {
+                            <a href="@job.Company.WebsiteURL" target="_blank" rel="noopener noreferrer" title="Link zu Firmenwebsite">
+                                <i class="bi bi-box-arrow-up-right"></i>
+                            </a>
+                        }
+                    </td>
+                    <td>@job.JobLocation</td>
+                    <td>@job.StartDate.ToString("dd.MM.yyyy")</td>
+                    <td>@job.AnnualSalary.ToString("C")</td>
+                    <td>
+                        <a class="btn btn-sm btn-primary" asp-area="" asp-controller="JobPosting" asp-action="Form" asp-route-id="@job.ID">
+                            bearbeiten
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
 
 @section Styles {
     <link rel="stylesheet" href="~/lib/datatables.net-dt/css/dataTables.dataTables.min.css" />

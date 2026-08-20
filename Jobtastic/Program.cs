@@ -25,6 +25,7 @@ namespace Jobtastic
             builder.Services.AddScoped<PostingService>();
             builder.Services.AddControllersWithViews();
             builder.Services.AddHttpContextAccessor();
+            builder.Services.AddScoped<Jobtastic.Services.ApiJobpostingService>();
 
             var app = builder.Build();
 

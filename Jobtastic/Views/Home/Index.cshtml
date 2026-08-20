@@ -12,6 +12,7 @@
             <th>Firma</th>
             <th>Ort</th>
             <th>Startdatum</th>
+            <th>Jahresgehalt</th>
         </tr>
     </thead>
     <tbody>
@@ -26,6 +27,7 @@
                 <td>@job.Company.Name</td>
                 <td>@job.JobLocation</td>
                 <td>@job.StartDate.ToString("dd.MM.yyyy")</td>
+                <td>@job.AnnualSalary.ToString("C")</td>
             </tr>
         }
     </tbody>
