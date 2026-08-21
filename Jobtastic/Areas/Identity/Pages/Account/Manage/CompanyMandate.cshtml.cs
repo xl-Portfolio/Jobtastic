@@ -1,5 +1,6 @@
 using Jobtastic.Data;
 using Jobtastic.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -28,14 +29,13 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
         }
         public class InputModel
         {
-            [Required]
+            [Required(ErrorMessage = "Firmenname ist erforderlich.")]
             public string Name { get; set; }
             public string? Description { get; set; }
             public string? LogoImageSource { get; set; }
             public string? WebsiteURL { get; set; }
-            public int? NumberEmployees { get; set; }
         }
-        private async Task<User> GetCompaniesbyUserAsync()
+        private async Task<User?> GetCompaniesByUserAsync()
         {
             var userId = _userManager.GetUserId(User);
             var user = await _context.Users
@@ -43,26 +43,38 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
                 .FirstOrDefaultAsync(u => u.Id == userId);
             return user;
         }
+        private static object ToDto(Company c) => new
+        {
+            id = c.ID,
+            name = c.Name,
+            description = c.Description,
+            logoImageSource = c.LogoImageSource,
+            websiteURL = c.WebsiteURL,
+        };
+
+        private IEnumerable<string> GetModelErrors() =>
+            ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+        private JsonResult ErrorJson(int statusCode, params string[] errors) =>
+            new(new { success = false, errors }) { StatusCode = statusCode };
         public async Task<IActionResult> OnGetAsync()
         {
-            var user = await GetCompaniesbyUserAsync();
+            var user = await GetCompaniesByUserAsync();
             if (user == null)
                 return NotFound();
 
             Companies = user.Companies.ToList();
-
             Input = new InputModel();
-
             return Page();
         }
+        // AJAX: Erfolg -> HTML-Fragment (Partial), Fehler -> JSON
         public async Task<IActionResult> OnPostAddMandateAsync()
         {
-            var user = await GetCompaniesbyUserAsync();
-            if (user == null) 
-                return NotFound();
+            var user = await GetCompaniesByUserAsync();
+            if (user == null)
+                return ErrorJson(StatusCodes.Status404NotFound, "Benutzer nicht gefunden.");
 
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                return ErrorJson(StatusCodes.Status400BadRequest, GetModelErrors().ToArray());
 
             var company = new Company
             {
@@ -71,41 +83,51 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
                 LogoImageSource = Input.LogoImageSource,
                 WebsiteURL = Input.WebsiteURL
             };
-
             user.Companies.Add(company);
 
-            var result = await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                return ErrorJson(
+                    StatusCodes.Status500InternalServerError,
+                    "Speichern fehlgeschlagen.");
+            }
 
-            if (result > 0)
-                return RedirectToPage();
-
-            ModelState.AddModelError("", "Speichern fehlgeschlagen.");
-            return Page();
+            return Partial("_MandateItem", company);
         }
         public async Task<IActionResult> OnPostEditMandateAsync()
         {
-            var user = await GetCompaniesbyUserAsync();
+            var user = await GetCompaniesByUserAsync();
             if (user == null)
-                return NotFound();
+                return ErrorJson(StatusCodes.Status404NotFound, "Benutzer nicht gefunden.");
 
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                return ErrorJson(StatusCodes.Status400BadRequest, GetModelErrors().ToArray());
 
             var company = user.Companies.FirstOrDefault(c => c.ID == CompanyId);
             if (company == null)
-                return NotFound();
+                return ErrorJson(StatusCodes.Status404NotFound, "Firma nicht gefunden oder keine Berechtigung.");
 
             company.Name = Input.Name;
             company.Description = Input.Description;
             company.LogoImageSource = Input.LogoImageSource;
             company.WebsiteURL = Input.WebsiteURL;
 
-            var result = await _context.SaveChangesAsync();
-            if (result > 0) 
-                return RedirectToPage();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                return ErrorJson(
+                    StatusCodes.Status500InternalServerError,
+                    "Speichern fehlgeschlagen.");
+            }
 
-            ModelState.AddModelError("", "Speichern fehlgeschlagen.");
-            return Page();
+            return Partial("_MandateItem", company);
         }
     }
 }

@@ -1,18 +1,19 @@
 ﻿@*
-    Detailansicht Job. enthält Daten zu Contact und Link zu Companyseite
+    Detailansicht Job. enthält Daten zu Contact und Company
 *@
 @{
 }
 <!--Post Ansicht-->
 @{
-    ViewData["Title"] = "Header hier rein";
+    ViewData["Title"] = Model.Header;
 }
 @model JobPosting
 
 
 <!--
 
-soll inkludieren/bzw verweisen auf: JobContactSeite, FirmenSeite
+
 
 if (Owner)
+    hervorheben
     Verweis auf Bearbeiten-Form inkludiert

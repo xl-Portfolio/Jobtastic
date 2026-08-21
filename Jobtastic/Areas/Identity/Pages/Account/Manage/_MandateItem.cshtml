@@ -1,0 +1,57 @@
+﻿@model Jobtastic.Models.Company
+
+<div id="mandateItem_@Model.ID" class="mandate-item list-group-item" data-id="@Model.ID">
+    <div id="displayMandate_@Model.ID" class="mandateDisplay">
+        <div class="d-flex align-items-center">
+            @if (!string.IsNullOrEmpty(Model.LogoImageSource))
+            {
+                <div class="me-3">
+                    <img src="@Model.LogoImageSource" alt="Logo" height="60" width="60" />
+                </div>
+            }
+            <div class="flex-grow-1">
+                <label style="font-weight: bold; font-size: 1.3em;">
+                    @if (!string.IsNullOrEmpty(Model.WebsiteURL))
+                    {
+                        <a href="@Model.WebsiteURL" target="_blank" rel="noopener">@Model.Name</a>
+                    }
+                    else
+                    {
+                        @Model.Name
+                    }
+                </label>
+            </div>
+            <button type="button" class="btn btn-outline-primary btn-sm editMandateBtn" data-id="@Model.ID">
+                <i class="bi bi-pencil"></i> Bearbeiten
+            </button>
+        </div>
+        @if (!string.IsNullOrEmpty(Model.Description))
+        {
+            <div class="mt-3 pt-2 border-top">@Model.Description</div>
+        }
+    </div>
+
+    <form class="editMandateForm d-none mt-2" id="editMandateForm_@Model.ID" data-id="@Model.ID">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="CompanyId" value="@Model.ID" />
+        <div class="row g-2">
+            <div class="col-md-12">
+                <input class="form-control" name="Input.Name" value="@Model.Name" placeholder="Firmenname" />
+            </div>
+            <div class="col-md-6">
+                <input class="form-control" name="Input.LogoImageSource" value="@Model.LogoImageSource" placeholder="Logo (URL)" />
+            </div>
+            <div class="col-md-6">
+                <input class="form-control" name="Input.WebsiteURL" value="@Model.WebsiteURL" placeholder="Webseite" />
+            </div>
+            <div class="col-md-12">
+                <input class="form-control" name="Input.Description" value="@Model.Description" placeholder="Beschreibung" />
+            </div>
+            <div class="col-12 mt-2">
+                <button type="submit" class="btn btn-primary btn-sm">Änderungen speichern</button>
+                <button type="button" class="btn btn-secondary btn-sm cancelEditBtn" data-id="@Model.ID">Abbrechen</button>
+            </div>
+        </div>
+    </form>
+    <hr />
+</div>

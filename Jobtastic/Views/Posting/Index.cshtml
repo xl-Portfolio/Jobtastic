@@ -4,7 +4,7 @@
 @model List<JobPosting>
 
 <h1>@ViewData["Title"]</h1>
-<a class="btn btn-primary mb-3" asp-area="" asp-controller="JobPosting" asp-action="Form" asp-route-id="0">Jobangebot posten</a>
+<a class="btn btn-primary mb-3" asp-area="" asp-controller="Posting" asp-action="Form" asp-route-id="0">Jobangebot posten</a>
 
 @if (Model == null || !Model.Any())
 {
@@ -45,7 +45,7 @@ else
                     <td>@job.StartDate.ToString("dd.MM.yyyy")</td>
                     <td>@job.AnnualSalary.ToString("C")</td>
                     <td>
-                        <a class="btn btn-sm btn-primary" asp-area="" asp-controller="JobPosting" asp-action="Form" asp-route-id="@job.ID">
+                        <a class="btn btn-sm btn-primary" asp-area="" asp-controller="Posting" asp-action="Form" asp-route-id="@job.ID">
                             bearbeiten
                         </a>
                     </td>

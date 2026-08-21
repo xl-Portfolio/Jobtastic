@@ -1,29 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Jobtastic.Enums;
 
 namespace Jobtastic.Models
 {
-    public enum Mode 
-    {
-        [Display(Name = "Vor Ort")]
-        OnSite,
-        [Display(Name = "Homeoffice")] 
-        FullRemote,
-        [Display(Name = "Hybrid")]
-        Hybrid 
-    }
-    public enum Experience 
-    {
-        [Display(Name = "Praktikum")]
-        Intern,
-        [Display(Name = "Berufseinstieg")]
-        Entry,
-        [Display(Name = "Junior")]
-        Junior,
-        [Display(Name = "Berufserfahren")]
-        Professional,
-        [Display(Name = "Senior")]
-        Senior 
-    }
     public class JobPosting
     {
         public int ID { get; set; }
