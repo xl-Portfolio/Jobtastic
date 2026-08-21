@@ -1,4 +1,30 @@
-﻿@page
+﻿@* @page
 @model Jobtastic.Areas.Identity.Pages.Account.Manage.ManagedContactsModel
 @{
 }
+<!--Account Settings User // hier vlt mit Javascript änderungen dynamisch ermöglichen?-->
+
+@{
+    ViewData["Title"] = "Verwaltete Kontakte";
+}
+@model User
+
+<h4>Assoziierte Kontakte</h4>
+    <div class="list-group">
+    @foreach (JobContact contact in Model.Contacts)
+    {
+        if (!string.IsNullOrEmpty(contact.ProfileImagePath))
+        {
+            <img src="contact.ProfileImagePath" alt="Profilbild" />
+        }
+        <input class="form-control" hidden asp-for="@contact.ID"/>
+        <h5>@contact.FirstName @contact.LastName</h5>
+        <label>Email: @contact.Email</label>
+        <label>Tel: @contact.Phone</label>
+        <label>Abteilung: @contact.Department</label>
+    }
+    </div>
+@*</form>*@
+
+    
+ 
