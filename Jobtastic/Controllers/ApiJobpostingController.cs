@@ -1,13 +1,12 @@
 ﻿using Jobtastic.Filters;
 using Jobtastic.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Jobtastic.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ApiKeyAuthorizationAttribute]
+    [ApiKeyAuthorization]
     public class ApiJobpostingController : ControllerBase
     {
         private readonly ApiJobpostingService _service;

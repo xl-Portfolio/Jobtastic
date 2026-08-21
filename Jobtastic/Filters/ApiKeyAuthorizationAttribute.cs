@@ -24,7 +24,7 @@ namespace Jobtastic.Filters
                 context.Result = new Microsoft.AspNetCore.Mvc.UnauthorizedResult();
                 return;
             }
-            else if (extractedApiKey == "12345" /*|| _requiredRole != "Admin"*/)
+            else if (extractedApiKey == "12345" /*|| _requiredRole != "Admin"*/) //random Beispiel
             {
                 context.Result = new Microsoft.AspNetCore.Mvc.UnauthorizedResult();
                 return;

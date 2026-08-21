@@ -40,6 +40,9 @@ namespace Jobtastic.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateEditJob(JobPosting job, IFormFile file)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (!await _postingService.IsAuthorizedForCompany(job.CompanyID))
                 return Unauthorized();
 

@@ -2,6 +2,7 @@ using Jobtastic.Data;
 using Jobtastic.Models;
 using Jobtastic.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Jobtastic
@@ -23,7 +24,10 @@ namespace Jobtastic
 				.AddEntityFrameworkStores<ApplicationDbContext>();
 			builder.Services.AddScoped<SetupService>();
             builder.Services.AddScoped<PostingService>();
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews(options =>
+			{
+				options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+            });
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddScoped<Jobtastic.Services.ApiJobpostingService>();
 
