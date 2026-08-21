@@ -29,7 +29,10 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
         }
         public class InputModel
         {
+            [Required]
+            [EmailAddress]
             public string Email { get; set; }
+            [Phone]
             public string? PhoneNumber { get; set; }
         }
         public class PasswordInputModel
@@ -65,6 +68,9 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
                 return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             var result = await _userManager.SetEmailAsync(user, Input.Email);
             if (!result.Succeeded)
