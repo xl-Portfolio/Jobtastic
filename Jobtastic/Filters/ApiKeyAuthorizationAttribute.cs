@@ -2,7 +2,7 @@
 
 namespace Jobtastic.Filters
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)] //Wie kann man Attributes Parameter übergeben?
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class ApiKeyAuthorizationAttribute : Attribute, IAsyncActionFilter
     {
         //private readonly string? _requiredRole;

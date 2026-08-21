@@ -8,10 +8,8 @@
 
 @if (User.IsInRole("Admin"))
 {
-    <h3>Hallo Admin</h3>
+    <h2>Hallo Admin</h2>
 } 
-
-<h5>@ViewData["Title"]</h5>
 <form method="post" asp-page-handler="EditData">
     <div id="displayData" class="list-group">
         <label>Email: @Model.Input.Email</label>

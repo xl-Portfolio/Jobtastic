@@ -69,8 +69,7 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
                 Name = Input.Name,
                 Description = Input.Description,
                 LogoImageSource = Input.LogoImageSource,
-                WebsiteURL = Input.WebsiteURL,
-                NumberEmployees = Input.NumberEmployees
+                WebsiteURL = Input.WebsiteURL
             };
 
             user.Companies.Add(company);
@@ -100,7 +99,6 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
             company.Description = Input.Description;
             company.LogoImageSource = Input.LogoImageSource;
             company.WebsiteURL = Input.WebsiteURL;
-            company.NumberEmployees = Input.NumberEmployees;
 
             var result = await _context.SaveChangesAsync();
             if (result > 0) 

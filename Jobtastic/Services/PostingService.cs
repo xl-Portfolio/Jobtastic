@@ -2,6 +2,7 @@
 using Jobtastic.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata;
 using System.Security.Claims;
 
 namespace Jobtastic.Services
@@ -26,12 +27,17 @@ namespace Jobtastic.Services
                 .SingleOrDefaultAsync(u => u.Id == UserId);
             return user?.Companies.Any() == true;
         }
-        public async Task<List<Company>> GetCompanyMandatesAsync()
+        public async Task<List<Company>> GetMandatesAsync()
         {
             var user = await _context.Users
                 .Include(u => u.Companies)
                 .SingleOrDefaultAsync(u => u.Id == UserId);
             return user!.Companies.ToList();
+        }
+        public async Task<bool> IsAuthorizedForCompany(int companyId)
+        {
+            var mandates = await GetMandatesAsync();
+            return mandates.Any(m => m.ID == companyId);
         }
 
         public async Task<JobPosting?> GetJobById(int id)
@@ -46,15 +52,19 @@ namespace Jobtastic.Services
                 .ToListAsync();
             return allJobs;
         }
-        public async Task<bool> AddJob_Successfully(JobPosting job, IFormFile file) //Interaktion Speichern
+        public async Task<bool> AddJob_Successfully(JobPosting job, IFormFile file)
         {
-            //Uploaddate und Expirydate mit IsOnline verknüpfen
-            //Admin und Owner muss Owner irgendwo ändern können
             job.OwnerID = UserId;
-            //job.Company = User.
+
+            if (job.IsOnline)
+            {
+                job.UploadDate = DateTime.Now;
+                job.ExpiryDate = job.UploadDate.AddMonths(6);
+            }
+
             await _context.Postings.AddAsync(job);
             var entitiesCreated = await _context.SaveChangesAsync();
-            return entitiesCreated >= 1 ? true : false;
+            return entitiesCreated >= 1;
         }
         public async Task<JobPosting?> FindPosting(JobPosting job)
         {
@@ -72,12 +82,16 @@ namespace Jobtastic.Services
             dbJob.Fulltime = formJob.Fulltime;
             dbJob.VolumeHours = formJob.VolumeHours;
             dbJob.Mode = formJob.Mode;
+
             dbJob.IsOnline = formJob.IsOnline;
-            dbJob.UploadDate = DateTime.Now;
-            dbJob.ExpiryDate = dbJob.UploadDate.AddMonths(6);
-            //CompanyId (FK) ??
+            if (dbJob.IsOnline)
+            {
+                dbJob.UploadDate = DateTime.Now;
+                dbJob.ExpiryDate = dbJob.UploadDate.AddMonths(6);
+            }
+
             var entitiesChanged = await _context.SaveChangesAsync();
-            return entitiesChanged >= 1 ? true : false;
+            return entitiesChanged >= 1;
         }
 
          
