@@ -1,5 +1,6 @@
 ﻿using Jobtastic.Models;
 using System.ComponentModel.DataAnnotations;
+using Jobtastic.Enums;
 
 namespace Jobtastic.DTO
 {

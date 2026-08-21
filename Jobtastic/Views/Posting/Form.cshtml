@@ -1,4 +1,5 @@
-﻿@{
+﻿@using Jobtastic.Enums
+@{
     ViewData["Title"] = "Job inserieren";
 }
 @model JobPosting
@@ -19,8 +20,8 @@
             }
             else
             {
-                <select class="form-control text-muted" asp-for="CompanyID" required asp-items="@(new SelectList(mandates, "ID", "Name"))">
-                    <option value="">Firma (bitte wählen)</option>
+                <select class="form-control" asp-for="CompanyID" required asp-items="@(new SelectList(mandates, "ID", "Name"))">
+                    <option  value="" class="text-muted">Firma (bitte wählen)</option>
                 </select>
             }
         </div>
@@ -38,8 +39,8 @@
             <input class="form-control" asp-for="JobTitle" required placeholder="Stellenbezeichnung" />
         </div>
         <div class="col-md-6">
-            <select class="form-control text-muted" asp-for="Experience" required asp-items="Html.GetEnumSelectList<Experience>()">
-                <option value="">Erfahrung</option>
+            <select class="form-control" asp-for="Experience" required asp-items="Html.GetEnumSelectList<Experience>()">
+                <option value="" class="text-muted">Erfahrung</option>
             </select>
         </div>
         
@@ -63,8 +64,8 @@
         </div>
 
         <div class="col-md-6">
-            <select class="form-control text-muted" asp-for="Mode" required asp-items="Html.GetEnumSelectList<Mode>()">
-                <option value="">Präsenzmodus (bitte wählen)</option>
+            <select class="form-control" asp-for="Mode" required asp-items="Html.GetEnumSelectList<Mode>()">
+                <option value="" class="text-muted">Präsenzmodus (bitte wählen)</option>
             </select>
         </div>
         <hr/>
@@ -72,7 +73,7 @@
             <input class="form-control" asp-for="Header" maxlength="160" required placeholder="Formulieren Sie einen aussagekräftigen Header" />
         </div>
         <div class="col-12">
-            <input class="form-control" asp-for="JobDescription" required placeholder="Beschreiben Sie die Stelle" />
+            <input class="form-control" asp-for="JobDescription" maxlength="5000" required placeholder="Beschreiben Sie die Stelle" />
         </div>
         <hr/>
         <div class="col-md-6 d-flex align-items-center gap-3">
