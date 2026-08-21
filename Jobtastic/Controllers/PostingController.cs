@@ -10,11 +10,11 @@ using System.Security.Claims;
 namespace Jobtastic.Controllers
 {
     [Authorize]
-    public class JobPostingController : Controller
+    public class PostingController : Controller
     {
         private readonly PostingService _postingService;
         
-        public JobPostingController(PostingService service)
+        public PostingController(PostingService service)
         {
             _postingService = service;
         }
@@ -27,7 +27,7 @@ namespace Jobtastic.Controllers
         {
             if (!await _postingService.ProfileIsComplete())
                 return View("ProfileIncomplete");
-            ViewBag.Mandates = await _postingService.GetCompanyMandatesAsync();
+            ViewBag.Mandates = await _postingService.GetMandatesAsync();
             if (id == 0)
                 return View();
             var job = await _postingService.GetJobById(id);
@@ -40,6 +40,9 @@ namespace Jobtastic.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateEditJob(JobPosting job, IFormFile file)
         {
+            if (!await _postingService.IsAuthorizedForCompany(job.CompanyID))
+                return Unauthorized();
+
             if (job.ID == 0)
             {
                 var jobAdded = await _postingService.AddJob_Successfully(job, file);

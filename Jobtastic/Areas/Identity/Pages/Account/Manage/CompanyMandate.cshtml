@@ -4,18 +4,19 @@
     ViewData["Title"] = "Meine Mandate";
     ViewData["ActivePage"] = ManageNavPages.CompanyMandate;
 }
-<!--Mandate können, wie postings, geändert, gelöscht und hinzugefügt werden-->
 
-<h5>@ViewData["Title"]</h5>
-<button id="createMandateBtn" type="button" class="btn btn-primary">Mandat hinzufügen</button>
+
+<div class="row">
+    <div class="col-12 text-left">
+        <button id="createMandateBtn" type="button" class="btn btn-primary">Mandat hinzufügen</button>
+    </div>
+</div>
+<hr/>
 
 <form method="post" asp-page-handler="AddMandate" class="mx-auto mt-3" style="max-width: 800px;">
     <div id="addMandate" class="row g-3 d-none">
-        <div class="col-md-6">
+        <div class="col-md-12">
             <input class="form-control" asp-for="Input.Name" placeholder="Firmenname" />
-        </div>
-        <div class="col-md-6">
-            <input class="form-control" asp-for="Input.Description" placeholder="Beschreibung" />
         </div>
         <div class="col-md-6">
             <input class="form-control" asp-for="Input.LogoImageSource" placeholder="Logo (URL)" />
@@ -23,15 +24,15 @@
         <div class="col-md-6">
             <input class="form-control" asp-for="Input.WebsiteURL" placeholder="Webseite" />
         </div>
-        <div class="col-md-6">
-            <input class="form-control" asp-for="Input.NumberEmployees" placeholder="Anzahl der Beschäftigten" />
+        <div class="col-md-12">
+            <input class="form-control" asp-for="Input.Description" placeholder="Beschreibung" />
         </div>
         <div class="col-12">
             <button id="addMandateBtn" type="submit" class="btn btn-primary mt-3">Mandat Speichern</button>
         </div>
     </div>
 </form>
-<hr />
+
 
 @if (!Model.Companies.Any())
 {
@@ -43,26 +44,34 @@ else
     {
         <form method="post" asp-page-handler="EditMandate">
             <div id="displayMandates_@company.ID" class="list-group mandateDisplay">
-                @if (!string.IsNullOrEmpty(company.LogoImageSource))
-                {
-                    <img src="@company.LogoImageSource" alt="Logo" />
-                }
-                <label>Firmenname: @company.Name</label>
-                <label>Beschreibung: @company.Description</label>
-                <label>Webseite: <a href="@company.WebsiteURL">@company.WebsiteURL</a></label>
-                <label>Beschäftigte: @company.NumberEmployees</label>
-                <button id="editMandateBtn_@company.ID" type="button" class="btn btn-primary editMandateBtn">Bearbeiten</button>
+                <div class="d-flex align-items-center">
+
+                    @if (!string.IsNullOrEmpty(company.LogoImageSource))
+                    {
+                        <div class="me-3">
+                            <img src="@company.LogoImageSource" alt="Logo" height="120" width="120" />
+                        </div>
+                    }
+                    <div class="flex-grow-1">
+                        <label style="font-weight: bold; font-size: 1.3em;">
+                            <a href="@company.WebsiteURL">@company.Name</a>
+                        </label>
+                    </div>
+                    <button id="editMandateBtn_@company.ID" type="button" class="btn btn-primary editMandateBtn">Bearbeiten</button>
+                </div>
+                <div class="mt-3 pt-2 border-top">@company.Description</div>
             </div>
+
             <div id="editMandate_@company.ID" class="list-group d-none mandateForm">
                 <!--inline editing-->
                 <input class="form-control" asp-for="CompanyId" value="@company.ID" type="hidden"/>
                 <input class="form-control" asp-for="Input.Name" value="@company.Name" placeholder="@company.Name" />
-                <input class="form-control" asp-for="Input.Description" value="@company.Description" placeholder="@(company.Description ?? "Beschreibung")" />
                 <input class="form-control" asp-for="Input.LogoImageSource" value="@company.LogoImageSource" placeholder="@(company.LogoImageSource ?? "Logo (URL)")" />
                 <input class="form-control" asp-for="Input.WebsiteURL" value="@company.WebsiteURL" placeholder="@(company.WebsiteURL ?? "Webseite")" />
-                <input class="form-control" asp-for="Input.NumberEmployees" value="@company.NumberEmployees" placeholder="@(company.NumberEmployees.ToString() ?? "Anzahl der Beschäftigten")" />
+                <input class="form-control" asp-for="Input.Description" value="@company.Description" placeholder="@(company.Description ?? "Beschreibung")" />
                 <button id="saveMandateChangesBtn_@company.ID" type="submit" class="btn btn-primary saveMandateChangesBtn">Änderungen speichern</button>
             </div>
+            <hr/>
         </form>
     }
 }
