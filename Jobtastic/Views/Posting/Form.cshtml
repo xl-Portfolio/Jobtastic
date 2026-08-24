@@ -9,10 +9,11 @@
     <input class="form-control" hidden asp-for="ID" />
 
     <div class="row g-3">
+        @{
+            var mandates = (List<Company>)ViewBag.Mandates;
+            var contacts = (List<JobContact>)ViewBag.Contacts;
+        }
         <div class="col-md-6">
-            @{
-                var mandates = (List<Company>)ViewBag.Mandates;
-            }
             @if (mandates.Count == 1)
             {
                 <input type="hidden" asp-for="CompanyID" value="@mandates[0].ID" />
@@ -25,6 +26,16 @@
                 </select>
             }
         </div>
+        <div class="col-md-6">
+            <select class="form-control" id="ContactSelect" asp-for="ContactID">
+                <option value="">Kein Ansprechpartner</option>
+                @foreach (var contact in mandates.Count == 1 ? contacts.Where(c => c.CompanyID == mandates[0].ID) : contacts)
+                {
+                    <option value="@contact.ID" data-company="@contact.CompanyID">@contact.FirstName @contact.LastName</option>
+                }
+            </select>
+        </div>
+
         <div class="col-md-6">
             <div class="row align-items-center">
                 <label asp-for="StartDate" class="col-md-4 col-form-label">Startdatum:</label>
