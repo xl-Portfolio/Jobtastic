@@ -51,10 +51,16 @@ namespace Jobtastic.Services
             var mandates = await GetMandatesAsync();
             return mandates.Any(m => m.ID == companyId);
         }
-
         public async Task<JobPosting?> GetJobById(int id)
         {
             return await _context.Postings.SingleOrDefaultAsync(x => x.ID == id);
+        }
+        public async Task<JobPosting?> GetJobDetailsById(int id)
+        {
+            return await _context.Postings
+                .Include(j => j.Company)
+                .Include(j => j.Contact)
+                .SingleOrDefaultAsync(x => x.ID == id);
         }
         public async Task<List<JobPosting>> GetOwnedPostings()
         {

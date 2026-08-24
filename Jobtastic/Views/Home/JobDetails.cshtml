@@ -1,20 +1,118 @@
-﻿@*
-    Detailansicht Job. enthält Daten zu Contact und Company
-*@
-@{
-}
-<!--Post Ansicht-->
+﻿@model JobPosting
+@inject Jobtastic.Services.PostingService PostingService
 @{
     ViewData["Title"] = Model.Header;
+    var isOwner = ViewBag.IsOwner as bool? ?? false;
 }
-@model JobPosting
 
+<div class="mx-auto" style="max-width: 800px;">
+    <div class="d-flex align-items-start justify-content-between">
+        <div>
+            <h1 class="mb-0">@Model.Header</h1>
+            <div class="text-muted fs-5">@Model.JobTitle</div>
+        </div>
+        @if (isOwner)
+        {
+            <a asp-controller="Posting" asp-action="Form" asp-route-id="@Model.ID" class="btn btn-outline-primary btn-sm" title="Posting bearbeiten">
+                <i class="bi bi-pencil"></i>
+            </a>
+        }
+    </div>
 
+    <div class="d-flex align-items-center mt-3 mb-4 pb-3 border-bottom">
+        @if (!string.IsNullOrEmpty(Model.Company.LogoImageSource))
+        {
+            <img src="@Model.Company.LogoImageSource" alt="Logo" height="50" width="50" class="me-3" />
+        }
+        <div class="flex-grow-1">
+            <label class="fw-bold fs-5 mb-0">
+                @if (!string.IsNullOrEmpty(Model.Company.WebsiteURL))
+                {
+                    <a href="@Model.Company.WebsiteURL" target="_blank" rel="noopener">@Model.Company.Name</a>
+                }
+                else
+                {
+                    @Model.Company.Name
+                }
+            </label>
+            @if (!string.IsNullOrEmpty(Model.Company.Description))
+            {
+                <div class="text-muted small">@Model.Company.Description</div>
+            }
+        </div>
+        @if (isOwner)
+        {
+            <a asp-area="Identity" asp-page="/Account/Manage/CompanyMandate" class="btn btn-outline-primary btn-sm" title="Firmenmandat bearbeiten">
+                <i class="bi bi-pencil"></i>
+            </a>
+        }
+    </div>
 
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="text-muted small">Ort</div>
+            <div>@Model.JobLocation</div>
+        </div>
+        <div class="col-md-4">
+            <div class="text-muted small">Startdatum</div>
+            <div>@Model.StartDate.ToString("dd.MM.yyyy")</div>
+        </div>
+        <div class="col-md-4">
+            <div class="text-muted small">Jahresgehalt</div>
+            <div>@Model.AnnualSalary.ToString("C")</div>
+        </div>
+        <div class="col-md-4">
+            <div class="text-muted small">Anstellung</div>
+            <div>@(Model.Fulltime ? "Vollzeit" : "Teilzeit")@(Model.VolumeHours.HasValue ? $" ({Model.VolumeHours} Std./Woche)" : "")</div>
+        </div>
+        <div class="col-md-4">
+            <div class="text-muted small">Präsenzmodus</div>
+            <div>@Html.DisplayFor(m => m.Mode)</div>
+        </div>
+        <div class="col-md-4">
+            <div class="text-muted small">Erfahrung</div>
+            <div>@Html.DisplayFor(m => m.Experience)</div>
+        </div>
+    </div>
 
-@* 
+    <div class="mb-4" style="white-space: pre-wrap;">@Model.JobDescription</div>
 
-if (Owner)
-    hervorheben
-    Verweis auf Bearbeiten-Form inkludiert
- *@
+    <div class="pt-3 border-top">
+        <div class="d-flex align-items-center">
+            <h5 class="mb-0 flex-grow-1">Ansprechpartner</h5>
+            @if (isOwner)
+            {
+                <a asp-area="Identity" asp-page="/Account/Manage/ManagedContacts" class="btn btn-outline-primary btn-sm" title="Kontakte verwalten">
+                    <i class="bi bi-pencil"></i>
+                </a>
+            }
+        </div>
+        @if (Model.Contact != null)
+        {
+            <div class="d-flex align-items-center mt-2">
+                @if (!string.IsNullOrEmpty(Model.Contact.ProfileImagePath))
+                {
+                    <img src="@Model.Contact.ProfileImagePath" alt="Profilbild" height="50" width="50" class="rounded-circle me-3" />
+                }
+                <div>
+                    <div class="fw-bold">
+                        @Model.Contact.FirstName @Model.Contact.LastName
+                        @if (!string.IsNullOrEmpty(Model.Contact.Department))
+                        {
+                            <span class="text-muted"> · @Model.Contact.Department</span>
+                        }
+                    </div>
+                    <div>E-Mail: <a href="mailto:@Model.Contact.Email">@Model.Contact.Email</a></div>
+                    @if (!string.IsNullOrEmpty(Model.Contact.Phone))
+                    {
+                        <div>Tel: @Model.Contact.Phone</div>
+                    }
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="text-muted mt-2">Kein Ansprechpartner hinterlegt.</div>
+        }
+    </div>
+</div>

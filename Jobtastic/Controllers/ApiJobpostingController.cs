@@ -25,9 +25,9 @@ namespace Jobtastic.Controllers
         }
 
         [HttpGet("GetById")]
-        public IActionResult GetPostingById(int id) 
+        public async Task< IActionResult> GetPostingById(int id) 
         {
-            var posting = _service.GetPostingById(id);
+            var posting = await _service.GetPostingById(id);
             if (posting == null) 
                 return NotFound();
             return Ok(posting);
