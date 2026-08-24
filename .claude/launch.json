@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "jobtastic-http",
+      "runtimeExecutable": "dotnet",
+      "runtimeArgs": ["run", "--project", "Jobtastic/Jobtastic.csproj", "--launch-profile", "http"],
+      "port": 5247
+    }
+  ]
+}

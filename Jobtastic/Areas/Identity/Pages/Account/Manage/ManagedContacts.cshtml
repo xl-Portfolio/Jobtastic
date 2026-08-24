@@ -1,30 +1,73 @@
-﻿@* @page
+﻿@page
+@using Microsoft.AspNetCore.Mvc.Rendering
 @model Jobtastic.Areas.Identity.Pages.Account.Manage.ManagedContactsModel
 @{
-}
-<!--Account Settings User // hier vlt mit Javascript änderungen dynamisch ermöglichen?-->
-
-@{
     ViewData["Title"] = "Verwaltete Kontakte";
+    ViewData["ActivePage"] = ManageNavPages.ManagedContacts;
 }
-@model User
-
-<h4>Assoziierte Kontakte</h4>
-    <div class="list-group">
-    @foreach (JobContact contact in Model.Contacts)
-    {
-        if (!string.IsNullOrEmpty(contact.ProfileImagePath))
+<div class="row">
+    <div class="col-12 text-left">
+        @if (Model.OwnedCompanies.Any())
         {
-            <img src="contact.ProfileImagePath" alt="Profilbild" />
+            <button id="createContactBtn" type="button" class="btn btn-primary">
+                <i class="bi bi-plus-lg"></i> Kontakt hinzufügen
+            </button>
         }
-        <input class="form-control" hidden asp-for="@contact.ID"/>
-        <h5>@contact.FirstName @contact.LastName</h5>
-        <label>Email: @contact.Email</label>
-        <label>Tel: @contact.Phone</label>
-        <label>Abteilung: @contact.Department</label>
-    }
+        else
+        {
+            <div class="alert alert-info mb-0">
+                Du musst zuerst ein <a asp-page="./CompanyMandate">Firmenmandat anlegen</a>, bevor du Kontakte hinzufügen kannst.
+            </div>
+        }
     </div>
-@*</form>*@
-
-    
- 
+</div>
+<hr />
+@if (Model.OwnedCompanies.Any())
+{
+    <form id="addContactForm" method="post" asp-page-handler="AddContact" class="mx-auto mt-3" style="max-width: 800px;">
+        <div id="addContact" class="row g-3 d-none">
+            <div class="col-md-12">
+                <select class="form-control" asp-for="Input.CompanyID" required asp-items="@(new SelectList(Model.OwnedCompanies, "ID", "Name"))">
+                    <option value="" class="text-muted">Firma (bitte wählen)</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <input class="form-control" asp-for="Input.FirstName" placeholder="Vorname" autocomplete="off" />
+            </div>
+            <div class="col-md-6">
+                <input class="form-control" asp-for="Input.LastName" placeholder="Nachname" autocomplete="off" />
+            </div>
+            <div class="col-md-6">
+                <input class="form-control" asp-for="Input.Email" placeholder="E-Mail" />
+            </div>
+            <div class="col-md-6">
+                <input class="form-control" asp-for="Input.Phone" placeholder="Telefon" />
+            </div>
+            <div class="col-md-6">
+                <input class="form-control" asp-for="Input.Department" placeholder="Abteilung" />
+            </div>
+            <div class="col-md-6">
+                <input class="form-control" asp-for="Input.ProfileImagePath" placeholder="Profilbild (https://bsp.de/foto.png)" />
+            </div>
+            <div class="col-12">
+                <button id="addContactBtn" type="submit" class="btn btn-primary mt-3">Kontakt speichern</button>
+            </div>
+        </div>
+    </form>
+}
+<div id="contactsList" class="list-group mt-3">
+    @if (!Model.Contacts.Any())
+    {
+        <label id="noContactsLabel">kein Kontakt hinterlegt</label>
+    }
+    else
+    {
+        foreach (var contact in Model.Contacts)
+        {
+            @await Html.PartialAsync("_ContactItem", contact)
+        }
+    }
+</div>
+@section Scripts {
+    <script src="~/js/manageContacts.js"></script>
+}
