@@ -14,14 +14,21 @@
 <hr />
 <form id="addMandateForm" method="post" asp-page-handler="AddMandate" class="mx-auto mt-3" style="max-width: 800px;">
     <div id="addMandate" class="row g-3 d-none">
-        <div class="col-md-12">
-            <input class="form-control" asp-for="Input.Name" placeholder="Firmenname" />
+        <div class="col-md-12 position-relative">
+            <input class="form-control" asp-for="Input.Name" placeholder="Firmenname" required autocomplete="off" />
+            <input type="hidden" id="existingCompanyId" name="ExistingCompanyId" value="" />
+            <input type="hidden" id="forceCreate" name="ForceCreate" value="false" />
+            <div id="companySuggestions" class="list-group position-absolute w-100 d-none" style="z-index: 1050; max-height: 220px; overflow-y: auto;"></div>
+            <div id="existingCompanyNotice" class="form-text text-info d-none mt-1">
+                Firma existiert bereits. Mandat hinzugefügt.
+                <a href="#" id="resetExistingCompany">Neue Firma anlegen</a>
+            </div>
         </div>
         <div class="col-md-6">
-            <input class="form-control" asp-for="Input.LogoImageSource" placeholder="Logo (URL)" />
+            <input class="form-control" asp-for="Input.LogoImageSource" placeholder="Logo (https://bsp.de/logo.png)" />
         </div>
         <div class="col-md-6">
-            <input class="form-control" asp-for="Input.WebsiteURL" placeholder="Webseite" />
+            <input class="form-control" asp-for="Input.WebsiteURL" placeholder="Webseite (https://bsp.de)" />
         </div>
         <div class="col-md-12">
             <input class="form-control" asp-for="Input.Description" placeholder="Beschreibung" />

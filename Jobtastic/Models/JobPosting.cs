@@ -9,7 +9,9 @@ namespace Jobtastic.Models
         public int CompanyID { get; set; } //(FK)
         public Company Company { get; set; }
         public string JobTitle { get; set; }
+        [MaxLength(160)]
         public string Header { get; set; }
+        [MaxLength(5000)]
         public string JobDescription { get; set; }
         public string JobLocation { get; set; } 
         public double AnnualSalary { get; set; }

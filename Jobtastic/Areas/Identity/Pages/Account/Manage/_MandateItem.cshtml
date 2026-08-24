@@ -22,7 +22,10 @@
                 </label>
             </div>
             <button type="button" class="btn btn-outline-primary btn-sm editMandateBtn" data-id="@Model.ID">
-                <i class="bi bi-pencil"></i> Bearbeiten
+                <i class="bi bi-pencil"></i>
+            </button>
+            <button type="button" class="btn btn-outline-danger btn-sm deleteMandateBtn" data-id="@Model.ID">
+                <i class="bi bi-trash"></i>
             </button>
         </div>
         @if (!string.IsNullOrEmpty(Model.Description))
@@ -34,15 +37,16 @@
     <form class="editMandateForm d-none mt-2" id="editMandateForm_@Model.ID" data-id="@Model.ID">
         @Html.AntiForgeryToken()
         <input type="hidden" name="CompanyId" value="@Model.ID" />
+        <input type="hidden" name="ForceCreate" value="false" />
         <div class="row g-2">
             <div class="col-md-12">
                 <input class="form-control" name="Input.Name" value="@Model.Name" placeholder="Firmenname" required/>
             </div>
             <div class="col-md-6">
-                <input class="form-control" name="Input.LogoImageSource" value="@Model.LogoImageSource" placeholder="Logo (URL)" />
+                <input class="form-control" type="url" name="Input.LogoImageSource" value="@Model.LogoImageSource" placeholder="Logo (https://bsp.de/logo.png)" />
             </div>
             <div class="col-md-6">
-                <input class="form-control" name="Input.WebsiteURL" value="@Model.WebsiteURL" placeholder="Webseite" />
+                <input class="form-control" type="url" name="Input.WebsiteURL" value="@Model.WebsiteURL" placeholder="Webseite (https://bsp.de)" />
             </div>
             <div class="col-md-12">
                 <input class="form-control" name="Input.Description" value="@Model.Description" placeholder="Beschreibung" />
@@ -52,6 +56,10 @@
                 <button type="button" class="btn btn-secondary btn-sm cancelEditBtn" data-id="@Model.ID">Abbrechen</button>
             </div>
         </div>
+    </form>
+    <form class="deleteMandateForm d-none" id="deleteMandateForm_@Model.ID">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="CompanyId" value="@Model.ID" />
     </form>
     <hr />
 </div>
