@@ -8,3 +8,23 @@ FulltimeYes.addEventListener("click", function () {
 FulltimeNo.addEventListener("click", function () {
     VolumeHours.value = null;
 })
+
+const companySelect = document.getElementById("CompanySelect");
+const contactSelect = document.getElementById("ContactSelect");
+
+if (companySelect && contactSelect) {
+    function filterContactsByCompany() {
+        const companyId = companySelect.value;
+        let selectedStillVisible = false;
+        Array.from(contactSelect.options).forEach(function (option) {
+            if (!option.value) return;
+            const matches = option.dataset.company === companyId;
+            option.hidden = !matches;
+            if (matches && option.selected) selectedStillVisible = true;
+        });
+        if (!selectedStillVisible) contactSelect.value = "";
+    }
+
+    companySelect.addEventListener("change", filterContactsByCompany);
+    filterContactsByCompany();
+}

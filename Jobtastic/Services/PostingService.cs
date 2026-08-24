@@ -27,6 +27,18 @@ namespace Jobtastic.Services
                 .SingleOrDefaultAsync(u => u.Id == UserId);
             return user?.Companies.Any() == true;
         }
+        public async Task<List<JobContact>> GetContactsAsync()
+        {
+            var user = await _context.Users
+                .Include(u => u.Contacts)
+                .SingleOrDefaultAsync(u => u.Id == UserId);
+            return user!.Contacts.ToList();
+        }
+        public async Task<bool> IsAuthorizedForContact(int contactId, int companyId)
+        {
+            var contacts = await GetContactsAsync();
+            return contacts.Any(c => c.ID == contactId && c.CompanyID == companyId);
+        }
         public async Task<List<Company>> GetMandatesAsync()
         {
             var user = await _context.Users

@@ -28,6 +28,7 @@ namespace Jobtastic.Controllers
             if (!await _postingService.ProfileIsComplete())
                 return View("ProfileIncomplete");
             ViewBag.Mandates = await _postingService.GetMandatesAsync();
+            ViewBag.Contacts = await _postingService.GetContactsAsync();
             if (id == 0)
                 return View();
             var job = await _postingService.GetJobById(id);
@@ -44,6 +45,9 @@ namespace Jobtastic.Controllers
                 return BadRequest(ModelState);
 
             if (!await _postingService.IsAuthorizedForCompany(job.CompanyID))
+                return Unauthorized();
+
+            if (job.ContactID.HasValue && !await _postingService.IsAuthorizedForContact(job.ContactID.Value, job.CompanyID))
                 return Unauthorized();
 
             if (job.ID == 0)
