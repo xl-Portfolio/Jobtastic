@@ -21,12 +21,13 @@ namespace Jobtastic.Controllers
         public async Task<IActionResult> Index()
         {
             var jobs = await _postingService.GetOwnedPostings();
+            ViewBag.HasMandate = await _postingService.ProfileIsComplete();
             return View(jobs);
         }
         public async Task<IActionResult> Form(int id)
         {
             if (!await _postingService.ProfileIsComplete())
-                return View("ProfileIncomplete");
+                return RedirectToAction("Index");
             ViewBag.Mandates = await _postingService.GetMandatesAsync();
             ViewBag.Contacts = await _postingService.GetContactsAsync();
             if (id == 0)

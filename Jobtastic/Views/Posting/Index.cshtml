@@ -4,7 +4,11 @@
 @model List<JobPosting>
 
 <h1>@ViewData["Title"]</h1>
-<a class="btn btn-primary mb-3" asp-area="" asp-controller="Posting" asp-action="Form" asp-route-id="0">Jobangebot posten</a>
+<a id="postJobBtn" class="btn btn-primary mb-3" asp-area="" asp-controller="Posting" asp-action="Form" asp-route-id="0"
+   data-has-mandate="@ViewBag.HasMandate.ToString().ToLower()"
+   data-mandate-url="@Url.Page("/Account/Manage/CompanyMandate", new { area = "Identity" })">
+    Jobangebot posten
+</a>
 
 @if (Model == null || !Model.Any())
 {
@@ -62,13 +66,12 @@ else
 @section Scripts {
     <script src="~/lib/datatables.net/dataTables.min.js"></script>
     <script src="~/lib/datatables.net-dt/js/dataTables.dataTables.min.js"></script>
+    <script src="~/js/postingIndexGuard.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
             new DataTable('#allPostings', {
                 columnDefs: [
-                    { orderable: false, searchable: false, targets: -1 }
+                    { orderable: true, searchable: true, targets: -1 }
                 ]
             });
-        });
     </script>
 }
