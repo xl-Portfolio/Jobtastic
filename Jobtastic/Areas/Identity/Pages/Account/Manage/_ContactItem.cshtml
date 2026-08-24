@@ -1,0 +1,68 @@
+﻿@model Jobtastic.Models.JobContact
+
+<div id="contactItem_@Model.ID" class="contact-item list-group-item" data-id="@Model.ID">
+    <div id="displayContact_@Model.ID" class="contactDisplay">
+        <div class="d-flex align-items-center">
+            @if (!string.IsNullOrEmpty(Model.ProfileImagePath))
+            {
+                <div class="me-3">
+                    <img src="@Model.ProfileImagePath" alt="Profilbild" height="60" width="60" class="rounded-circle" />
+                </div>
+            }
+            <div class="flex-grow-1">
+                <label data-role="contact-name" style="font-weight: bold; font-size: 1.3em;">@Model.FirstName @Model.LastName</label>
+                <div class="text-muted">
+                    @Model.Company.Name@(string.IsNullOrEmpty(Model.Department) ? "" : " · " + Model.Department)
+                </div>
+            </div>
+            <button type="button" class="btn btn-outline-primary btn-sm editContactBtn" data-id="@Model.ID">
+                <i class="bi bi-pencil"></i>
+            </button>
+            <button type="button" class="btn btn-outline-danger btn-sm deleteContactBtn" data-id="@Model.ID">
+                <i class="bi bi-trash"></i>
+            </button>
+        </div>
+        <div class="mt-3 pt-2">
+            <div>E-Mail: <a href="mailto:@Model.Email">@Model.Email</a></div>
+            @if (!string.IsNullOrEmpty(Model.Phone))
+            {
+                <div>Tel: @Model.Phone</div>
+            }
+        </div>
+    </div>
+
+    <form class="editContactForm d-none mt-2" id="editContactForm_@Model.ID" data-id="@Model.ID">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="ContactId" value="@Model.ID" />
+        <div class="row g-2">
+            <div class="col-12 text-muted small">Firma: @Model.Company.Name (nicht änderbar – Kontakt ggf. löschen und neu anlegen)</div>
+            <div class="col-md-6">
+                <input class="form-control" name="Input.FirstName" value="@Model.FirstName" placeholder="Vorname" required />
+            </div>
+            <div class="col-md-6">
+                <input class="form-control" name="Input.LastName" value="@Model.LastName" placeholder="Nachname" required />
+            </div>
+            <div class="col-md-6">
+                <input class="form-control" name="Input.Email" value="@Model.Email" placeholder="E-Mail" required />
+            </div>
+            <div class="col-md-6">
+                <input class="form-control" name="Input.Phone" value="@Model.Phone" placeholder="Telefon" />
+            </div>
+            <div class="col-md-6">
+                <input class="form-control" name="Input.Department" value="@Model.Department" placeholder="Abteilung" />
+            </div>
+            <div class="col-md-6">
+                <input class="form-control" type="url" name="Input.ProfileImagePath" value="@Model.ProfileImagePath" placeholder="Profilbild (https://bsp.de/foto.png)" />
+            </div>
+            <div class="col-12 mt-2">
+                <button type="submit" class="btn btn-primary btn-sm">Änderungen speichern</button>
+                <button type="button" class="btn btn-secondary btn-sm cancelEditBtn" data-id="@Model.ID">Abbrechen</button>
+            </div>
+        </div>
+    </form>
+    <form class="deleteContactForm d-none" id="deleteContactForm_@Model.ID">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="ContactId" value="@Model.ID" />
+    </form>
+    <hr />
+</div>
