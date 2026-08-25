@@ -1,8 +1,6 @@
 ﻿using Jobtastic.Data;
 using Jobtastic.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Metadata;
 using System.Security.Claims;
 
 namespace Jobtastic.Services
@@ -51,24 +49,30 @@ namespace Jobtastic.Services
             var mandates = await GetMandatesAsync();
             return mandates.Any(m => m.ID == companyId);
         }
-        public async Task<JobPosting?> GetJobById(int id)
-        {
-            return await _context.Postings.SingleOrDefaultAsync(x => x.ID == id);
-        }
+        public async Task<JobPosting?> GetJobById(int id) => await _context.Postings.SingleOrDefaultAsync(x => x.ID == id);
         public async Task<JobPosting?> GetJobDetailsById(int id)
         {
-            return await _context.Postings
+            var jobDetails = await _context.Postings
                 .Include(j => j.Company)
                 .Include(j => j.Contact)
                 .SingleOrDefaultAsync(x => x.ID == id);
+            return jobDetails;
         }
         public async Task<List<JobPosting>> GetOwnedPostings()
         {
-            var allJobs = await _context.Postings
+            var jobList = await _context.Postings
                 .Where(x => x.OwnerID == UserId)
                 .Include(j => j.Company)
                 .ToListAsync();
-            return allJobs;
+            return jobList;
+        }
+        public async Task<List<JobPosting>> GetAllActivePostingsAsync()
+        {
+            var jobList = await _context.Postings
+                .Where(j => j.IsOnline)
+                .Include(j => j.Company)
+                .ToListAsync();
+            return jobList;
         }
         public async Task<bool> AddJob_Successfully(JobPostingInputModel input)
         {
