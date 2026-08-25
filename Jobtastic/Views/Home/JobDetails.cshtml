@@ -2,13 +2,13 @@
 @inject Jobtastic.Services.PostingService PostingService
 @{
     ViewData["Title"] = Model.Header;
-    var isOwner = ViewBag.IsOwner as bool? ?? false;
+    var isOwner = PostingService.IsAuthorized(Model);
 }
 
 <div class="mx-auto" style="max-width: 800px;">
     <div class="d-flex align-items-start justify-content-between">
-        <div>
-            <h1 class="mb-0">@Model.Header</h1>
+        <div style="min-width: 0;">
+            <h1 class="mb-0" style="overflow-wrap: break-word;">@Model.Header</h1>
             <div class="text-muted fs-5">@Model.JobTitle</div>
         </div>
         @if (isOwner)
@@ -18,6 +18,35 @@
             </a>
         }
     </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="text-muted small">Ort</div>
+            <div>@Model.JobLocation</div>
+        </div>
+        <div class="col-md-4">
+            <div class="text-muted small">Startdatum</div>
+            <div>@Model.StartDate.ToString("dd.MM.yyyy")</div>
+        </div>
+        <div class="col-md-4">
+            <div class="text-muted small">Jahresgehalt</div>
+            <div>@Model.AnnualSalary.ToString("C")</div>
+        </div>
+        <div class="col-md-4">
+            <div class="text-muted small">Anstellung</div>
+            <div>@(Model.Fulltime ? "Vollzeit" : "Teilzeit") (@Model.VolumeHours Std./Woche)</div>
+        </div>
+        <div class="col-md-4">
+            <div class="text-muted small">Präsenzmodus</div>
+            <div>@Html.DisplayFor(m => m.Mode)</div>
+        </div>
+        <div class="col-md-4">
+            <div class="text-muted small">Erfahrung</div>
+            <div>@Html.DisplayFor(m => m.Experience)</div>
+        </div>
+    </div>
+
+    <div class="mb-4" style="white-space: pre-wrap;">@Model.JobDescription</div>
 
     <div class="d-flex align-items-center mt-3 mb-4 pb-3 border-bottom">
         @if (!string.IsNullOrEmpty(Model.Company.LogoImageSource))
@@ -48,47 +77,18 @@
         }
     </div>
 
-    <div class="row g-3 mb-4">
-        <div class="col-md-4">
-            <div class="text-muted small">Ort</div>
-            <div>@Model.JobLocation</div>
-        </div>
-        <div class="col-md-4">
-            <div class="text-muted small">Startdatum</div>
-            <div>@Model.StartDate.ToString("dd.MM.yyyy")</div>
-        </div>
-        <div class="col-md-4">
-            <div class="text-muted small">Jahresgehalt</div>
-            <div>@Model.AnnualSalary.ToString("C")</div>
-        </div>
-        <div class="col-md-4">
-            <div class="text-muted small">Anstellung</div>
-            <div>@(Model.Fulltime ? "Vollzeit" : "Teilzeit")@(Model.VolumeHours.HasValue ? $" ({Model.VolumeHours} Std./Woche)" : "")</div>
-        </div>
-        <div class="col-md-4">
-            <div class="text-muted small">Präsenzmodus</div>
-            <div>@Html.DisplayFor(m => m.Mode)</div>
-        </div>
-        <div class="col-md-4">
-            <div class="text-muted small">Erfahrung</div>
-            <div>@Html.DisplayFor(m => m.Experience)</div>
-        </div>
-    </div>
-
-    <div class="mb-4" style="white-space: pre-wrap;">@Model.JobDescription</div>
-
-    <div class="pt-3 border-top">
-        <div class="d-flex align-items-center">
-            <h5 class="mb-0 flex-grow-1">Ansprechpartner</h5>
-            @if (isOwner)
-            {
-                <a asp-area="Identity" asp-page="/Account/Manage/ManagedContacts" class="btn btn-outline-primary btn-sm" title="Kontakte verwalten">
-                    <i class="bi bi-pencil"></i>
-                </a>
-            }
-        </div>
-        @if (Model.Contact != null)
-        {
+    @if (Model.Contact != null)
+    {
+        <div class="pt-3 border-top">
+            <div class="d-flex align-items-center">
+                <h5 class="mb-0 flex-grow-1">Ansprechpartner</h5>
+                @if (isOwner)
+                {
+                    <a asp-area="Identity" asp-page="/Account/Manage/ManagedContacts" class="btn btn-outline-primary btn-sm" title="Kontakte verwalten">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                }
+            </div>
             <div class="d-flex align-items-center mt-2">
                 @if (!string.IsNullOrEmpty(Model.Contact.ProfileImagePath))
                 {
@@ -109,10 +109,6 @@
                     }
                 </div>
             </div>
-        }
-        else
-        {
-            <div class="text-muted mt-2">Kein Ansprechpartner hinterlegt.</div>
-        }
-    </div>
+        </div>
+    }
 </div>
