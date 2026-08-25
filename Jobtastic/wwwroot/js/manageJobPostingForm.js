@@ -17,22 +17,35 @@ FulltimeNo.addEventListener("click", function () {
     VolumeHours.value = null;
 })
 
-const companySelect = document.getElementById("CompanySelect");
+const companySelect = document.getElementById("CompanyID");
 const contactSelect = document.getElementById("ContactSelect");
 
 if (companySelect && contactSelect) {
     function filterContactsByCompany() {
         const companyId = companySelect.value;
-        let selectedStillVisible = false;
         Array.from(contactSelect.options).forEach(function (option) {
             if (!option.value) return;
-            const matches = option.dataset.company === companyId;
-            option.hidden = !matches;
-            if (matches && option.selected) selectedStillVisible = true;
+            option.hidden = companyId !== "" && option.dataset.company !== companyId;
         });
-        if (!selectedStillVisible) contactSelect.value = "";
+        const selectedOption = contactSelect.selectedOptions[0];
+        if (companyId !== "" && selectedOption && selectedOption.hidden) {
+            contactSelect.value = "";
+        }
+    }
+
+    function fillCompanyFromContact() {
+        if (companySelect.value) return;
+        const selectedOption = contactSelect.selectedOptions[0];
+        const companyId = selectedOption ? selectedOption.dataset.company : "";
+        if (companyId) companySelect.value = companyId;
     }
 
     companySelect.addEventListener("change", filterContactsByCompany);
+    contactSelect.addEventListener("change", function () {
+        fillCompanyFromContact();
+        filterContactsByCompany();
+    });
+
+    fillCompanyFromContact();
     filterContactsByCompany();
 }
