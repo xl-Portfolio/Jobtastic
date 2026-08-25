@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Jobtastic.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -60,8 +60,7 @@ namespace Jobtastic.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LogoImageSource = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    WebsiteURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NumberEmployees = table.Column<int>(type: "int", nullable: true)
+                    WebsiteURL = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -239,8 +238,8 @@ namespace Jobtastic.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CompanyID = table.Column<int>(type: "int", nullable: false),
                     JobTitle = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Header = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    JobDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Header = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
+                    JobDescription = table.Column<string>(type: "nvarchar(max)", maxLength: 5000, nullable: false),
                     JobLocation = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AnnualSalary = table.Column<double>(type: "float", nullable: false),
                     Fulltime = table.Column<bool>(type: "bit", nullable: false),

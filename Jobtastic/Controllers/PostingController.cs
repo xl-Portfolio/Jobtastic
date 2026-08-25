@@ -1,11 +1,7 @@
-﻿using Jobtastic.Data;
-using Jobtastic.Models;
+﻿using Jobtastic.Models;
 using Jobtastic.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace Jobtastic.Controllers
 {

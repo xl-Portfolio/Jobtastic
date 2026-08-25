@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Jobtastic.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260727095805_Init")]
-    partial class Init
+    [Migration("20260825104758_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -57,9 +57,6 @@ namespace Jobtastic.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("NumberEmployees")
-                        .HasColumnType("int");
 
                     b.Property<string>("WebsiteURL")
                         .HasColumnType("nvarchar(max)");
@@ -144,13 +141,15 @@ namespace Jobtastic.Migrations
 
                     b.Property<string>("Header")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<bool>("IsOnline")
                         .HasColumnType("bit");
 
                     b.Property<string>("JobDescription")
                         .IsRequired()
+                        .HasMaxLength(5000)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("JobLocation")
