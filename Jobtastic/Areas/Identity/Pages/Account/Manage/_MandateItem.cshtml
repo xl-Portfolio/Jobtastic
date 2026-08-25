@@ -39,17 +39,21 @@
         <input type="hidden" name="CompanyId" value="@Model.ID" />
         <input type="hidden" name="ForceCreate" value="false" />
         <div class="row g-2">
-            <div class="col-md-12">
+            <div class="col-md-12 form-floating">
                 <input class="form-control" name="Input.Name" value="@Model.Name" placeholder="Firmenname" required/>
+                <label>Firmenname</label>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 form-floating">
                 <input class="form-control" type="url" name="Input.LogoImageSource" value="@Model.LogoImageSource" placeholder="Logo (https://bsp.de/logo.png)" />
+                <label>Logo (https://bsp.de/logo.png)</label>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 form-floating">
                 <input class="form-control" type="url" name="Input.WebsiteURL" value="@Model.WebsiteURL" placeholder="Webseite (https://bsp.de)" />
+                <label>Webseite (https://bsp.de)</label>
             </div>
-            <div class="col-md-12">
+            <div class="col-md-12 form-floating">
                 <input class="form-control" name="Input.Description" value="@Model.Description" placeholder="Beschreibung" />
+                <label>Beschreibung</label>
             </div>
             <div class="col-12 mt-2">
                 <button type="submit" class="btn btn-primary btn-sm">Änderungen speichern</button>

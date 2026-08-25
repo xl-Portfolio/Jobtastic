@@ -8,8 +8,44 @@ html {
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+.btn:focus, 
+.btn:active:focus, 
+.btn-link.nav-link:focus, 
+.form-control:focus, 
+.form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+.btn-primary, 
+.btn-primary:hover, 
+.btn-primary:focus, 
+.btn-primary:active, 
+.btn-primary.active, 
+.open > .dropdown-toggle.btn-primary {
+  color: white;
+  background-color: seagreen;
+  border-color: seagreen;
+}
+
+.btn-outline-primary {
+    color: seagreen;
+    border-color: seagreen;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus,
+.btn-outline-primary:active,
+.btn-outline-primary.active,
+.btn-check:checked + .btn-outline-primary,
+.btn-check:active + .btn-outline-primary {
+    color: white;
+    background-color: seagreen;
+    border-color: seagreen;
+}
+
+.btn-check:focus + .btn-outline-primary,
+.btn-outline-primary:focus {
+    box-shadow: 0 0 0 0.25rem rgba(46, 139, 87, 0.5);
 }
 
 html {
@@ -47,4 +83,23 @@ h1, h2, h3, h4, h5, h6 {
 
 .password-field .eyeIcon:hover {
     color: #495057;
+}
+
+a {
+    color: seagreen;
+    text-decoration: none;
+}
+
+a:hover {
+    color: darkgreen;
+}
+
+.nav-pills .nav-link {
+    color: black;
+}
+
+.nav-pills .nav-link.active {
+    color: black;
+    background-color: white;
+    border-color: white;
 }

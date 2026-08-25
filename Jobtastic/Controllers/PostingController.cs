@@ -31,40 +31,58 @@ namespace Jobtastic.Controllers
             ViewBag.Mandates = await _postingService.GetMandatesAsync();
             ViewBag.Contacts = await _postingService.GetContactsAsync();
             if (id == 0)
-                return View();
+                return View(new JobPostingInputModel { Fulltime = true, VolumeHours = 40, StartDate = DateTime.Today });
             var job = await _postingService.GetJobById(id);
             if (job == null)
                 return NotFound();
             if (!_postingService.IsAuthorized(job))
                 return Unauthorized();
-            return View(job);
+
+            var input = new JobPostingInputModel
+            {
+                ID = job.ID,
+                CompanyID = job.CompanyID,
+                ContactID = job.ContactID,
+                JobTitle = job.JobTitle,
+                Header = job.Header,
+                JobDescription = job.JobDescription,
+                JobLocation = job.JobLocation,
+                AnnualSalary = job.AnnualSalary,
+                Fulltime = job.Fulltime,
+                VolumeHours = job.VolumeHours,
+                Mode = job.Mode,
+                Experience = job.Experience,
+                StartDate = job.StartDate,
+                IsOnline = job.IsOnline
+            };
+            return View(input);
         }
         [HttpPost]
-        public async Task<IActionResult> CreateEditJob(JobPosting job, IFormFile file)
+        public async Task<IActionResult> CreateEditJob(JobPostingInputModel input)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (!await _postingService.IsAuthorizedForCompany(job.CompanyID))
+            if (!await _postingService.IsAuthorizedForCompany(input.CompanyID))
                 return Unauthorized();
 
-            if (job.ContactID.HasValue && !await _postingService.IsAuthorizedForContact(job.ContactID.Value, job.CompanyID))
+            if (input.ContactID.HasValue && !await _postingService.IsAuthorizedForContact(input.ContactID.Value, input.CompanyID))
                 return Unauthorized();
 
-            if (job.ID == 0)
+            if (input.ID == 0)
             {
-                var jobAdded = await _postingService.AddJob_Successfully(job, file);
+                var jobAdded = await _postingService.AddJob_Successfully(input);
                 if (!jobAdded)
                     return BadRequest();
             }
             else
             {
-                var postingById = await _postingService.FindPosting(job);
+                var postingById = await _postingService.GetJobById(input.ID);
                 if (postingById == null)
                     return NotFound();
-                if (!_postingService.IsAuthorized(postingById)) 
+                if (!_postingService.IsAuthorized(postingById))
                     return Unauthorized();
-                var jobEdited = await _postingService.EditJob_Successfully(job, file, postingById);
+                var jobEdited = await _postingService.EditJob_Successfully(input, postingById);
                 if (!jobEdited)
                     return BadRequest();
             }

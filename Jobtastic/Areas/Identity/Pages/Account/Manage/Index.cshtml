@@ -10,36 +10,51 @@
 {
     <h2>Hallo Admin</h2>
 } 
-<form method="post" asp-page-handler="EditData">
-    <div id="displayData" class="list-group">
-        <label>Email: @Model.Input.Email</label>
-        <label>Tel: @(Model.Input.PhoneNumber ?? "")</label>
-        <button id="editDataBtn" type="button" class="btn btn-primary">Bearbeiten</button>
+<form method="post" asp-page-handler="EditData" class="mx-auto" style="max-width: 800px;">
+    <div id="displayData" class="d-flex justify-content-between align-items-center">
+        <div>
+            <label class="d-block">Email: @Model.Input.Email</label>
+            <label class="d-block">Tel: @(Model.Input.PhoneNumber ?? "")</label>
+        </div>
+        <button id="editDataBtn" type="button" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-pencil"></i>
+        </button>
     </div>
     <div id="editData" class="list-group d-none">
-        <!--inline editing-->
         <input class="form-control" asp-for="Input.Email" placeholder="@Model.Input.Email" />
-        <input class="form-control" asp-for="Input.PhoneNumber" placeholder="@(Model.Input.PhoneNumber ?? "Telefonnummer hinzufügen")" />
-        <button id="saveDataBtn" type="submit" class="btn btn-primary">Speichern</button>
+        <div class="form-floating mb-3">
+            <input class="form-control" asp-for="Input.PhoneNumber" placeholder="Telefonnummer hinzufügen" />
+            <label asp-for="Input.PhoneNumber">Telefonnummer hinzufügen</label>
+        </div>
+        <div class="mt-2">
+            <button id="saveDataBtn" type="submit" class="btn btn-primary btn-sm">Änderungen speichern</button>
+            <button id="cancelDataBtn" type="button" class="btn btn-secondary btn-sm">Abbrechen</button>
+        </div>
     </div>
 </form>
 <hr />
-<form method="post" asp-page-handler="EditPassword">
+<form method="post" asp-page-handler="EditPassword" class="mx-auto" style="max-width: 800px;">
     <button id="editPasswordBtn" type="button" class="btn btn-primary">Passwort ändern</button>
     <div id="editPassword" class="list-group d-none">
-        <div class="password-field mb-3">
+        <div class="password-field form-floating mb-3">
             <input id="passwordInput" type="password" class="form-control" asp-for="PasswordInput.Password" placeholder="altes Passwort" />
+            <label asp-for="PasswordInput.Password">altes Passwort</label>
             <span id="visibilityIcon_Old" class="bi bi-eye-slash eyeIcon"></span>
         </div>
-        <div class="password-field mb-3">
+        <div class="password-field form-floating mb-3">
             <input id="newPasswordInput" type="password" class="form-control" asp-for="PasswordInput.NewPassword" placeholder="neues Passwort"/>
+            <label asp-for="PasswordInput.NewPassword">neues Passwort</label>
             <span id="visibilityIcon_New" class="bi bi-eye-slash eyeIcon" ></span>
         </div>
-        <div class="password-field mb-3">
+        <div class="password-field form-floating mb-3">
             <input id="confirmPasswordInput" type="password" class="form-control" asp-for="PasswordInput.ConfirmedPassword" placeholder="Passwort wiederholen"/>
+            <label asp-for="PasswordInput.ConfirmedPassword">Passwort wiederholen</label>
             <span id="visibilityIcon_Confirm" class="bi bi-eye-slash eyeIcon" ></span>
         </div>
-        <button id="savePasswordBtn" type="submit" class="btn btn-primary">Speichern</button>
+        <div class="mt-2">
+            <button id="savePasswordBtn" type="submit" class="btn btn-primary btn-sm">Änderungen speichern</button>
+            <button id="cancelPasswordBtn" type="button" class="btn btn-secondary btn-sm">Abbrechen</button>
+        </div>
     </div>
 </form>
 

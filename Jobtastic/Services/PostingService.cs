@@ -70,9 +70,25 @@ namespace Jobtastic.Services
                 .ToListAsync();
             return allJobs;
         }
-        public async Task<bool> AddJob_Successfully(JobPosting job, IFormFile file)
+        public async Task<bool> AddJob_Successfully(JobPostingInputModel input)
         {
-            job.OwnerID = UserId;
+            var job = new JobPosting
+            {
+                CompanyID = input.CompanyID,
+                ContactID = input.ContactID,
+                JobTitle = input.JobTitle,
+                Header = input.Header,
+                JobDescription = input.JobDescription,
+                JobLocation = input.JobLocation,
+                AnnualSalary = input.AnnualSalary,
+                Fulltime = input.Fulltime,
+                VolumeHours = input.VolumeHours,
+                Mode = input.Mode,
+                Experience = input.Experience,
+                StartDate = input.StartDate,
+                IsOnline = input.IsOnline,
+                OwnerID = UserId
+            };
 
             if (job.IsOnline)
             {
@@ -84,24 +100,22 @@ namespace Jobtastic.Services
             var entitiesCreated = await _context.SaveChangesAsync();
             return entitiesCreated >= 1;
         }
-        public async Task<JobPosting?> FindPosting(JobPosting job)
+        public async Task<bool> EditJob_Successfully(JobPostingInputModel input, JobPosting dbJob)
         {
-            return await GetJobById(job.ID);
-        }
-        public async Task<bool> EditJob_Successfully(JobPosting formJob, IFormFile file, JobPosting dbJob)
-        {
-            dbJob.JobTitle = formJob.JobTitle;
-            dbJob.Experience = formJob.Experience;
-            dbJob.StartDate = formJob.StartDate;
-            dbJob.Header = formJob.Header;
-            dbJob.JobDescription = formJob.JobDescription;
-            dbJob.JobLocation = formJob.JobLocation;
-            dbJob.AnnualSalary = formJob.AnnualSalary;
-            dbJob.Fulltime = formJob.Fulltime;
-            dbJob.VolumeHours = formJob.VolumeHours;
-            dbJob.Mode = formJob.Mode;
+            dbJob.JobTitle = input.JobTitle;
+            dbJob.Experience = input.Experience;
+            dbJob.StartDate = input.StartDate;
+            dbJob.Header = input.Header;
+            dbJob.JobDescription = input.JobDescription;
+            dbJob.JobLocation = input.JobLocation;
+            dbJob.AnnualSalary = input.AnnualSalary;
+            dbJob.Fulltime = input.Fulltime;
+            dbJob.VolumeHours = input.VolumeHours;
+            dbJob.Mode = input.Mode;
+            dbJob.CompanyID = input.CompanyID;
+            dbJob.ContactID = input.ContactID;
 
-            dbJob.IsOnline = formJob.IsOnline;
+            dbJob.IsOnline = input.IsOnline;
             if (dbJob.IsOnline)
             {
                 dbJob.UploadDate = DateTime.Now;
@@ -111,8 +125,5 @@ namespace Jobtastic.Services
             var entitiesChanged = await _context.SaveChangesAsync();
             return entitiesChanged >= 1;
         }
-
-         
-         
     }
 }

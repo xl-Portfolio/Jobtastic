@@ -36,23 +36,29 @@
         <input type="hidden" name="ContactId" value="@Model.ID" />
         <div class="row g-2">
             <div class="col-12 text-muted small">Firma: @Model.Company.Name (nicht änderbar – Kontakt ggf. löschen und neu anlegen)</div>
-            <div class="col-md-6">
+            <div class="col-md-6 form-floating">
                 <input class="form-control" name="Input.FirstName" value="@Model.FirstName" placeholder="Vorname" required />
+                <label>Vorname</label>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 form-floating">
                 <input class="form-control" name="Input.LastName" value="@Model.LastName" placeholder="Nachname" required />
+                <label>Nachname</label>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 form-floating">
                 <input class="form-control" name="Input.Email" value="@Model.Email" placeholder="E-Mail" required />
+                <label>E-Mail</label>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 form-floating">
                 <input class="form-control" name="Input.Phone" value="@Model.Phone" placeholder="Telefon" />
+                <label>Telefon</label>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 form-floating">
                 <input class="form-control" name="Input.Department" value="@Model.Department" placeholder="Abteilung" />
+                <label>Abteilung</label>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 form-floating">
                 <input class="form-control" type="url" name="Input.ProfileImagePath" value="@Model.ProfileImagePath" placeholder="Profilbild (https://bsp.de/foto.png)" />
+                <label>Profilbild (https://bsp.de/foto.png)</label>
             </div>
             <div class="col-12 mt-2">
                 <button type="submit" class="btn btn-primary btn-sm">Änderungen speichern</button>

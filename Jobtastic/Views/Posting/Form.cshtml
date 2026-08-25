@@ -2,8 +2,8 @@
 @{
     ViewData["Title"] = "Job inserieren";
 }
-@model JobPosting
-<form asp-controller="Posting" asp-action="CreateEditJob" method="post" enctype="multipart/form-data"
+@model JobPostingInputModel
+<form asp-controller="Posting" asp-action="CreateEditJob" method="post"
       class="mx-auto" style="max-width: 800px;">
 
     <input class="form-control" hidden asp-for="ID" />
@@ -21,51 +21,62 @@
             }
             else
             {
-                <select class="form-control" asp-for="CompanyID" required asp-items="@(new SelectList(mandates, "ID", "Name"))">
-                    <option  value="" class="text-muted">Firma (bitte wählen)</option>
-                </select>
+                <div class="form-floating">
+                    <select class="form-control" asp-for="CompanyID" required asp-items="@(new SelectList(mandates, "ID", "Name"))">
+                        <option value="" class="text-muted">Bitte wählen</option>
+                    </select>
+                    <label asp-for="CompanyID">Firma</label>
+                </div>
             }
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6 form-floating">
             <select class="form-control" id="ContactSelect" asp-for="ContactID">
-                <option value="">Kein Ansprechpartner</option>
+                <option value="">kein Ansprechpartner</option>
                 @foreach (var contact in mandates.Count == 1 ? contacts.Where(c => c.CompanyID == mandates[0].ID) : contacts)
                 {
                     <option value="@contact.ID" data-company="@contact.CompanyID">@contact.FirstName @contact.LastName</option>
                 }
             </select>
+            <label asp-for="ContactID">Ansprechpartner</label>
         </div>
 
         <div class="col-md-6">
             <div class="row align-items-center">
                 <label asp-for="StartDate" class="col-md-4 col-form-label">Startdatum:</label>
                 <div class="col-md-8">
-                    <input class="form-control" asp-for="StartDate" type="date" />
+                    <input class="form-control" asp-for="StartDate" type="date" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
                 </div>
             </div>
         </div>
         <hr />
 
-        <div class="col-md-6">
+        <div class="col-md-6 form-floating">
             <input class="form-control" asp-for="JobTitle" required placeholder="Stellenbezeichnung" />
+            <label asp-for="JobTitle">Stellenbezeichnung</label>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6 form-floating">
             <select class="form-control" asp-for="Experience" required asp-items="Html.GetEnumSelectList<Experience>()">
-                <option value="" class="text-muted">Erfahrung</option>
+                <option value="" class="text-muted">Bitte wählen</option>
             </select>
+            <label asp-for="Experience">Erfahrung</label>
         </div>
-        
 
-        <div class="col-md-6">
+
+        <div class="col-md-6 form-floating">
             <input class="form-control" asp-for="JobLocation" required placeholder="Stadt" />
+            <label asp-for="JobLocation">Stadt</label>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6 form-floating">
             <input class="form-control" asp-for="AnnualSalary" type="number" min="1000" required placeholder="Jahresgehalt" />
+            <label asp-for="AnnualSalary">Jahresgehalt</label>
         </div>
 
         <div class="col-6 d-flex align-items-center flex-wrap gap-3">
-            <input id="VolumeHours" class="form-control" asp-for="VolumeHours"
-                   type="number" min="0" max="99" placeholder="Wochenstunden" style="width: 17ch;" />
+            <div class="form-floating" style="width: 17ch;">
+                <input id="VolumeHours" class="form-control" asp-for="VolumeHours"
+                       type="number" min="0" max="99" placeholder="Wochenstunden" />
+                <label asp-for="VolumeHours">Wochenstunden</label>
+            </div>
             <div class="btn-group" role="group">
                 <input type="radio" class="btn-check" asp-for="Fulltime" value="True" id="FulltimeYes" autocomplete="off" />
                 <label class="btn btn-outline-primary" for="FulltimeYes">Vollzeit</label>
@@ -74,17 +85,20 @@
             </div>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-6 form-floating">
             <select class="form-control" asp-for="Mode" required asp-items="Html.GetEnumSelectList<Mode>()">
-                <option value="" class="text-muted">Präsenzmodus (bitte wählen)</option>
+                <option value="" class="text-muted">Bitte wählen</option>
             </select>
+            <label asp-for="Mode">Präsenzmodus</label>
         </div>
         <hr/>
-        <div class="col-12">
-            <input class="form-control" asp-for="Header" maxlength="160" required placeholder="Formulieren Sie einen aussagekräftigen Header" />
+        <div class="col-12 form-floating">
+            <input class="form-control" asp-for="Header" maxlength="60" required placeholder="Formulieren Sie einen aussagekräftigen Header" />
+            <label asp-for="Header">Formulieren Sie einen aussagekräftigen Header</label>
         </div>
-        <div class="col-12">
-            <textarea class="form-control" asp-for="JobDescription" maxlength="5000" required placeholder="Beschreiben Sie die Stelle"></textarea>
+        <div class="col-12 form-floating">
+            <textarea class="form-control" asp-for="JobDescription" maxlength="5000" required placeholder="Beschreiben Sie die Stelle" style="height: 150px"></textarea>
+            <label asp-for="JobDescription">Beschreiben Sie die Stelle</label>
         </div>
         <hr/>
         <div class="col-md-6 d-flex align-items-center gap-3">

@@ -1,4 +1,12 @@
-﻿const VolumeHours = /** @type {HTMLInputElement} */ (document.getElementById("VolumeHours"));
+﻿const idInput = document.getElementById("ID");
+if (idInput && idInput.value === "0") {
+    const experienceSelect = document.getElementById("Experience");
+    const modeSelect = document.getElementById("Mode");
+    if (experienceSelect) experienceSelect.value = "";
+    if (modeSelect) modeSelect.value = "";
+}
+
+const VolumeHours = /** @type {HTMLInputElement} */ (document.getElementById("VolumeHours"));
 var FulltimeYes = document.getElementById("FulltimeYes");
 var FulltimeNo = document.getElementById("FulltimeNo");
 

@@ -6,11 +6,23 @@ editDataBtn.addEventListener("click", function () {
     editData.classList.remove("d-none");
 });
 
+var cancelDataBtn = document.getElementById("cancelDataBtn");
+cancelDataBtn.addEventListener("click", function () {
+    editData.classList.add("d-none");
+    displayData.classList.remove("d-none");
+});
+
 var editPasswordBtn = document.getElementById("editPasswordBtn");
 var editPassword = document.getElementById("editPassword");
 editPasswordBtn.addEventListener("click", function () {
     editPassword.classList.remove("d-none");
     editPasswordBtn.classList.add("d-none");
+});
+
+var cancelPasswordBtn = document.getElementById("cancelPasswordBtn");
+cancelPasswordBtn.addEventListener("click", function () {
+    editPassword.classList.add("d-none");
+    editPasswordBtn.classList.remove("d-none");
 });
 
 var passwordInput = document.getElementById("passwordInput");

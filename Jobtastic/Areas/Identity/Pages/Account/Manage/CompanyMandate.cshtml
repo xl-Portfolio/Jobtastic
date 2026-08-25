@@ -14,8 +14,9 @@
 <hr />
 <form id="addMandateForm" method="post" asp-page-handler="AddMandate" class="mx-auto mt-3" style="max-width: 800px;">
     <div id="addMandate" class="row g-3 d-none">
-        <div class="col-md-12 position-relative">
+        <div class="col-md-12 position-relative form-floating">
             <input class="form-control" asp-for="Input.Name" placeholder="Firmenname" required autocomplete="off" />
+            <label asp-for="Input.Name">Firmenname</label>
             <input type="hidden" id="existingCompanyId" name="ExistingCompanyId" value="" />
             <input type="hidden" id="forceCreate" name="ForceCreate" value="false" />
             <div id="companySuggestions" class="list-group position-absolute w-100 d-none" style="z-index: 1050; max-height: 220px; overflow-y: auto;"></div>
@@ -24,14 +25,17 @@
                 <a href="#" id="resetExistingCompany">Neue Firma anlegen</a>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6 form-floating">
             <input class="form-control" asp-for="Input.LogoImageSource" placeholder="Logo (https://bsp.de/logo.png)" />
+            <label asp-for="Input.LogoImageSource">Logo (https://bsp.de/logo.png)</label>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6 form-floating">
             <input class="form-control" asp-for="Input.WebsiteURL" placeholder="Webseite (https://bsp.de)" />
+            <label asp-for="Input.WebsiteURL">Webseite (https://bsp.de)</label>
         </div>
-        <div class="col-md-12">
+        <div class="col-md-12 form-floating">
             <input class="form-control" asp-for="Input.Description" placeholder="Beschreibung" />
+            <label asp-for="Input.Description">Beschreibung</label>
         </div>
         <div class="col-12">
             <button id="addMandateBtn" type="submit" class="btn btn-primary mt-3">Mandat Speichern</button>

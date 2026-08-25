@@ -26,28 +26,35 @@
 {
     <form id="addContactForm" method="post" asp-page-handler="AddContact" class="mx-auto mt-3" style="max-width: 800px;">
         <div id="addContact" class="row g-3 d-none">
-            <div class="col-md-12">
+            <div class="col-md-12 form-floating">
                 <select class="form-control" asp-for="Input.CompanyID" required asp-items="@(new SelectList(Model.OwnedCompanies, "ID", "Name"))">
                     <option value="" class="text-muted">Firma (bitte wählen)</option>
                 </select>
+                <label asp-for="Input.CompanyID">Firma (bitte wählen)</label>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 form-floating">
                 <input class="form-control" asp-for="Input.FirstName" placeholder="Vorname" autocomplete="off" />
+                <label asp-for="Input.FirstName">Vorname</label>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 form-floating">
                 <input class="form-control" asp-for="Input.LastName" placeholder="Nachname" autocomplete="off" />
+                <label asp-for="Input.LastName">Nachname</label>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 form-floating">
                 <input class="form-control" asp-for="Input.Email" placeholder="E-Mail" />
+                <label asp-for="Input.Email">E-Mail</label>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 form-floating">
                 <input class="form-control" asp-for="Input.Phone" placeholder="Telefon" />
+                <label asp-for="Input.Phone">Telefon</label>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 form-floating">
                 <input class="form-control" asp-for="Input.Department" placeholder="Abteilung" />
+                <label asp-for="Input.Department">Abteilung</label>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 form-floating">
                 <input class="form-control" asp-for="Input.ProfileImagePath" placeholder="Profilbild (https://bsp.de/foto.png)" />
+                <label asp-for="Input.ProfileImagePath">Profilbild (https://bsp.de/foto.png)</label>
             </div>
             <div class="col-12">
                 <button id="addContactBtn" type="submit" class="btn btn-primary mt-3">Kontakt speichern</button>
