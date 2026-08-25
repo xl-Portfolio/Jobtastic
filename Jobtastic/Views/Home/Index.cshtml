@@ -5,14 +5,14 @@
 
 <h1>Entdecke Jobs</h1>
 
-<table id="allPostings" class="table table-striped" style="width:100%">
+<table id="allPostings" class="table table-striped align-top" style="width:100%">
     <thead>
         <tr>
             <th>Titel</th>
             <th>Firma</th>
             <th>Ort</th>
-            <th>Startdatum</th>
             <th>Jahresgehalt</th>
+            <th>Startdatum</th>
         </tr>
     </thead>
     <tbody>
@@ -20,14 +20,14 @@
         {
             <tr>
                 <td>
-                    <a class="nav-link text-dark" asp-controller="Home" asp-action="JobDetails" asp-route-id="@job.ID">
+                    <a asp-controller="Home" asp-action="JobDetails" asp-route-id="@job.ID">
                         @job.JobTitle
                     </a>
                 </td>
                 <td>@job.Company.Name</td>
                 <td>@job.JobLocation</td>
-                <td>@job.StartDate.ToString("dd.MM.yyyy")</td>
                 <td>@job.AnnualSalary.ToString("C")</td>
+                <td>@job.StartDate.ToString("dd.MM.yyyy")</td>
             </tr>
         }
     </tbody>

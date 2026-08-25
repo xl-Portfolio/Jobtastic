@@ -9,7 +9,7 @@
     <div class="d-flex align-items-start justify-content-between">
         <div style="min-width: 0;">
             <h1 class="mb-0" style="overflow-wrap: break-word;">@Model.Header</h1>
-            <div class="text-muted fs-5">@Model.JobTitle</div>
+            <div class="text-muted fs-5 mt-3">@Model.JobTitle</div>
         </div>
         @if (isOwner)
         {
@@ -18,7 +18,7 @@
             </a>
         }
     </div>
-
+    <hr/>
     <div class="row g-3 mb-4">
         <div class="col-md-4">
             <div class="text-muted small">Ort</div>
@@ -45,7 +45,7 @@
             <div>@Html.DisplayFor(m => m.Experience)</div>
         </div>
     </div>
-
+    <hr/>
     <div class="mb-4" style="white-space: pre-wrap;">@Model.JobDescription</div>
 
     <div class="d-flex align-items-center mt-3 mb-4 pb-3 border-bottom">

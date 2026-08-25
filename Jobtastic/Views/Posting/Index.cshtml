@@ -16,15 +16,15 @@
 }
 else
 {
-    <table id="allPostings" class="table table-striped" style="width:100%">
+    <table id="allPostings" class="table table-striped align-top" style="width:100%">
         <thead>
             <tr>
                 <th>Titel</th>
                 <th>Firma</th>
                 <th>Ort</th>
-                <th>Startdatum</th>
                 <th>Jahresgehalt</th>
-                <th>Aktionen</th>
+                <th>Startdatum</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -46,12 +46,17 @@ else
                         }
                     </td>
                     <td>@job.JobLocation</td>
-                    <td>@job.StartDate.ToString("dd.MM.yyyy")</td>
                     <td>@job.AnnualSalary.ToString("C")</td>
+                    <td>@job.StartDate.ToString("dd.MM.yyyy")</td>
                     <td>
-                        <a class="btn btn-sm btn-primary" asp-area="" asp-controller="Posting" asp-action="Form" asp-route-id="@job.ID">
-                            bearbeiten
-                        </a>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="btn btn-sm @(job.IsOnline ? "btn-success" : "btn-outline-secondary")" style="cursor: default; pointer-events: none;">
+                                @(job.IsOnline ? "online" : "offline")
+                            </span>
+                            <a class="btn btn-outline-primary btn-sm" asp-area="" asp-controller="Posting" asp-action="Form" asp-route-id="@job.ID" title="Posting bearbeiten">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </div>
                     </td>
                 </tr>
             }
