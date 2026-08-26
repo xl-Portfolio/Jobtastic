@@ -3,15 +3,13 @@ using Jobtastic.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
 namespace Jobtastic.Areas.Identity.Pages.Account.Manage
 {
-    public class CompanyMandateModel : PageModel
+    public class CompanyMandateModel : AdminAwarePageModel
     {
-        private readonly UserManager<User> _userManager;
         private readonly ApplicationDbContext _context;
 
         [BindProperty]
@@ -25,9 +23,8 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
         public bool ForceCreate { get; set; }
 
 
-        public CompanyMandateModel(UserManager<User> userManager, ApplicationDbContext context)
+        public CompanyMandateModel(UserManager<User> userManager, ApplicationDbContext context) : base(userManager)
         {
-            _userManager = userManager;
             _context = context;
         }
         public class InputModel
@@ -40,14 +37,8 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
             [Url(ErrorMessage = "Webseite muss eine gültige URL sein (z. B. https://...).")]
             public string? WebsiteURL { get; set; }
         }
-        private async Task<User?> GetCompaniesByUserAsync()
-        {
-            var userId = _userManager.GetUserId(User);
-            var user = await _context.Users
-                .Include(u => u.Companies)
-                .FirstOrDefaultAsync(u => u.Id == userId);
-            return user;
-        }
+        private static IQueryable<User> WithCompanies(IQueryable<User> users) => users.Include(u => u.Companies);
+
         /// <summary>
         /// Literalzeichen, die als SQL-Wildcards fungieren, werden escaped.
         /// </summary>
@@ -60,21 +51,21 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
             ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
         private JsonResult ErrorJson(int statusCode, params string[] errors) =>
             new(new { success = false, errors }) { StatusCode = statusCode };
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(string? userId)
         {
-            var user = await GetCompaniesByUserAsync();
-            if (user == null)
-                return NotFound();
+            var (user, error) = await ResolveTargetUserAsync(userId, WithCompanies);
+            if (error != null)
+                return error;
 
-            Companies = user.Companies.ToList();
+            Companies = user!.Companies.ToList();
             Input = new InputModel();
             return Page();
         }
-        public async Task<IActionResult> OnPostAddMandateAsync()
+        public async Task<IActionResult> OnPostAddMandateAsync(string? userId)
         {
-            var user = await GetCompaniesByUserAsync();
-            if (user == null)
-                return ErrorJson(StatusCodes.Status404NotFound, "Benutzer nicht gefunden.");
+            var (user, error) = await ResolveTargetUserAsync(userId, WithCompanies);
+            if (error != null)
+                return error;
 
             if (ExistingCompanyId.HasValue && ExistingCompanyId.Value > 0)
             {
@@ -82,7 +73,7 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
                 if (existing == null)
                     return ErrorJson(StatusCodes.Status404NotFound, "Firma nicht gefunden.");
 
-                if (user.Companies.Any(c => c.ID == existing.ID))
+                if (user!.Companies.Any(c => c.ID == existing.ID))
                     return ErrorJson(StatusCodes.Status400BadRequest, "Du hast dieses Mandat bereits.");
 
                 user.Companies.Add(existing);
@@ -113,7 +104,7 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
 
                 if (candidates.Any())
                 {
-                    var ownedCandidate = candidates.FirstOrDefault(c => user.Companies.Any(uc => uc.ID == c.ID));
+                    var ownedCandidate = candidates.FirstOrDefault(c => user!.Companies.Any(uc => uc.ID == c.ID));
                     if (ownedCandidate != null)
                         return ErrorJson(StatusCodes.Status400BadRequest, "Du hast dieses Mandat bereits.");
 
@@ -134,7 +125,7 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
                 LogoImageSource = Input.LogoImageSource,
                 WebsiteURL = Input.WebsiteURL
             };
-            user.Companies.Add(company);
+            user!.Companies.Add(company);
 
             try { await _context.SaveChangesAsync(); }
             catch (DbUpdateException)
@@ -144,16 +135,16 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
 
             return Partial("_MandateItem", company);
         }
-        public async Task<IActionResult> OnPostEditMandateAsync()
+        public async Task<IActionResult> OnPostEditMandateAsync(string? userId)
         {
-            var user = await GetCompaniesByUserAsync();
-            if (user == null)
-                return ErrorJson(StatusCodes.Status404NotFound, "Benutzer nicht gefunden.");
+            var (user, error) = await ResolveTargetUserAsync(userId, WithCompanies);
+            if (error != null)
+                return error;
 
             if (!ModelState.IsValid)
                 return ErrorJson(StatusCodes.Status400BadRequest, GetModelErrors().ToArray());
 
-            var company = user.Companies.FirstOrDefault(c => c.ID == CompanyId);
+            var company = user!.Companies.FirstOrDefault(c => c.ID == CompanyId);
             if (company == null)
                 return ErrorJson(StatusCodes.Status404NotFound, "Firma nicht gefunden oder keine Berechtigung.");
 
@@ -200,13 +191,13 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
 
             return Partial("_MandateItem", company);
         }
-        public async Task<IActionResult> OnPostDeleteMandateAsync()
+        public async Task<IActionResult> OnPostDeleteMandateAsync(string? userId)
         {
-            var user = await GetCompaniesByUserAsync();
-            if (user == null)
-                return ErrorJson(StatusCodes.Status404NotFound, "Benutzer nicht gefunden.");
+            var (user, error) = await ResolveTargetUserAsync(userId, WithCompanies);
+            if (error != null)
+                return error;
 
-            var company = user.Companies.FirstOrDefault(c => c.ID == CompanyId);
+            var company = user!.Companies.FirstOrDefault(c => c.ID == CompanyId);
             if (company == null)
                 return ErrorJson(StatusCodes.Status404NotFound, "Firma nicht gefunden oder keine Berechtigung.");
 
@@ -238,18 +229,17 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
 
             return new JsonResult(new { success = true, id = company.ID });
         }
-        public async Task<IActionResult> OnGetSearchCompaniesAsync(string? term)
+        public async Task<IActionResult> OnGetSearchCompaniesAsync(string? term, string? userId)
         {
             if (string.IsNullOrWhiteSpace(term) || term.Trim().Length < 2)
                 return new JsonResult(new { companies = Array.Empty<object>() });
 
-            term = term.Trim();
-            var userId = _userManager.GetUserId(User);
+            var (user, error) = await ResolveTargetUserAsync(userId, WithCompanies);
+            if (error != null)
+                return error;
 
-            var existingIds = await _context.Users
-                .Where(u => u.Id == userId)
-                .SelectMany(u => u.Companies.Select(c => c.ID))
-                .ToListAsync();
+            term = term.Trim();
+            var existingIds = user!.Companies.Select(c => c.ID).ToList();
 
             var matches = await _context.Companies
                 .Where(c => EF.Functions.Like(c.Name, $"%{term}%") && !existingIds.Contains(c.ID))

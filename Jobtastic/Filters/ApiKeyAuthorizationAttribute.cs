@@ -1,44 +1,34 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Jobtastic.Filters
 {
+    /// <summary>
+    /// Protects the public job API via API key in the request header.
+    /// Ignores roles and other authentication mechanisms, as the API is meant to be used by external systems.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class ApiKeyAuthorizationAttribute : Attribute, IAsyncActionFilter
     {
-        //private readonly string? _requiredRole;
-        //public ApiKeyAuthorizationAttribute(string requiredRole = null)
-        //{
-        //    _requiredRole = requiredRole;
-        //}
+        private const string HeaderName = "ApiKey";
 
-        /// <summary>
-        /// checks API Key in the request header and returns Unauthorized if not present or invalid
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="next"></param>
-        /// <returns></returns>
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            if (!context.HttpContext.Request.Headers.TryGetValue("ApiKey", out var extractedApiKey))
+            if (!context.HttpContext.Request.Headers.TryGetValue(HeaderName, out var extractedApiKey))
             {
-                context.Result = new Microsoft.AspNetCore.Mvc.UnauthorizedResult();
+                context.Result = new UnauthorizedResult();
                 return;
             }
-            else if (extractedApiKey == "12345" /*|| _requiredRole != "Admin"*/) //random Beispiel
+
+            var config = context.HttpContext.RequestServices.GetRequiredService<IConfiguration>();
+            var configuredKey = config.GetValue<string>("ApiKey");
+
+            if (string.IsNullOrEmpty(configuredKey) || extractedApiKey != configuredKey)
             {
-                context.Result = new Microsoft.AspNetCore.Mvc.UnauthorizedResult();
+                context.Result = new UnauthorizedResult();
                 return;
             }
-            else
-            {
-                var config = context.HttpContext.RequestServices.GetRequiredService<IConfiguration>();
-                var key = config.GetValue<string>("ApiKey");
-                if (string.IsNullOrEmpty(key) || extractedApiKey != key)
-                {
-                    context.Result = new Microsoft.AspNetCore.Mvc.UnauthorizedResult();
-                    return;
-                }
-            }
+
             await next();
         }
     }

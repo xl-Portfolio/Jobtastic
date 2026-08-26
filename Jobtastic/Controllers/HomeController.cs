@@ -22,9 +22,6 @@ namespace Jobtastic.Controllers
             if (posting == null)
                 return NotFound();
 
-            if (!posting.IsOnline && !_postingService.IsAuthorized(posting))
-                return NotFound();
-
             return View(posting);
         }
 		public IActionResult Privacy() => View();

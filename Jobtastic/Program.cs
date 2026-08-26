@@ -1,3 +1,4 @@
+using Jobtastic.Authorization;
 using Jobtastic.Data;
 using Jobtastic.Models;
 using Jobtastic.Services;
@@ -18,18 +19,18 @@ namespace Jobtastic
 			builder.Services.AddDbContext<ApplicationDbContext>(options =>
 				options.UseSqlServer(connectionString));
 			builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
 			builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false)
 				.AddRoles<IdentityRole>()
 				.AddEntityFrameworkStores<ApplicationDbContext>();
 			builder.Services.AddScoped<SetupService>();
+            builder.Services.AddScoped<ICurrentUser, CurrentUser>();
             builder.Services.AddScoped<PostingService>();
             builder.Services.AddControllersWithViews(options =>
 			{
 				options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             });
             builder.Services.AddHttpContextAccessor();
-            builder.Services.AddScoped<Jobtastic.Services.ApiJobpostingService>();
+            builder.Services.AddScoped<ApiJobpostingService>();
 
             var app = builder.Build();
 

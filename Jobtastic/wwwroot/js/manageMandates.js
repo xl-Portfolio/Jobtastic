@@ -5,6 +5,18 @@
     const $list = $('#mandatesList');
     const createBtnDefaultHtml = $createBtn.html();
 
+    // Preserves the page's userId (admin editing another account) across handler calls.
+    function handlerUrl(handler, extraParams) {
+        const params = new URLSearchParams();
+        params.set('handler', handler);
+        const userId = new URLSearchParams(window.location.search).get('userId');
+        if (userId) params.set('userId', userId);
+        if (extraParams) {
+            Object.keys(extraParams).forEach(function (key) { params.set(key, extraParams[key]); });
+        }
+        return window.location.pathname + '?' + params.toString();
+    }
+
     const $nameInput = $('#Input_Name');
     const $suggestions = $('#companySuggestions');
     const $existingId = $('#existingCompanyId');
@@ -20,7 +32,7 @@
     $list.on('submit', '.editMandateForm', function (e) {
         e.preventDefault();
         const id = $(this).data('id');
-        postMandate(this, window.location.pathname + '?handler=EditMandate', function (html) {
+        postMandate(this, handlerUrl('EditMandate'), function (html) {
             $('#mandateItem_' + id).replaceWith(html);
             notifySuccess('Änderungen gespeichert.');
         }, handleEditCompanyConflict);
@@ -57,7 +69,7 @@
     });
     function deleteMandate(id) {
         const formEl = document.getElementById('deleteMandateForm_' + id);
-        fetch(window.location.pathname + '?handler=DeleteMandate', {
+        fetch(handlerUrl('DeleteMandate'), {
             method: 'POST',
             body: new FormData(formEl),
             credentials: 'same-origin',
@@ -80,7 +92,7 @@
 
     $addForm.on('submit', function (e) {
         e.preventDefault();
-        postMandate(this, window.location.pathname + '?handler=AddMandate', function (html) {
+        postMandate(this, handlerUrl('AddMandate'), function (html) {
             $('#noMandatesLabel').remove();
             $list.prepend(html);
             $addForm[0].reset();
@@ -199,7 +211,7 @@
             return;
         }
         searchTimeout = setTimeout(function () {
-            fetch(window.location.pathname + '?handler=SearchCompanies&term=' + encodeURIComponent(term), {
+            fetch(handlerUrl('SearchCompanies', { term: term }), {
                 headers: { 'X-Requested-With': 'XMLHttpRequest' }
             }).then(function (r) { return r.json(); })
                 .then(function (data) { renderSuggestions(data.companies || []); })

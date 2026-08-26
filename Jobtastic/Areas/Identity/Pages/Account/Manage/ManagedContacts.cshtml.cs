@@ -3,15 +3,13 @@ using Jobtastic.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
 namespace Jobtastic.Areas.Identity.Pages.Account.Manage
 {
-    public class ManagedContactsModel : PageModel
+    public class ManagedContactsModel : AdminAwarePageModel
     {
-        private readonly UserManager<User> _userManager;
         private readonly ApplicationDbContext _context;
 
         [BindProperty]
@@ -22,9 +20,8 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
         [BindProperty]
         public int ContactId { get; set; }
 
-        public ManagedContactsModel(UserManager<User> userManager, ApplicationDbContext context)
+        public ManagedContactsModel(UserManager<User> userManager, ApplicationDbContext context) : base(userManager)
         {
-            _userManager = userManager;
             _context = context;
         }
 
@@ -35,55 +32,49 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
             [Required(ErrorMessage = "Nachname ist erforderlich.")]
             public string LastName { get; set; }
             [Required(ErrorMessage = "E-Mail ist erforderlich.")]
-            [EmailAddress(ErrorMessage = "Bitte eine gültige E-Mail-Adresse angeben.")]
+            [EmailAddress(ErrorMessage = "Bitte eine gï¿½ltige E-Mail-Adresse angeben.")]
             public string Email { get; set; }
-            [Phone(ErrorMessage = "Bitte eine gültige Telefonnummer angeben.")]
+            [Phone(ErrorMessage = "Bitte eine gï¿½ltige Telefonnummer angeben.")]
             public string? Phone { get; set; }
             public string? Department { get; set; }
-            [Url(ErrorMessage = "Profilbild muss eine gültige URL sein (z. B. https://...).")]
+            [Url(ErrorMessage = "Profilbild muss eine gï¿½ltige URL sein (z. B. https://...).")]
             public string? ProfileImagePath { get; set; }
             public int CompanyID { get; set; }
         }
 
-        private async Task<User?> GetUserWithContactsAsync()
-        {
-            var userId = _userManager.GetUserId(User);
-            return await _context.Users
-                .Include(u => u.Contacts).ThenInclude(c => c.Company)
-                .Include(u => u.Companies)
-                .FirstOrDefaultAsync(u => u.Id == userId);
-        }
+        private static IQueryable<User> WithContacts(IQueryable<User> users) =>
+            users.Include(u => u.Contacts).ThenInclude(c => c.Company).Include(u => u.Companies);
 
         private IEnumerable<string> GetModelErrors() =>
             ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
         private JsonResult ErrorJson(int statusCode, params string[] errors) =>
             new(new { success = false, errors }) { StatusCode = statusCode };
 
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(string? userId)
         {
-            var user = await GetUserWithContactsAsync();
-            if (user == null)
-                return NotFound();
+            var (user, error) = await ResolveTargetUserAsync(userId, WithContacts);
+            if (error != null)
+                return error;
 
-            Contacts = user.Contacts.ToList();
+            Contacts = user!.Contacts.ToList();
             OwnedCompanies = user.Companies.OrderBy(c => c.Name).ToList();
             Input = new InputModel();
             return Page();
         }
 
         // AJAX: Erfolg -> HTML-Fragment (Partial), Fehler -> JSON
-        public async Task<IActionResult> OnPostAddContactAsync()
+        public async Task<IActionResult> OnPostAddContactAsync(string? userId)
         {
-            var user = await GetUserWithContactsAsync();
-            if (user == null)
-                return ErrorJson(StatusCodes.Status404NotFound, "Benutzer nicht gefunden.");
+            var (user, error) = await ResolveTargetUserAsync(userId, WithContacts);
+            if (error != null)
+                return error;
 
             if (!ModelState.IsValid)
                 return ErrorJson(StatusCodes.Status400BadRequest, GetModelErrors().ToArray());
 
-            var company = user.Companies.FirstOrDefault(c => c.ID == Input.CompanyID);
+            var company = user!.Companies.FirstOrDefault(c => c.ID == Input.CompanyID);
             if (company == null)
-                return ErrorJson(StatusCodes.Status400BadRequest, "Firma gehört nicht zu deinen Mandaten.");
+                return ErrorJson(StatusCodes.Status400BadRequest, "Firma gehï¿½rt nicht zu den Mandaten dieses Kontos.");
 
             var contact = new JobContact
             {
@@ -107,16 +98,16 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
             return Partial("_ContactItem", contact);
         }
 
-        public async Task<IActionResult> OnPostEditContactAsync()
+        public async Task<IActionResult> OnPostEditContactAsync(string? userId)
         {
-            var user = await GetUserWithContactsAsync();
-            if (user == null)
-                return ErrorJson(StatusCodes.Status404NotFound, "Benutzer nicht gefunden.");
+            var (user, error) = await ResolveTargetUserAsync(userId, WithContacts);
+            if (error != null)
+                return error;
 
             if (!ModelState.IsValid)
                 return ErrorJson(StatusCodes.Status400BadRequest, GetModelErrors().ToArray());
 
-            var contact = user.Contacts.FirstOrDefault(c => c.ID == ContactId);
+            var contact = user!.Contacts.FirstOrDefault(c => c.ID == ContactId);
             if (contact == null)
                 return ErrorJson(StatusCodes.Status404NotFound, "Kontakt nicht gefunden oder keine Berechtigung.");
 
@@ -136,27 +127,27 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
             return Partial("_ContactItem", contact);
         }
 
-        public async Task<IActionResult> OnPostDeleteContactAsync()
+        public async Task<IActionResult> OnPostDeleteContactAsync(string? userId)
         {
-            var user = await GetUserWithContactsAsync();
-            if (user == null)
-                return ErrorJson(StatusCodes.Status404NotFound, "Benutzer nicht gefunden.");
+            var (user, error) = await ResolveTargetUserAsync(userId, WithContacts);
+            if (error != null)
+                return error;
 
-            var contact = user.Contacts.FirstOrDefault(c => c.ID == ContactId);
+            var contact = user!.Contacts.FirstOrDefault(c => c.ID == ContactId);
             if (contact == null)
                 return ErrorJson(StatusCodes.Status404NotFound, "Kontakt nicht gefunden oder keine Berechtigung.");
 
             var hasPostings = await _context.Postings.AnyAsync(p => p.ContactID == contact.ID);
             if (hasPostings)
                 return ErrorJson(StatusCodes.Status400BadRequest,
-                    "Dieser Kontakt kann nicht gelöscht werden, solange ihm noch Stellenanzeigen zugeordnet sind.");
+                    "Dieser Kontakt kann nicht gelï¿½scht werden, solange ihm noch Stellenanzeigen zugeordnet sind.");
 
             _context.Contacts.Remove(contact);
 
             try { await _context.SaveChangesAsync(); }
             catch (DbUpdateException)
             {
-                return ErrorJson(StatusCodes.Status500InternalServerError, "Löschen fehlgeschlagen.");
+                return ErrorJson(StatusCodes.Status500InternalServerError, "Lï¿½schen fehlgeschlagen.");
             }
 
             return new JsonResult(new { success = true, id = contact.ID });
