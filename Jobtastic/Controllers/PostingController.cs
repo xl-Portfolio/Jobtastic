@@ -1,4 +1,5 @@
-﻿using Jobtastic.Models;
+﻿using Jobtastic.Authorization;
+using Jobtastic.Models;
 using Jobtastic.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,10 +10,12 @@ namespace Jobtastic.Controllers
     public class PostingController : Controller
     {
         private readonly PostingService _postingService;
-        
-        public PostingController(PostingService service)
+        private readonly ICurrentUser _me;
+
+        public PostingController(PostingService service, ICurrentUser me)
         {
             _postingService = service;
+            _me = me;
         }
         public async Task<IActionResult> Index()
         {
@@ -31,8 +34,6 @@ namespace Jobtastic.Controllers
             var job = await _postingService.GetJobById(id);
             if (job == null)
                 return NotFound();
-            if (!_postingService.IsAuthorized(job))
-                return Unauthorized();
 
             var input = new JobPostingInputModel
             {
@@ -59,14 +60,14 @@ namespace Jobtastic.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (!await _postingService.IsAuthorizedForCompany(input.CompanyID))
-                return Unauthorized();
-
-            if (input.ContactID.HasValue && !await _postingService.IsAuthorizedForContact(input.ContactID.Value, input.CompanyID))
-                return Unauthorized();
-
             if (input.ID == 0)
             {
+                // Neuanlage: Eigentümer ist immer der Handelnde selbst.
+                if (!await _postingService.OwnerHoldsMandate(_me.Id, input.CompanyID))
+                    return Unauthorized();
+                if (input.ContactID.HasValue && !await _postingService.OwnerHoldsContact(_me.Id, input.ContactID.Value, input.CompanyID))
+                    return Unauthorized();
+
                 var jobAdded = await _postingService.AddJob_Successfully(input);
                 if (!jobAdded)
                     return BadRequest();
@@ -76,31 +77,20 @@ namespace Jobtastic.Controllers
                 var postingById = await _postingService.GetJobById(input.ID);
                 if (postingById == null)
                     return NotFound();
-                if (!_postingService.IsAuthorized(postingById))
+
+                // Bearbeitung: gegen den bestehenden Eigentümer prüfen, nicht gegen den
+                // Handelnden - so kann auch ein Admin fremde Anzeigen bearbeiten, ohne
+                // dass dabei die Mandats-Zugehörigkeit des Eigentümers verletzt wird.
+                if (!await _postingService.OwnerHoldsMandate(postingById.OwnerID, input.CompanyID))
                     return Unauthorized();
+                if (input.ContactID.HasValue && !await _postingService.OwnerHoldsContact(postingById.OwnerID, input.ContactID.Value, input.CompanyID))
+                    return Unauthorized();
+
                 var jobEdited = await _postingService.EditJob_Successfully(input, postingById);
                 if (!jobEdited)
                     return BadRequest();
             }
             return RedirectToAction("Index");
         }
-
-        //public async Task<IActionResult> Settings(User user)
-        //{
-        //    var userData = await _context.Users.SingleOrDefaultAsync(x => x.Id == user.Id);
-        //    if (userData == null)
-        //        return NotFound();
-        //    if (!IsAuthorized(user))
-        //        return Unauthorized();
-        //    return View(userData);
-
-        //}
-        //public async Task<IActionResult> EditAccount(User user)
-        //{
-        //    var userData = await _context.Users.SingleOrDefaultAsync(x => x.Id == user.Id);
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction("Settings");
-        //}
-
     }
 }

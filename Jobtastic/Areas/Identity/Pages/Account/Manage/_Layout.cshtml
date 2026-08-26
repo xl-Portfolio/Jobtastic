@@ -7,9 +7,19 @@
     {
         Layout = "/Areas/Identity/Pages/_Layout.cshtml";
     }
+
+    var adminAwarePage = ViewContext.ViewData.Model as AdminAwarePageModel;
 }
 
 <h1>Profil von @User.Identity.Name</h1>
+
+@if (adminAwarePage?.IsActingOnBehalfOfOther == true)
+{
+    <div class="alert alert-warning">
+        <i class="bi bi-shield-exclamation"></i>
+        Du bearbeitest gerade das Konto eines anderen Benutzers (ID: @adminAwarePage.TargetUserId) als Admin.
+    </div>
+}
 
 <div>
     <hr />

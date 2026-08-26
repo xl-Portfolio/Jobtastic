@@ -1,67 +1,85 @@
-﻿using Jobtastic.Data;
+﻿using Jobtastic.Authorization;
+using Jobtastic.Data;
 using Jobtastic.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace Jobtastic.Services
 {
     public class PostingService
     {
         private readonly ApplicationDbContext _context;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        public PostingService(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
+        private readonly ICurrentUser _me;
+        public PostingService(ApplicationDbContext context, ICurrentUser me)
         {
             _context = context;
-            _httpContextAccessor = httpContextAccessor;
+            _me = me;
         }
-        private ClaimsPrincipal? User => _httpContextAccessor.HttpContext?.User;
-        private string? UserId => User?.FindFirstValue(ClaimTypes.NameIdentifier);
-        public bool IsAuthorized(JobPosting job) => job.OwnerID == UserId || (User?.IsInRole("Admin") ?? false);
-        public bool IsAuthorized(User user) => user.Id == UserId || (User?.IsInRole("Admin") ?? false);
+        public bool IsAuthorized(JobPosting job) => _me.IsAdmin || (_me.Id is not null && job.OwnerID == _me.Id);
+        public bool IsAuthorized(User user) => _me.IsAdmin || (_me.Id is not null && user.Id == _me.Id);
         public async Task<bool> ProfileIsComplete()
         {
             var user = await _context.Users
                 .Include(u => u.Companies)
-                .SingleOrDefaultAsync(u => u.Id == UserId);
+                .SingleOrDefaultAsync(u => u.Id == _me.Id);
             return user?.Companies.Any() == true;
         }
         public async Task<List<JobContact>> GetContactsAsync()
         {
             var user = await _context.Users
                 .Include(u => u.Contacts)
-                .SingleOrDefaultAsync(u => u.Id == UserId);
+                .SingleOrDefaultAsync(u => u.Id == _me.Id);
             return user!.Contacts.ToList();
-        }
-        public async Task<bool> IsAuthorizedForContact(int contactId, int companyId)
-        {
-            var contacts = await GetContactsAsync();
-            return contacts.Any(c => c.ID == contactId && c.CompanyID == companyId);
         }
         public async Task<List<Company>> GetMandatesAsync()
         {
             var user = await _context.Users
                 .Include(u => u.Companies)
-                .SingleOrDefaultAsync(u => u.Id == UserId);
+                .SingleOrDefaultAsync(u => u.Id == _me.Id);
             return user!.Companies.ToList();
         }
-        public async Task<bool> IsAuthorizedForCompany(int companyId)
-        {
-            var mandates = await GetMandatesAsync();
-            return mandates.Any(m => m.ID == companyId);
-        }
-        public async Task<JobPosting?> GetJobById(int id) => await _context.Postings.SingleOrDefaultAsync(x => x.ID == id);
+        /// <summary>
+        /// Prüft gegen den Eigentümer der Anzeige, nicht gegen den Handelnden - damit gilt
+        /// dieselbe Regel unabhängig davon, ob man seine eigene Anzeige bearbeitet oder als
+        /// Admin die eines anderen: Die zugewiesene Firma muss zu den Mandaten des
+        /// Eigentümers gehören.
+        /// </summary>
+        public async Task<bool> OwnerHoldsMandate(string? ownerId, int companyId) =>
+            ownerId is not null &&
+            await _context.Users.AnyAsync(u => u.Id == ownerId && u.Companies.Any(c => c.ID == companyId));
+
+        /// <summary>
+        /// Wie <see cref="OwnerHoldsMandate"/>, für den zugewiesenen Kontakt: Er muss dem
+        /// Eigentümer gehören und zur selben Firma zählen.
+        /// </summary>
+        public async Task<bool> OwnerHoldsContact(string? ownerId, int contactId, int companyId) =>
+            ownerId is not null &&
+            await _context.Contacts.AnyAsync(c => c.ID == contactId && c.CompanyID == companyId && c.UserID == ownerId);
+
+        /// <summary>
+        /// Load a specific post for editing. The scope is limited to the current user and admins. Returns null if not found or not authorized.
+        /// </summary>
+        public async Task<JobPosting?> GetJobById(int id) =>
+            await _context.Postings.ManageableBy(_me).SingleOrDefaultAsync(x => x.ID == id);
+
+        /// <summary>
+        /// Detail view: publicly visible posts and owned posts (preview for owners and admins). Otherwise null.
+        /// </summary>
         public async Task<JobPosting?> GetJobDetailsById(int id)
         {
             var jobDetails = await _context.Postings
                 .Include(j => j.Company)
                 .Include(j => j.Contact)
                 .SingleOrDefaultAsync(x => x.ID == id);
-            return jobDetails;
+
+            if (jobDetails == null)
+                return null;
+
+            return jobDetails.IsPubliclyVisible() || IsAuthorized(jobDetails) ? jobDetails : null;
         }
         public async Task<List<JobPosting>> GetOwnedPostings()
         {
             var jobList = await _context.Postings
-                .Where(x => x.OwnerID == UserId)
+                .Where(x => x.OwnerID == _me.Id)
                 .Include(j => j.Company)
                 .ToListAsync();
             return jobList;
@@ -69,7 +87,7 @@ namespace Jobtastic.Services
         public async Task<List<JobPosting>> GetAllActivePostingsAsync()
         {
             var jobList = await _context.Postings
-                .Where(j => j.IsOnline)
+                .PubliclyVisible()
                 .Include(j => j.Company)
                 .ToListAsync();
             return jobList;
@@ -91,7 +109,7 @@ namespace Jobtastic.Services
                 Experience = input.Experience,
                 StartDate = input.StartDate,
                 IsOnline = input.IsOnline,
-                OwnerID = UserId
+                OwnerID = _me.Id
             };
 
             if (job.IsOnline)

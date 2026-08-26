@@ -5,6 +5,15 @@
     const $list = $('#contactsList');
     const createBtnDefaultHtml = $createBtn.html();
 
+    // Preserves the page's userId (admin editing another account) across handler calls.
+    function handlerUrl(handler) {
+        const params = new URLSearchParams();
+        params.set('handler', handler);
+        const userId = new URLSearchParams(window.location.search).get('userId');
+        if (userId) params.set('userId', userId);
+        return window.location.pathname + '?' + params.toString();
+    }
+
     $createBtn.on('click', function () {
         const isOpening = $addPanel.hasClass('d-none');
         $addPanel.toggleClass('d-none');
@@ -15,7 +24,7 @@
 
     $addForm.on('submit', function (e) {
         e.preventDefault();
-        postContact(this, window.location.pathname + '?handler=AddContact', function (html) {
+        postContact(this, handlerUrl('AddContact'), function (html) {
             $('#noContactsLabel').remove();
             $list.prepend(html);
             $addForm[0].reset();
@@ -28,7 +37,7 @@
     $list.on('submit', '.editContactForm', function (e) {
         e.preventDefault();
         const id = $(this).data('id');
-        postContact(this, window.location.pathname + '?handler=EditContact', function (html) {
+        postContact(this, handlerUrl('EditContact'), function (html) {
             $('#contactItem_' + id).replaceWith(html);
             notifySuccess('Änderungen gespeichert.');
         });
@@ -66,7 +75,7 @@
 
     function deleteContact(id) {
         const formEl = document.getElementById('deleteContactForm_' + id);
-        fetch(window.location.pathname + '?handler=DeleteContact', {
+        fetch(handlerUrl('DeleteContact'), {
             method: 'POST',
             body: new FormData(formEl),
             credentials: 'same-origin',
