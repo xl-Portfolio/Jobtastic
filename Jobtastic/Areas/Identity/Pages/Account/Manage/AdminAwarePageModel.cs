@@ -1,3 +1,4 @@
+using Jobtastic.Authorization;
 using Jobtastic.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -47,7 +48,7 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
             var callerId = CallerId;
             var targetId = string.IsNullOrEmpty(userId) ? callerId : userId;
 
-            if (targetId != callerId && !User.IsInRole("Admin"))
+            if (!AccountAccess.MayTarget(callerId, userId, User.IsInRole("Admin")))
                 return (null, Forbid());
 
             var user = await include(UserManager.Users).FirstOrDefaultAsync(u => u.Id == targetId);
