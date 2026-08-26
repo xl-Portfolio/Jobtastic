@@ -1,13 +1,11 @@
 ﻿@inject SignInManager<User> SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
-    // Only CompanyMandate/ManagedContacts support admin-on-behalf-of editing.
-    var targetUserId = (Model as AdminAwarePageModel)?.IsActingOnBehalfOfOther == true
-        ? ((AdminAwarePageModel)Model).TargetUserId
-        : null;
+    // Carried on every link so the managed account survives navigation within the area.
+    var targetUserId = (Model as AdminAwarePageModel)?.TargetUserIdForLinks;
 }
 <ul class="nav nav-pills flex-column">
-    <li class="nav-item"><a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="UserData" asp-page="./Index">Nutzerkonto</a></li>
+    <li class="nav-item"><a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="UserData" asp-page="./Index" asp-route-userId="@targetUserId">Nutzerkonto</a></li>
     <li class="nav-item"><a class="nav-link @ManageNavPages.CompanyMandateNavClass(ViewContext)" id="CompanyMandate" asp-page="./CompanyMandate" asp-route-userId="@targetUserId">Verwaltete Firmen</a></li>
     <li class="nav-item"><a class="nav-link @ManageNavPages.ManagedContactsNavClass(ViewContext)" id="ManagedContacts" asp-page="./ManagedContacts" asp-route-userId="@targetUserId">Verwaltete Kontakte</a></li>
 

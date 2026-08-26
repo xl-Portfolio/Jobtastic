@@ -9,15 +9,22 @@
     }
 
     var adminAwarePage = ViewContext.ViewData.Model as AdminAwarePageModel;
+    var profileName = adminAwarePage?.DisplayUserName ?? User.Identity?.Name;
 }
 
-<h1>Profil von @User.Identity.Name</h1>
+<h1>Profil von @profileName</h1>
 
 @if (adminAwarePage?.IsActingOnBehalfOfOther == true)
 {
-    <div class="alert alert-warning">
-        <i class="bi bi-shield-exclamation"></i>
-        Du bearbeitest gerade das Konto eines anderen Benutzers (ID: @adminAwarePage.TargetUserId) als Admin.
+    <div class="alert alert-warning d-flex justify-content-between align-items-center">
+        <span>
+            <i class="bi bi-shield-exclamation"></i>
+            Du bearbeitest gerade das Konto eines anderen Benutzers (ID: @adminAwarePage.TargetUserId) als Admin.
+        </span>
+        <a class="btn btn-outline-secondary btn-sm text-nowrap ms-3"
+           asp-area="" asp-controller="Admin" asp-action="Users">
+            <i class="bi bi-arrow-left"></i> Benutzerverwaltung
+        </a>
     </div>
 }
 

@@ -25,6 +25,7 @@ namespace Jobtastic
 			builder.Services.AddScoped<SetupService>();
             builder.Services.AddScoped<ICurrentUser, CurrentUser>();
             builder.Services.AddScoped<PostingService>();
+            builder.Services.AddScoped<AdminService>();
             builder.Services.AddControllersWithViews(options =>
 			{
 				options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());

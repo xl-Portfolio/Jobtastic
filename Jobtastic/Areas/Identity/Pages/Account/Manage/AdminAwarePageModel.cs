@@ -13,19 +13,27 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
     public abstract class AdminAwarePageModel : PageModel
     {
         protected readonly UserManager<User> UserManager;
-
         protected AdminAwarePageModel(UserManager<User> userManager)
         {
             UserManager = userManager;
         }
 
         protected string? CallerId => UserManager.GetUserId(User);
-
-        /// <summary>Id of the account this request resolved to.</summary>
         public string? TargetUserId { get; private set; }
-
-        /// <summary>True when managing an account other than the caller's own.</summary>
+        public string? TargetUserName { get; private set; }
         public bool IsActingOnBehalfOfOther { get; private set; }
+
+        /// <summary>
+        /// Name for page headings: the managed account while acting on behalf of
+        /// someone, otherwise the caller's own.
+        /// </summary>
+        public string? DisplayUserName => IsActingOnBehalfOfOther ? TargetUserName : User.Identity?.Name;
+
+        /// <summary>
+        /// Value to append as userId on links and form posts so the managed account
+        /// survives navigation. Null on one's own account, which keeps those URLs clean.
+        /// </summary>
+        public string? TargetUserIdForLinks => IsActingOnBehalfOfOther ? TargetUserId : null;
 
         /// <summary>
         /// Resolves the target account: the caller by default, or
@@ -47,6 +55,7 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
                 return (null, NotFound());
 
             TargetUserId = targetId;
+            TargetUserName = user.UserName;
             IsActingOnBehalfOfOther = targetId != callerId;
             return (user, null);
         }

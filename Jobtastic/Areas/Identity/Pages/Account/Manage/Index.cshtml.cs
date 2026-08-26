@@ -1,31 +1,26 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
+// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
-#nullable disable
 
-using System;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Jobtastic.Models;
 
 namespace Jobtastic.Areas.Identity.Pages.Account.Manage
 {
-    public class IndexModel : PageModel
+    public class IndexModel : AdminAwarePageModel
     {
-        private readonly UserManager<User> _userManager;
-
         [BindProperty]
         public InputModel Input {  get; set; }
 
         [BindProperty]
         public PasswordInputModel PasswordInput { get; set; }
-        
-        public IndexModel(UserManager<User> userManager)
+
+        /// <summary>Roles of the displayed account, so an admin profile is recognizable as one.</summary>
+        public IList<string> TargetUserRoles { get; private set; } = new List<string>();
+
+        public IndexModel(UserManager<User> userManager) : base(userManager)
         {
-            _userManager = userManager;
         }
         public class InputModel
         {
@@ -45,15 +40,29 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
             [Compare("NewPassword")]
             public string ConfirmedPassword { get; set; }
         }
-        public async Task<IActionResult> OnGetAsync()
+        /// <summary>
+        /// The page hosts two independent forms that both bind to this model, so a
+        /// post from one carries no values for the other's [Required] fields and
+        /// would fail validation on its behalf. Discards the incoming validation
+        /// state and re-runs it against the submitted sub-model only.
+        /// </summary>
+        private bool ValidateOnly<TModel>(TModel model, string prefix) where TModel : class
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return NotFound();
+            ModelState.Clear();
+            return TryValidateModel(model, prefix);
+        }
+
+        public async Task<IActionResult> OnGetAsync(string? userId)
+        {
+            var (user, error) = await ResolveTargetUserAsync(userId, users => users);
+            if (error != null)
+                return error;
+
+            TargetUserRoles = await UserManager.GetRolesAsync(user!);
 
             Input = new InputModel
             {
-                Email = user.Email,
+                Email = user!.Email!,
                 PhoneNumber = user.PhoneNumber,
             };
             PasswordInput = new PasswordInputModel
@@ -63,41 +72,56 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
 
             return Page();
         }
-        public async Task<IActionResult> OnPostEditDataAsync()
+        public async Task<IActionResult> OnPostEditDataAsync(string? userId)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return NotFound();
+            var (user, error) = await ResolveTargetUserAsync(userId, users => users);
+            if (error != null)
+                return error;
 
-            if (!ModelState.IsValid)
+            if (!ValidateOnly(Input, nameof(Input)))
                 return BadRequest(ModelState);
 
-            var result = await _userManager.SetEmailAsync(user, Input.Email);
-            if (!result.Succeeded)
-                return BadRequest(result.Errors);
-            result = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
+            var result = await UserManager.SetEmailAsync(user!, Input.Email);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
 
-            return Page();
+            // The sign-in form matches against UserName, and registration seeds it
+            // with the email. Without this the account would keep logging in under
+            // the old address after an email change.
+            result = await UserManager.SetUserNameAsync(user!, Input.Email);
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+
+            result = await UserManager.SetPhoneNumberAsync(user!, Input.PhoneNumber);
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+
+            return RedirectToPage(new { userId });
         }
+
+        /// <summary>
+        /// Self-service only. Changing a password requires the current one, which an
+        /// admin cannot supply for someone else's account, so this handler always
+        /// resolves the caller and ignores any userId - the form is not rendered
+        /// while managing another account.
+        /// </summary>
         public async Task<IActionResult> OnPostEditPasswordAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await UserManager.GetUserAsync(User);
             if (user == null)
                 return NotFound();
 
-            if (!ModelState.IsValid)
-                return BadRequest();
+            if (!ValidateOnly(PasswordInput, nameof(PasswordInput)))
+                return BadRequest(ModelState);
 
-            var result = await _userManager.ChangePasswordAsync(
+            var result = await UserManager.ChangePasswordAsync(
                 user,
                 PasswordInput.Password,
                 PasswordInput.NewPassword);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
 
-            return Page();
+            return RedirectToPage();
         }
     }
 }
