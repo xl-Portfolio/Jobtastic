@@ -62,7 +62,6 @@ namespace Jobtastic.Controllers
 
             if (input.ID == 0)
             {
-                // Neuanlage: Eigentümer ist immer der Handelnde selbst.
                 if (!await _postingService.OwnerHoldsMandate(_me.Id, input.CompanyID))
                     return Unauthorized();
                 if (input.ContactID.HasValue && !await _postingService.OwnerHoldsContact(_me.Id, input.ContactID.Value, input.CompanyID))
@@ -77,10 +76,6 @@ namespace Jobtastic.Controllers
                 var postingById = await _postingService.GetJobById(input.ID);
                 if (postingById == null)
                     return NotFound();
-
-                // Bearbeitung: gegen den bestehenden Eigentümer prüfen, nicht gegen den
-                // Handelnden - so kann auch ein Admin fremde Anzeigen bearbeiten, ohne
-                // dass dabei die Mandats-Zugehörigkeit des Eigentümers verletzt wird.
                 if (!await _postingService.OwnerHoldsMandate(postingById.OwnerID, input.CompanyID))
                     return Unauthorized();
                 if (input.ContactID.HasValue && !await _postingService.OwnerHoldsContact(postingById.OwnerID, input.ContactID.Value, input.CompanyID))
