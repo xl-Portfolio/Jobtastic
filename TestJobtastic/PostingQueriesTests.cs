@@ -60,5 +60,16 @@ namespace TestJobtastic
 
             Assert.That(result, Is.EquivalentTo(new[] { 1, 2 }));
         }
+
+        [Test]
+        public void Expired_matches_only_postings_still_flagged_online_past_their_expiry()
+        {
+            // ID 4 is the drift case this scope exists to catch: IsOnline still
+            // true, but ExpiryDate has already passed. ID 3 is already offline,
+            // so it's not "expired" - there's nothing left to correct there.
+            var result = Postings().Expired().Select(p => p.ID);
+
+            Assert.That(result, Is.EquivalentTo(new[] { 4 }));
+        }
     }
 }

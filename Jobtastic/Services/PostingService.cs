@@ -56,10 +56,33 @@ namespace Jobtastic.Services
             await _context.Contacts.AnyAsync(c => c.ID == contactId && c.CompanyID == companyId && c.UserID == ownerId);
 
         /// <summary>
+        /// Marks postings in the given scope offline once their expiry date has
+        /// passed. Called only from owner-facing reads (dashboard, edit form),
+        /// where a stale IsOnline=true would otherwise mislead the owner - the
+        /// public board already hides expired postings via PubliclyVisible()
+        /// regardless of this flag, so it doesn't need the write on every hit.
+        /// </summary>
+        private async Task ExpireStalePostings(IQueryable<JobPosting> scope)
+        {
+            var stale = await scope.Expired().ToListAsync();
+            if (stale.Count == 0)
+                return;
+
+            foreach (var posting in stale)
+                posting.IsOnline = false;
+
+            await _context.SaveChangesAsync();
+        }
+
+        /// <summary>
         /// Load a specific post for editing. The scope is limited to the current user and admins. Returns null if not found or not authorized.
         /// </summary>
-        public async Task<JobPosting?> GetJobById(int id) =>
-            await _context.Postings.ManageableBy(_me).SingleOrDefaultAsync(x => x.ID == id);
+        public async Task<JobPosting?> GetJobById(int id)
+        {
+            var scope = _context.Postings.ManageableBy(_me);
+            await ExpireStalePostings(scope.Where(x => x.ID == id));
+            return await scope.SingleOrDefaultAsync(x => x.ID == id);
+        }
 
         /// <summary>
         /// Detail view: publicly visible posts and owned posts (preview for owners and admins). Otherwise null.
@@ -78,8 +101,10 @@ namespace Jobtastic.Services
         }
         public async Task<List<JobPosting>> GetOwnedPostings()
         {
-            var jobList = await _context.Postings
-                .Where(x => x.OwnerID == _me.Id)
+            var scope = _context.Postings.Where(x => x.OwnerID == _me.Id);
+            await ExpireStalePostings(scope);
+
+            var jobList = await scope
                 .Include(j => j.Company)
                 .ToListAsync();
             return jobList;
@@ -115,7 +140,7 @@ namespace Jobtastic.Services
             if (job.IsOnline)
             {
                 job.UploadDate = DateTime.Now;
-                job.ExpiryDate = job.UploadDate.AddMonths(6);
+                job.ExpiryDate = job.StartDate.AddMonths(3);
             }
 
             await _context.Postings.AddAsync(job);
@@ -141,7 +166,7 @@ namespace Jobtastic.Services
             if (dbJob.IsOnline)
             {
                 dbJob.UploadDate = DateTime.Now;
-                dbJob.ExpiryDate = dbJob.UploadDate.AddMonths(6);
+                dbJob.ExpiryDate = dbJob.StartDate.AddMonths(3);
             }
 
             var entitiesChanged = await _context.SaveChangesAsync();
