@@ -22,6 +22,13 @@ namespace Jobtastic
 			builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false)
 				.AddRoles<IdentityRole>()
 				.AddEntityFrameworkStores<ApplicationDbContext>();
+
+            // Role changes and lockouts live in the auth cookie, which is otherwise
+            // only re-checked at sign-in. Revalidating keeps an admin's action from
+            // taking effect hours later, when the affected session happens to expire.
+            builder.Services.Configure<SecurityStampValidatorOptions>(options =>
+                options.ValidationInterval = TimeSpan.FromMinutes(1));
+
 			builder.Services.AddScoped<SetupService>();
             builder.Services.AddScoped<ICurrentUser, CurrentUser>();
             builder.Services.AddScoped<PostingService>();

@@ -1,16 +1,20 @@
+@using Jobtastic.Authorization
 @{
     ViewData["Title"] = "Benutzerverwaltung";
+    var callerId = ViewBag.CurrentUserId as string;
 }
 @model List<AdminUserListModel>
 
 <h1>@ViewData["Title"]</h1>
 <p class="text-muted">@Model.Count Konten</p>
+@* Exists only to carry the antiforgery token for the fetch calls in adminUsers.js. *@
+<form id="adminActionForm">@Html.AntiForgeryToken()</form>
 
 <table id="allUsers" class="table table-striped align-top" style="width:100%">
     <thead>
         <tr>
             <th>E-Mail</th>
-            <th>Rollen</th>
+            <th>Rolle</th>
             <th>Status</th>
             <th>Registriert</th>
             <th>Mandate</th>
@@ -22,15 +26,16 @@
     <tbody>
         @foreach (AdminUserListModel user in Model)
         {
-            <tr>
+            <tr id="userRow_@user.Id" data-user-id="@user.Id" data-email="@user.Email">
                 <td>@user.Email</td>
-                <td>
-                    @foreach (var role in user.Roles)
-                    {
-                        <span class="badge @(role == "Admin" ? "text-bg-primary" : "text-bg-secondary")">@role</span>
-                    }
+                @* Roles are stored additively; only the highest one is shown, so each
+                   account reads as having exactly one role. *@
+                <td data-role="roles">
+                    <span class="badge @(user.IsOwner ? "text-bg-dark" : user.IsAdmin ? "text-bg-primary" : "text-bg-secondary")">
+                        @user.EffectiveRole
+                    </span>
                 </td>
-                <td>
+                <td data-role="status">
                     @if (user.IsLocked)
                     {
                         <span class="badge text-bg-danger">gesperrt</span>
@@ -56,6 +61,24 @@
                            title="Kontakte dieses Kontos verwalten">
                             <i class="bi bi-person-lines-fill"></i>
                         </a>
+                        @* The same rules the server enforces decide whether the button
+                           is offered at all, so UI and server cannot disagree. *@
+                        @if (AccountAccess.MayRevokeAdmin(callerId, user.Id, user.IsOwner) || !user.IsAdmin)
+                        {
+                            <button type="button" class="btn btn-outline-secondary btn-sm roleToggleBtn"
+                                    data-is-admin="@user.IsAdmin.ToString().ToLower()"
+                                    title="Admin-Rolle vergeben oder entziehen">
+                                <i class="bi bi-shield"></i>
+                            </button>
+                        }
+                        @if (AccountAccess.MayLock(callerId, user.Id, user.IsOwner))
+                        {
+                            <button type="button" class="btn btn-outline-danger btn-sm lockToggleBtn"
+                                    data-locked="@user.IsLocked.ToString().ToLower()"
+                                    title="Konto sperren oder entsperren">
+                                <i class="bi bi-lock"></i>
+                            </button>
+                        }
                     </div>
                 </td>
             </tr>
@@ -77,4 +100,5 @@
             ]
         });
     </script>
+    <script src="~/js/adminUsers.js"></script>
 }

@@ -5,9 +5,18 @@
     ViewData["ActivePage"] = ManageNavPages.Index;
 }
 
-@if (Model.TargetUserRoles.Contains("Admin"))
+@using Jobtastic.Authorization
+@{
+    // Only a role above the baseline is worth showing - "User" is on every account.
+    var elevatedRole = Model.TargetUserRoles.Contains(RoleNames.Owner) ? RoleNames.Owner
+        : Model.TargetUserRoles.Contains(RoleNames.Admin) ? RoleNames.Admin
+        : null;
+}
+@if (elevatedRole != null)
 {
-    <p class="mb-3"><span class="badge text-bg-primary">Admin</span></p>
+    <p class="mb-3">
+        <span class="badge @(elevatedRole == RoleNames.Owner ? "text-bg-dark" : "text-bg-primary")">@elevatedRole</span>
+    </p>
 }
 
 <form method="post" asp-page-handler="EditData" asp-route-userId="@Model.TargetUserIdForLinks" class="mx-auto" style="max-width: 800px;">

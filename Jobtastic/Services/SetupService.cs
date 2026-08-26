@@ -1,4 +1,5 @@
-﻿using Jobtastic.Models;
+﻿using Jobtastic.Authorization;
+using Jobtastic.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace Jobtastic.Services
@@ -16,7 +17,7 @@ namespace Jobtastic.Services
         }
         public async Task SeedRolesAsync()
         {
-            string[] roles = { "Admin", "User" };
+            string[] roles = RoleNames.All;
 
             foreach (var role in roles)
             {
