@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Jobtastic.Authorization;
 using Jobtastic.Models;
 
 namespace Jobtastic.Areas.Identity.Pages.Account
@@ -114,7 +115,13 @@ namespace Jobtastic.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    var roleResult = await _userManager.AddToRoleAsync(user, isFirstUser ? "Admin" : "User");
+                    // Roles are additive: everyone is a User, the founding account is
+                    // additionally Admin and Owner. Assigning only one of them would
+                    // leave that account without the baseline role.
+                    var roles = isFirstUser
+                        ? new[] { RoleNames.User, RoleNames.Admin, RoleNames.Owner }
+                        : new[] { RoleNames.User };
+                    var roleResult = await _userManager.AddToRolesAsync(user, roles);
                     if (!roleResult.Succeeded)
                     {
                         foreach (var error in roleResult.Errors)

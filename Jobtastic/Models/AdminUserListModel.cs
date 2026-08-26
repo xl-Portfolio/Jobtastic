@@ -1,3 +1,5 @@
+using Jobtastic.Authorization;
+
 namespace Jobtastic.Models
 {
     /// <summary>
@@ -20,5 +22,18 @@ namespace Jobtastic.Models
         /// Identity leaves past values in place instead of clearing them.
         /// </summary>
         public bool IsLocked => LockoutEnd.HasValue && LockoutEnd.Value > DateTimeOffset.Now;
+
+        public bool IsOwner => Roles.Contains(RoleNames.Owner);
+
+        public bool IsAdmin => Roles.Contains(RoleNames.Admin);
+
+        /// <summary>
+        /// The highest role held. Roles are stored additively, but every account is
+        /// presented as having exactly one - this is what makes that possible.
+        /// </summary>
+        public string EffectiveRole =>
+            IsOwner ? RoleNames.Owner
+            : IsAdmin ? RoleNames.Admin
+            : RoleNames.User;
     }
 }

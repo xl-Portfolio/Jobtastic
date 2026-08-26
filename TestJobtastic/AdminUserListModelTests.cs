@@ -31,5 +31,39 @@ namespace TestJobtastic
 
             Assert.That(user.IsLocked, Is.True);
         }
+
+        [Test]
+        public void IsAdmin_reflects_whether_the_Admin_role_is_present()
+        {
+            var admin = new AdminUserListModel { Roles = { "User", "Admin" } };
+            var plain = new AdminUserListModel { Roles = { "User" } };
+
+            Assert.That(admin.IsAdmin, Is.True);
+            Assert.That(plain.IsAdmin, Is.False);
+        }
+
+        [Test]
+        public void EffectiveRole_reports_the_highest_role_held()
+        {
+            // Roles are stored additively, so an owner also holds Admin and User.
+            // Only the top of that stack is shown.
+            var owner = new AdminUserListModel { Roles = { "User", "Admin", "Owner" } };
+            var admin = new AdminUserListModel { Roles = { "User", "Admin" } };
+            var plain = new AdminUserListModel { Roles = { "User" } };
+
+            Assert.That(owner.EffectiveRole, Is.EqualTo("Owner"));
+            Assert.That(admin.EffectiveRole, Is.EqualTo("Admin"));
+            Assert.That(plain.EffectiveRole, Is.EqualTo("User"));
+        }
+
+        [Test]
+        public void EffectiveRole_falls_back_to_User_when_no_role_is_recorded()
+        {
+            // Legacy rows from before roles were additive can hold no baseline role;
+            // the overview should still show something sensible rather than a blank.
+            var roleless = new AdminUserListModel();
+
+            Assert.That(roleless.EffectiveRole, Is.EqualTo("User"));
+        }
     }
 }

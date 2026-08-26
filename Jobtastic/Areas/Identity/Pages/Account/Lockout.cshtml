@@ -1,0 +1,12 @@
+@page
+@model LockoutModel
+@{
+    ViewData["Title"] = "Konto gesperrt";
+    Layout = "_AuthLayout";
+}
+
+<p>
+    Dieses Konto wurde gesperrt und kann sich derzeit nicht anmelden.
+    Bitte wende dich an einen Administrator.
+</p>
+<a asp-page="./Login">Zurück zum Login</a>
