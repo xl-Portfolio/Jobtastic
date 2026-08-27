@@ -48,7 +48,17 @@
                     }
                 </td>
                 <td>@user.CreatedAt.ToString("dd.MM.yyyy")</td>
-                <td>@user.MandateCount</td>
+                <td>
+                    @if (user.MandateCount > 0)
+                    {
+                        <a asp-area="Identity" asp-page="/Account/Manage/CompanyMandate" asp-route-userId="@user.Id"
+                           title="Mandate dieses Kontos anzeigen">@user.MandateCount</a>
+                    }
+                    else
+                    {
+                        @user.MandateCount
+                    }
+                </td>
                 <td>
                     @if (user.ContactCount > 0)
                     {
