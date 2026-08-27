@@ -13,7 +13,7 @@ namespace TestJobtastic
         public void A_posting_that_was_never_published_is_a_draft()
         {
             // Both dates are only stamped on publishing, so an unpublished posting has
-            // an expiry of default(DateTime) - which lies in the past and would read as
+            // an expiry of default(DateTime), which lies in the past and would read as
             // expired if the upload date were not checked first.
             var draft = Posting(isOnline: false, uploadDate: default, expiryDate: default);
 
