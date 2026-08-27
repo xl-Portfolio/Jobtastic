@@ -42,6 +42,18 @@ namespace Jobtastic
             builder.Services.AddControllersWithViews(options =>
 			{
 				options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+
+				// Messages the model binder produces before any validation attribute
+				// runs - an empty date field or letters in a number field. They default
+				// to English and would otherwise show up amid the German ones.
+				var messages = options.ModelBindingMessageProvider;
+				messages.SetValueIsInvalidAccessor(_ => "Der angegebene Wert ist ungültig.");
+				messages.SetAttemptedValueIsInvalidAccessor((value, field) => $"'{value}' ist kein gültiger Wert für {field}.");
+				messages.SetNonPropertyAttemptedValueIsInvalidAccessor(value => $"'{value}' ist kein gültiger Wert.");
+				messages.SetValueMustNotBeNullAccessor(_ => "Dieses Feld ist erforderlich.");
+				messages.SetMissingBindRequiredValueAccessor(field => $"Für {field} wurde kein Wert übermittelt.");
+				messages.SetValueMustBeANumberAccessor(field => $"{field} muss eine Zahl sein.");
+				messages.SetNonPropertyValueMustBeANumberAccessor(() => "Der Wert muss eine Zahl sein.");
             });
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddScoped<ApiJobpostingService>();
