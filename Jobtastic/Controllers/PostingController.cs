@@ -55,6 +55,17 @@ namespace Jobtastic.Controllers
             return View(input);
         }
         /// <summary>
+        /// Renders the form again with the submitted values and the validation errors
+        /// still in ModelState.
+        /// </summary>
+        private async Task<IActionResult> RedisplayFormAsync(JobPostingInputModel input)
+        {
+            ViewBag.Mandates = await _postingService.GetMandatesAsync();
+            ViewBag.Contacts = await _postingService.GetContactsAsync();
+            return View("Form", input);
+        }
+
+        /// <summary>
         /// Deletes a posting for good. GetJobById is scoped to what the caller may
         /// manage, so a foreign id is indistinguishable from a missing one.
         /// </summary>
@@ -74,8 +85,11 @@ namespace Jobtastic.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateEditJob(JobPostingInputModel input)
         {
+            // Plain form post, so errors belong back in the form rather than in a raw
+            // JSON response. The dropdowns are populated per request and have to be
+            // restored before re-rendering.
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                return await RedisplayFormAsync(input);
 
             if (input.ID == 0)
             {

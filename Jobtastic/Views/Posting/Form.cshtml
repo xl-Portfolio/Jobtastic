@@ -6,6 +6,12 @@
 <form asp-controller="Posting" asp-action="CreateEditJob" method="post"
       class="mx-auto" style="max-width: 800px;">
 
+    @* Wrapped in a condition so no empty red box appears on the first visit. *@
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
+    }
+
     <input class="form-control" hidden asp-for="ID" />
 
     <div class="row g-3">
@@ -44,7 +50,11 @@
             <div class="row align-items-center">
                 <label asp-for="StartDate" class="col-md-4 col-form-label">Startdatum:</label>
                 <div class="col-md-8">
-                    <input class="form-control" asp-for="StartDate" type="date" value="@Model.StartDate ? Model.StartDate : DateTime.Today" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                    @* type="date" only accepts yyyy-MM-dd; the default rendering of a
+                       DateTime is not parsed by the browser and leaves the field empty. *@
+                    <input class="form-control" asp-for="StartDate" type="date"
+                           value="@(Model.StartDate == default ? DateTime.Today.ToString("yyyy-MM-dd") : Model.StartDate.ToString("yyyy-MM-dd"))"
+                           min="@DateTime.Today.ToString("yyyy-MM-dd")" />
                 </div>
             </div>
         </div>
