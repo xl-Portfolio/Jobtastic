@@ -1,0 +1,53 @@
+@{
+    ViewData["Title"] = "Alle Kontakte";
+    ViewData["AdminPage"] = "Contacts";
+    var ownerFilter = ViewBag.OwnerFilter as string;
+}
+@model List<AdminContactListModel>
+
+<h1>@ViewData["Title"]</h1>
+<partial name="_AdminNav" />
+<p class="text-muted">@Model.Count Kontakte</p>
+
+<table id="allContacts" class="table table-striped align-top" style="width:100%">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>E-Mail</th>
+            <th>Telefon</th>
+            <th>Abteilung</th>
+            <th>Firma</th>
+            <th>Betreut von</th>
+            <th>Anzeigen</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (AdminContactListModel contact in Model)
+        {
+            <tr>
+                <td>@contact.FullName</td>
+                <td>@contact.Email</td>
+                <td>@contact.Phone</td>
+                <td>@contact.Department</td>
+                <td>@contact.CompanyName</td>
+                <td>@(contact.OwnerEmail ?? "-")</td>
+                <td>@contact.PostingCount</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Styles {
+    <link rel="stylesheet" href="~/lib/datatables.net-dt/css/dataTables.dataTables.min.css" />
+}
+
+@section Scripts {
+    <script src="~/lib/datatables.net/dataTables.min.js"></script>
+    <script src="~/lib/datatables.net-dt/js/dataTables.dataTables.min.js"></script>
+    <script>
+        new DataTable('#allContacts', {
+            // Prefilled when arriving from a contact count in the user overview.
+            search: { search: '@Html.Raw(Html.Encode(ownerFilter ?? ""))' }
+        });
+    </script>
+}

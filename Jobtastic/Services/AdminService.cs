@@ -69,6 +69,45 @@ namespace Jobtastic.Services
                 .ToListAsync();
 
         /// <summary>
+        /// Every company with the counts that show how entangled it is - a company with
+        /// postings or contacts cannot be removed by dropping the last mandate.
+        /// </summary>
+        public async Task<List<AdminCompanyListModel>> GetCompanyOverviewAsync() =>
+            await _context.Companies
+                .OrderBy(c => c.Name)
+                .Select(c => new AdminCompanyListModel
+                {
+                    Id = c.ID,
+                    Name = c.Name,
+                    Description = c.Description,
+                    WebsiteURL = c.WebsiteURL,
+                    MandateHolderCount = c.Users.Count,
+                    ContactCount = c.Contacts.Count,
+                    PostingCount = c.Postings.Count
+                })
+                .ToListAsync();
+
+        /// <summary>
+        /// Every contact across all accounts, with the account that maintains it.
+        /// </summary>
+        public async Task<List<AdminContactListModel>> GetContactOverviewAsync() =>
+            await _context.Contacts
+                .OrderBy(c => c.LastName)
+                .ThenBy(c => c.FirstName)
+                .Select(c => new AdminContactListModel
+                {
+                    Id = c.ID,
+                    FullName = c.FirstName + " " + c.LastName,
+                    Email = c.Email,
+                    Phone = c.Phone,
+                    Department = c.Department,
+                    CompanyName = c.Company.Name,
+                    OwnerEmail = c.User == null ? null : c.User.Email,
+                    PostingCount = c.Postings.Count
+                })
+                .ToListAsync();
+
+        /// <summary>
         /// Locks or unlocks an account. Refreshing the security stamp invalidates any
         /// session the account already holds, so a lock takes effect within the
         /// configured validation interval instead of only at the next sign-in.

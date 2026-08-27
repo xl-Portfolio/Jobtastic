@@ -37,6 +37,17 @@ namespace Jobtastic.Controllers
             return View(await _adminService.GetPostingOverviewAsync());
         }
 
+        public async Task<IActionResult> Companies() => View(await _adminService.GetCompanyOverviewAsync());
+
+        /// <summary>
+        /// <paramref name="owner"/> preselects the table filter, mirroring the postings view.
+        /// </summary>
+        public async Task<IActionResult> Contacts(string? owner)
+        {
+            ViewBag.OwnerFilter = owner;
+            return View(await _adminService.GetContactOverviewAsync());
+        }
+
         [HttpPost]
         public async Task<IActionResult> SetLocked(string userId, bool locked)
         {

@@ -9,4 +9,10 @@
     <li class="nav-item">
         <a class="nav-link @(active == "Postings" ? "active" : "")" asp-controller="Admin" asp-action="Postings">Anzeigen</a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link @(active == "Companies" ? "active" : "")" asp-controller="Admin" asp-action="Companies">Firmen</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @(active == "Contacts" ? "active" : "")" asp-controller="Admin" asp-action="Contacts">Kontakte</a>
+    </li>
 </ul>
