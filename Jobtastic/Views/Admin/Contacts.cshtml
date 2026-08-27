@@ -46,7 +46,6 @@
     <script src="~/lib/datatables.net-dt/js/dataTables.dataTables.min.js"></script>
     <script>
         new DataTable('#allContacts', {
-            // Prefilled when arriving from a contact count in the user overview.
             search: { search: '@Html.Raw(Html.Encode(ownerFilter ?? ""))' }
         });
     </script>

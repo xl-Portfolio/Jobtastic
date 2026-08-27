@@ -1,9 +1,7 @@
 namespace Jobtastic.Models
 {
     /// <summary>
-    /// One row of the admin company overview. A company belongs to no single account -
-    /// it is shared by everyone holding a mandate for it - so this is the only place
-    /// where all companies can be seen at once.
+    /// One row of the admin-exclusive company overview.
     /// </summary>
     public class AdminCompanyListModel
     {

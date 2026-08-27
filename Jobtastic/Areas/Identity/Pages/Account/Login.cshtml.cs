@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using Jobtastic.Authorization;
+using Jobtastic.Identity;
 using Jobtastic.Models;
 
 namespace Jobtastic.Areas.Identity.Pages.Account

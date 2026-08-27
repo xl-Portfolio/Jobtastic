@@ -5,7 +5,7 @@
     ViewData["ActivePage"] = ManageNavPages.Index;
 }
 
-@using Jobtastic.Authorization
+@using Jobtastic.Identity
 @{
     // Only a role above the baseline is worth showing - "User" is on every account.
     var elevatedRole = Model.TargetUserRoles.Contains(RoleNames.Owner) ? RoleNames.Owner

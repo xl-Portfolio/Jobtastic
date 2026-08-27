@@ -33,8 +33,6 @@
                     <a asp-area="Identity" asp-page="/Account/Manage/Index" asp-route-userId="@user.Id"
                        title="Nutzerkonto dieses Kontos anzeigen">@user.Email</a>
                 </td>
-                @* Roles are stored additively; only the highest one is shown, so each
-                   account reads as having exactly one role. *@
                 <td data-role="roles">
                     <span class="badge @(user.IsOwner ? "text-bg-dark" : user.IsAdmin ? "text-bg-primary" : "text-bg-secondary")">
                         @user.EffectiveRole

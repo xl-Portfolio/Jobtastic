@@ -1,8 +1,7 @@
 namespace Jobtastic.Models
 {
     /// <summary>
-    /// One row of the admin contact overview. Contacts are reachable per account
-    /// through the user overview as well; this view adds the cross-account search.
+    /// One row of the admin contact overview. this view adds the cross-account search.
     /// </summary>
     public class AdminContactListModel
     {
