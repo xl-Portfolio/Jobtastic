@@ -1,0 +1,53 @@
+@{
+    ViewData["Title"] = "Alle Firmen";
+    ViewData["AdminPage"] = "Companies";
+}
+@model List<AdminCompanyListModel>
+
+<h1>@ViewData["Title"]</h1>
+<partial name="_AdminNav" />
+<p class="text-muted">@Model.Count Firmen</p>
+
+<table id="allCompanies" class="table table-striped align-top" style="width:100%">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Beschreibung</th>
+            <th>Mandatsträger</th>
+            <th>Kontakte</th>
+            <th>Anzeigen</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (AdminCompanyListModel company in Model)
+        {
+            <tr>
+                <td>
+                    @company.Name
+                    @if (!string.IsNullOrWhiteSpace(company.WebsiteURL))
+                    {
+                        <a href="@company.WebsiteURL" target="_blank" rel="noopener noreferrer" title="Link zur Firmenwebsite">
+                            <i class="bi bi-box-arrow-up-right"></i>
+                        </a>
+                    }
+                </td>
+                <td class="text-muted small">@company.Description</td>
+                <td>@company.MandateHolderCount</td>
+                <td>@company.ContactCount</td>
+                <td>@company.PostingCount</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Styles {
+    <link rel="stylesheet" href="~/lib/datatables.net-dt/css/dataTables.dataTables.min.css" />
+}
+
+@section Scripts {
+    <script src="~/lib/datatables.net/dataTables.min.js"></script>
+    <script src="~/lib/datatables.net-dt/js/dataTables.dataTables.min.js"></script>
+    <script>
+        new DataTable('#allCompanies');
+    </script>
+}

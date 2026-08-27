@@ -49,7 +49,17 @@
                 </td>
                 <td>@user.CreatedAt.ToString("dd.MM.yyyy")</td>
                 <td>@user.MandateCount</td>
-                <td>@user.ContactCount</td>
+                <td>
+                    @if (user.ContactCount > 0)
+                    {
+                        <a asp-controller="Admin" asp-action="Contacts" asp-route-owner="@user.Email"
+                           title="Kontakte dieses Kontos anzeigen">@user.ContactCount</a>
+                    }
+                    else
+                    {
+                        @user.ContactCount
+                    }
+                </td>
                 <td>
                     @if (user.PostingCount > 0)
                     {
