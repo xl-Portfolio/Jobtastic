@@ -1,8 +1,9 @@
 ﻿namespace Jobtastic.Models
 {
     /// <summary>
-    /// fachlicher Ansprechpartner
-    /// JobContact = reine Datenstruktur (Appendix / Value-ähnliches Entity), kein “Domänen-Akteur”
+    /// A company's point of contact for a posting.
+    /// JobContact is a pure data structure (an appendix / value-like entity), not a
+    /// "domain actor".
     /// </summary>
     public class JobContact
     {
