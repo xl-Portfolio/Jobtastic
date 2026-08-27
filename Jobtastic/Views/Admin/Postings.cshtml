@@ -1,0 +1,85 @@
+@using Jobtastic.Enums
+@{
+    ViewData["Title"] = "Alle Anzeigen";
+    ViewData["AdminPage"] = "Postings";
+    var ownerFilter = ViewBag.OwnerFilter as string;
+}
+@model List<AdminPostingListModel>
+
+<h1>@ViewData["Title"]</h1>
+<partial name="_AdminNav" />
+<p class="text-muted">@Model.Count Anzeigen</p>
+
+<table id="allPostings" class="table table-striped align-top" style="width:100%">
+    <thead>
+        <tr>
+            <th>Titel</th>
+            <th>Firma</th>
+            <th>Ort</th>
+            <th>Eigentümer</th>
+            <th>Status</th>
+            <th>Startdatum</th>
+            <th>Klicks</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (AdminPostingListModel posting in Model)
+        {
+            <tr>
+                <td>
+                    <a asp-area="" asp-controller="Home" asp-action="JobDetails" asp-route-id="@posting.Id">
+                        @posting.JobTitle
+                    </a>
+                </td>
+                <td>@posting.CompanyName</td>
+                <td>@posting.JobLocation</td>
+                <td>@(posting.OwnerEmail ?? "-")</td>
+                <td>
+                    @switch (posting.Status)
+                    {
+                        case PostingStatus.Online:
+                            <span class="badge text-bg-success">online</span>
+                            break;
+                        case PostingStatus.Expired:
+                            <span class="badge text-bg-warning">abgelaufen</span>
+                            break;
+                        case PostingStatus.Draft:
+                            <span class="badge text-bg-secondary">Entwurf</span>
+                            break;
+                        default:
+                            <span class="badge text-bg-dark">offline</span>
+                            break;
+                    }
+                </td>
+                <td>@posting.StartDate.ToString("dd.MM.yyyy")</td>
+                <td>@posting.Klicks</td>
+                <td>
+                    <a class="btn btn-outline-primary btn-sm"
+                       asp-area="" asp-controller="Posting" asp-action="Form" asp-route-id="@posting.Id"
+                       title="Anzeige bearbeiten">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Styles {
+    <link rel="stylesheet" href="~/lib/datatables.net-dt/css/dataTables.dataTables.min.css" />
+}
+
+@section Scripts {
+    <script src="~/lib/datatables.net/dataTables.min.js"></script>
+    <script src="~/lib/datatables.net-dt/js/dataTables.dataTables.min.js"></script>
+    <script>
+        new DataTable('#allPostings', {
+            // Prefilled when arriving from a posting count in the user overview.
+            search: { search: '@Html.Raw(Html.Encode(ownerFilter ?? ""))' },
+            columnDefs: [
+                { orderable: false, searchable: false, targets: -1 }
+            ]
+        });
+    </script>
+}

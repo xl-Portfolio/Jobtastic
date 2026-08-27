@@ -45,6 +45,30 @@ namespace Jobtastic.Services
                 .ToListAsync();
 
         /// <summary>
+        /// Every posting in the system with its owner, for the admin overview. Unlike
+        /// the recruiter's own list this deliberately bypasses the ownership scope -
+        /// the caller is already restricted to admins at controller level.
+        /// </summary>
+        public async Task<List<AdminPostingListModel>> GetPostingOverviewAsync() =>
+            await _context.Postings
+                .OrderByDescending(p => p.UploadDate)
+                .ThenBy(p => p.JobTitle)
+                .Select(p => new AdminPostingListModel
+                {
+                    Id = p.ID,
+                    JobTitle = p.JobTitle,
+                    CompanyName = p.Company.Name,
+                    JobLocation = p.JobLocation,
+                    OwnerEmail = p.Owner == null ? null : p.Owner.Email,
+                    IsOnline = p.IsOnline,
+                    UploadDate = p.UploadDate,
+                    ExpiryDate = p.ExpiryDate,
+                    StartDate = p.StartDate,
+                    Klicks = p.Klicks
+                })
+                .ToListAsync();
+
+        /// <summary>
         /// Locks or unlocks an account. Refreshing the security stamp invalidates any
         /// session the account already holds, so a lock takes effect within the
         /// configured validation interval instead of only at the next sign-in.
