@@ -1,5 +1,5 @@
-using Jobtastic.Authorization;
 using Jobtastic.Data;
+using Jobtastic.Identity;
 using Jobtastic.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

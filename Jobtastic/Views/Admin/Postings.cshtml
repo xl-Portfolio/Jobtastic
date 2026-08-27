@@ -75,7 +75,6 @@
     <script src="~/lib/datatables.net-dt/js/dataTables.dataTables.min.js"></script>
     <script>
         new DataTable('#allPostings', {
-            // Prefilled when arriving from a posting count in the user overview.
             search: { search: '@Html.Raw(Html.Encode(ownerFilter ?? ""))' },
             columnDefs: [
                 { orderable: false, searchable: false, targets: -1 }

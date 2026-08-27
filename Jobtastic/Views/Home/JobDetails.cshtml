@@ -71,7 +71,12 @@
         </div>
         @if (isOwner)
         {
-            <a asp-area="Identity" asp-page="/Account/Manage/CompanyMandate" class="btn btn-outline-primary btn-sm" title="Firmenmandat bearbeiten">
+            @* userId only changes anything for an admin viewing someone else's
+               posting: it lands them on the actual owner's mandate, with the
+               foreign-account banner from AdminAwarePageModel, instead of their
+               own (unrelated) mandate list. *@
+            <a asp-area="Identity" asp-page="/Account/Manage/CompanyMandate" asp-route-userId="@Model.OwnerID"
+               class="btn btn-outline-primary btn-sm" title="Firmenmandat bearbeiten">
                 <i class="bi bi-pencil"></i>
             </a>
         }
@@ -84,7 +89,8 @@
                 <h5 class="mb-0 flex-grow-1">Ansprechpartner</h5>
                 @if (isOwner)
                 {
-                    <a asp-area="Identity" asp-page="/Account/Manage/ManagedContacts" class="btn btn-outline-primary btn-sm" title="Kontakte verwalten">
+                    <a asp-area="Identity" asp-page="/Account/Manage/ManagedContacts" asp-route-userId="@Model.OwnerID"
+                       class="btn btn-outline-primary btn-sm" title="Kontakte verwalten">
                         <i class="bi bi-pencil"></i>
                     </a>
                 }

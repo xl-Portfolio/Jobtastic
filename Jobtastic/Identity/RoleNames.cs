@@ -1,4 +1,4 @@
-namespace Jobtastic.Authorization
+namespace Jobtastic.Identity
 {
     /// <summary>
     /// Role names, ordered from highest privilege to lowest.

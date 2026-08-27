@@ -1,6 +1,6 @@
-using Jobtastic.Authorization;
 using Jobtastic.Data;
 using Jobtastic.Enums;
+using Jobtastic.Identity;
 using Jobtastic.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +22,17 @@ namespace Jobtastic.Services
         public const string OwnerEmail = "admin@jobtastic.demo";
         public const string RecruiterEmail = "recruiter1@firma.demo";
 
-        private const string LogoPlaceholder = "https://fakelogo.com/api/random";
+        /// <summary>
+        /// A deterministic placeholder logo (initials on a colored background) for a
+        /// company name. The previous placeholder, fakelogo.com/api/random, returned a
+        /// JSON payload rather than an image - an &lt;img&gt; tag pointed at it just
+        /// shows a broken-image icon - and being random, a fixed URL from it would
+        /// have changed on every re-seed anyway. DiceBear's initials generator returns
+        /// an actual SVG and is stable for the same seed, so re-seeding always
+        /// reproduces the same logo per company.
+        /// </summary>
+        private static string LogoUrlFor(string companyName) =>
+            "https://api.dicebear.com/9.x/initials/svg?seed=" + Uri.EscapeDataString(companyName);
 
         private readonly ApplicationDbContext _context;
         private readonly UserManager<User> _userManager;
@@ -58,7 +68,7 @@ namespace Jobtastic.Services
                 Description = "Futuriva Labs entwickelt innovative digitale Lösungen, die Unternehmen dabei helfen, "
                             + "Arbeitsprozesse einfacher, schneller und nachhaltiger zu gestalten.",
                 WebsiteURL = "https://futuriva.demo",
-                LogoImageSource = LogoPlaceholder
+                LogoImageSource = LogoUrlFor("Futuriva Labs")
             };
             var greennest = new Company
             {
@@ -66,7 +76,7 @@ namespace Jobtastic.Services
                 Description = "GreenNest Solutions bietet umweltfreundliche Produkte und intelligente Konzepte für ein "
                             + "nachhaltigeres Zuhause – von energiesparender Technik bis hin zu recycelbaren Alltagsprodukten.",
                 WebsiteURL = "https://greennest.demo",
-                LogoImageSource = LogoPlaceholder
+                LogoImageSource = LogoUrlFor("GreenNest Solutions")
             };
             var nordlicht = new Company
             {
@@ -74,7 +84,7 @@ namespace Jobtastic.Services
                 Description = "Nordlicht Medien produziert Podcasts, Dokumentationen und digitale Formate für Kunden "
                             + "aus Kultur, Bildung und Wirtschaft.",
                 WebsiteURL = "https://nordlicht-medien.demo",
-                LogoImageSource = LogoPlaceholder
+                LogoImageSource = LogoUrlFor("Nordlicht Medien")
             };
             var kessler = new Company
             {
@@ -82,7 +92,7 @@ namespace Jobtastic.Services
                 Description = "Kessler Logistik plant und steuert Warenströme für mittelständische Unternehmen – "
                             + "vom einzelnen Transport bis zur kompletten Lieferkette.",
                 WebsiteURL = "https://kessler-logistik.demo",
-                LogoImageSource = LogoPlaceholder
+                LogoImageSource = LogoUrlFor("Kessler Logistik")
             };
 
             // Nordlicht is held by both recruiters, so the many-to-many mandate relation

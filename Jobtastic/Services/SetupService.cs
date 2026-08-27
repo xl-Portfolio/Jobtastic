@@ -1,4 +1,4 @@
-﻿using Jobtastic.Authorization;
+﻿using Jobtastic.Identity;
 using Jobtastic.Models;
 using Microsoft.AspNetCore.Identity;
 
