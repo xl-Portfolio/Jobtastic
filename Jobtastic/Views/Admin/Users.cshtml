@@ -1,11 +1,13 @@
 @using Jobtastic.Authorization
 @{
     ViewData["Title"] = "Benutzerverwaltung";
+    ViewData["AdminPage"] = "Users";
     var callerId = ViewBag.CurrentUserId as string;
 }
 @model List<AdminUserListModel>
 
 <h1>@ViewData["Title"]</h1>
+<partial name="_AdminNav" />
 <p class="text-muted">@Model.Count Konten</p>
 @* Exists only to carry the antiforgery token for the fetch calls in adminUsers.js. *@
 <form id="adminActionForm">@Html.AntiForgeryToken()</form>
@@ -48,7 +50,17 @@
                 <td>@user.CreatedAt.ToString("dd.MM.yyyy")</td>
                 <td>@user.MandateCount</td>
                 <td>@user.ContactCount</td>
-                <td>@user.PostingCount</td>
+                <td>
+                    @if (user.PostingCount > 0)
+                    {
+                        <a asp-controller="Admin" asp-action="Postings" asp-route-owner="@user.Email"
+                           title="Anzeigen dieses Kontos anzeigen">@user.PostingCount</a>
+                    }
+                    else
+                    {
+                        @user.PostingCount
+                    }
+                </td>
                 <td>
                     <div class="d-flex align-items-center gap-2">
                         <a class="btn btn-outline-primary btn-sm"

@@ -27,6 +27,16 @@ namespace Jobtastic.Controllers
             return View(await _adminService.GetUserOverviewAsync());
         }
 
+        /// <summary>
+        /// <paramref name="owner"/> preselects the table filter, so the posting count
+        /// in the user overview can link straight to that account's postings.
+        /// </summary>
+        public async Task<IActionResult> Postings(string? owner)
+        {
+            ViewBag.OwnerFilter = owner;
+            return View(await _adminService.GetPostingOverviewAsync());
+        }
+
         [HttpPost]
         public async Task<IActionResult> SetLocked(string userId, bool locked)
         {

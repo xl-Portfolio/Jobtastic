@@ -18,7 +18,16 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
 
         [BindProperty]
         public int CompanyId { get; set; }
+
+        /// <summary>
+        /// Set when the user picked an existing company instead of typing a new one.
+        /// Without the binding the add handler never takes that branch and every save
+        /// falls through to duplicate detection, which then offers the very company
+        /// that was already chosen.
+        /// </summary>
+        [BindProperty]
         public int? ExistingCompanyId { get; set; }
+
         [BindProperty]
         public bool ForceCreate { get; set; }
 
