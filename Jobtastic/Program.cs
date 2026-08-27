@@ -1,5 +1,6 @@
 using Jobtastic.Authorization;
 using Jobtastic.Data;
+using Jobtastic.Identity;
 using Jobtastic.Models;
 using Jobtastic.Services;
 using Microsoft.AspNetCore.Identity;
@@ -25,6 +26,7 @@ namespace Jobtastic
 			builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 			builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false)
 				.AddRoles<IdentityRole>()
+				.AddErrorDescriber<GermanIdentityErrorDescriber>()
 				.AddEntityFrameworkStores<ApplicationDbContext>();
 
             // Role changes and lockouts live in the auth cookie, which is otherwise

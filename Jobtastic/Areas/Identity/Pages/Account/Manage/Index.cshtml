@@ -19,11 +19,11 @@
     </p>
 }
 
-<form method="post" asp-page-handler="EditData" asp-route-userId="@Model.TargetUserIdForLinks" class="mx-auto" style="max-width: 800px;">
+<form id="editDataForm" method="post" asp-page-handler="EditData" asp-route-userId="@Model.TargetUserIdForLinks" class="mx-auto" style="max-width: 800px;">
     <div id="displayData" class="d-flex justify-content-between align-items-center">
         <div>
-            <label class="d-block">Email: @Model.Input.Email</label>
-            <label class="d-block">Tel: @(Model.Input.PhoneNumber ?? "")</label>
+            <label class="d-block">Email: <span data-role="email">@Model.Input.Email</span></label>
+            <label class="d-block">Tel: <span data-role="phone">@(Model.Input.PhoneNumber ?? "")</span></label>
         </div>
         <button id="editDataBtn" type="button" class="btn btn-outline-primary btn-sm">
             <i class="bi bi-pencil"></i>
@@ -52,7 +52,7 @@
 }
 else
 {
-<form method="post" asp-page-handler="EditPassword" class="mx-auto" style="max-width: 800px;">
+<form id="editPasswordForm" method="post" asp-page-handler="EditPassword" class="mx-auto" style="max-width: 800px;">
     <button id="editPasswordBtn" type="button" class="btn btn-primary">Passwort ändern</button>
     <div id="editPassword" class="list-group d-none">
         <div class="password-field form-floating mb-3">

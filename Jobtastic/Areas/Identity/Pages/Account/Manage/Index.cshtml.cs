@@ -24,20 +24,20 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
         }
         public class InputModel
         {
-            [Required]
-            [EmailAddress]
+            [Required(ErrorMessage = "E-Mail ist erforderlich.")]
+            [EmailAddress(ErrorMessage = "Bitte eine gültige E-Mail-Adresse angeben.")]
             public string Email { get; set; }
-            [Phone]
+            [Phone(ErrorMessage = "Bitte eine gültige Telefonnummer angeben.")]
             public string? PhoneNumber { get; set; }
         }
         public class PasswordInputModel
         {
-            [Required]
+            [Required(ErrorMessage = "Bitte das aktuelle Passwort angeben.")]
             public string Password { get; set; }
-            [Required]
+            [Required(ErrorMessage = "Bitte ein neues Passwort angeben.")]
             public string NewPassword { get; set; }
-            [Required]
-            [Compare("NewPassword")]
+            [Required(ErrorMessage = "Bitte das neue Passwort wiederholen.")]
+            [Compare("NewPassword", ErrorMessage = "Die Passwörter stimmen nicht überein.")]
             public string ConfirmedPassword { get; set; }
         }
         /// <summary>
@@ -51,6 +51,18 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
             ModelState.Clear();
             return TryValidateModel(model, prefix);
         }
+
+        // Both forms are submitted by fetch, so failures answer with the same JSON
+        // shape the mandate and contact pages use and are shown as a dialog. Returning
+        // BadRequest(ModelState) instead would replace the page with raw JSON.
+        private IEnumerable<string> GetModelErrors() =>
+            ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+
+        private JsonResult ErrorJson(params string[] errors) =>
+            new(new { success = false, errors }) { StatusCode = StatusCodes.Status400BadRequest };
+
+        private JsonResult ErrorJson(IEnumerable<IdentityError> errors) =>
+            ErrorJson(errors.Select(e => e.Description).ToArray());
 
         public async Task<IActionResult> OnGetAsync(string? userId)
         {
@@ -79,24 +91,24 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
                 return error;
 
             if (!ValidateOnly(Input, nameof(Input)))
-                return BadRequest(ModelState);
+                return ErrorJson(GetModelErrors().ToArray());
 
             var result = await UserManager.SetEmailAsync(user!, Input.Email);
             if (!result.Succeeded)
-                return BadRequest(result.Errors);
+                return ErrorJson(result.Errors);
 
             // The sign-in form matches against UserName, and registration seeds it
             // with the email. Without this the account would keep logging in under
             // the old address after an email change.
             result = await UserManager.SetUserNameAsync(user!, Input.Email);
             if (!result.Succeeded)
-                return BadRequest(result.Errors);
+                return ErrorJson(result.Errors);
 
             result = await UserManager.SetPhoneNumberAsync(user!, Input.PhoneNumber);
             if (!result.Succeeded)
-                return BadRequest(result.Errors);
+                return ErrorJson(result.Errors);
 
-            return RedirectToPage(new { userId });
+            return new JsonResult(new { success = true, email = Input.Email, phoneNumber = Input.PhoneNumber ?? "" });
         }
 
         /// <summary>
@@ -109,19 +121,19 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
         {
             var user = await UserManager.GetUserAsync(User);
             if (user == null)
-                return NotFound();
+                return ErrorJson("Benutzer nicht gefunden.");
 
             if (!ValidateOnly(PasswordInput, nameof(PasswordInput)))
-                return BadRequest(ModelState);
+                return ErrorJson(GetModelErrors().ToArray());
 
             var result = await UserManager.ChangePasswordAsync(
                 user,
                 PasswordInput.Password,
                 PasswordInput.NewPassword);
             if (!result.Succeeded)
-                return BadRequest(result.Errors);
+                return ErrorJson(result.Errors);
 
-            return RedirectToPage();
+            return new JsonResult(new { success = true });
         }
     }
 }
