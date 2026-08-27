@@ -9,6 +9,8 @@
    data-mandate-url="@Url.Page("/Account/Manage/CompanyMandate", new { area = "Identity" })">
     Jobangebot posten
 </a>
+@* Exists only to carry the antiforgery token for the fetch call in postingDelete.js. *@
+<form id="postingActionForm">@Html.AntiForgeryToken()</form>
 
 @if (Model == null || !Model.Any())
 {
@@ -30,7 +32,7 @@ else
         <tbody>
             @foreach (JobPosting job in Model)
             {
-                <tr>
+                <tr data-id="@job.ID" data-title="@job.JobTitle">
                     <td>
                         <a asp-area="" asp-controller="Home" asp-action="JobDetails" asp-route-id="@job.ID">
                             @job.JobTitle
@@ -56,6 +58,9 @@ else
                             <a class="btn btn-outline-primary btn-sm" asp-area="" asp-controller="Posting" asp-action="Form" asp-route-id="@job.ID" title="Posting bearbeiten">
                                 <i class="bi bi-pencil"></i>
                             </a>
+                            <button type="button" class="btn btn-outline-danger btn-sm deletePostingBtn" data-id="@job.ID" title="Posting löschen">
+                                <i class="bi bi-trash"></i>
+                            </button>
                         </div>
                     </td>
                 </tr>
@@ -79,4 +84,6 @@ else
                 ]
             });
     </script>
+    @* Loaded after the DataTable exists, so the delete handler can reach its API. *@
+    <script src="~/js/postingDelete.js"></script>
 }

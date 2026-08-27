@@ -54,6 +54,23 @@ namespace Jobtastic.Controllers
             };
             return View(input);
         }
+        /// <summary>
+        /// Deletes a posting for good. GetJobById is scoped to what the caller may
+        /// manage, so a foreign id is indistinguishable from a missing one.
+        /// </summary>
+        [HttpPost]
+        public async Task<IActionResult> DeleteJob(int id)
+        {
+            var job = await _postingService.GetJobById(id);
+            if (job == null)
+                return Json(new { success = false, errors = new[] { "Inserat nicht gefunden." } });
+
+            if (!await _postingService.DeleteJob_Successfully(job))
+                return Json(new { success = false, errors = new[] { "Löschen fehlgeschlagen." } });
+
+            return Json(new { success = true, id });
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateEditJob(JobPostingInputModel input)
         {

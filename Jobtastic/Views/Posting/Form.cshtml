@@ -109,7 +109,12 @@
         </div>
     </div>
 
-    <button type="submit" class="btn btn-primary mt-3">Speichern</button>
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">Speichern</button>
+        @* Full page rather than an inline form, so cancelling means going back to the
+           list instead of collapsing an editor. *@
+        <a class="btn btn-secondary" asp-controller="Posting" asp-action="Index">Abbrechen</a>
+    </div>
 </form>
 
 @section Scripts {
