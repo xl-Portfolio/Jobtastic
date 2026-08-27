@@ -1,8 +1,8 @@
 ﻿namespace Jobtastic.Authorization
 {
     /// <summary>
-    /// CurrentUser Interface, um den HttpContext zu kapseln und spätere Testbarkeit zu ermöglichen. 
-    /// Implementierungen können den aktuellen Benutzer und seine Rollen bereitstellen.
+    /// Abstracts over the HttpContext to keep implementations testable. Provides the
+    /// current user and their roles.
     /// </summary>
     public interface ICurrentUser
     {

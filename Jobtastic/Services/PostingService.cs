@@ -38,18 +38,17 @@ namespace Jobtastic.Services
             return user!.Companies.ToList();
         }
         /// <summary>
-        /// Prüft gegen den Eigentümer der Anzeige, nicht gegen den Handelnden - damit gilt
-        /// dieselbe Regel unabhängig davon, ob man seine eigene Anzeige bearbeitet oder als
-        /// Admin die eines anderen: Die zugewiesene Firma muss zu den Mandaten des
-        /// Eigentümers gehören.
+        /// Checks against the posting's owner, not the caller - so the same rule holds
+        /// whether you're editing your own posting or, as an admin, someone else's: the
+        /// assigned company must be among the owner's mandates.
         /// </summary>
         public async Task<bool> OwnerHoldsMandate(string? ownerId, int companyId) =>
             ownerId is not null &&
             await _context.Users.AnyAsync(u => u.Id == ownerId && u.Companies.Any(c => c.ID == companyId));
 
         /// <summary>
-        /// Wie <see cref="OwnerHoldsMandate"/>, für den zugewiesenen Kontakt: Er muss dem
-        /// Eigentümer gehören und zur selben Firma zählen.
+        /// Like <see cref="OwnerHoldsMandate"/>, for the assigned contact: it must
+        /// belong to the owner and to the same company.
         /// </summary>
         public async Task<bool> OwnerHoldsContact(string? ownerId, int contactId, int companyId) =>
             ownerId is not null &&

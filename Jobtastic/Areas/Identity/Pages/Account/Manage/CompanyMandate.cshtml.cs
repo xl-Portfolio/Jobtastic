@@ -49,7 +49,7 @@ namespace Jobtastic.Areas.Identity.Pages.Account.Manage
         private static IQueryable<User> WithCompanies(IQueryable<User> users) => users.Include(u => u.Companies);
 
         /// <summary>
-        /// Literalzeichen, die als SQL-Wildcards fungieren, werden escaped.
+        /// Escapes characters that would otherwise act as SQL wildcards.
         /// </summary>
         /// <param name="term"></param>
         /// <returns></returns>
