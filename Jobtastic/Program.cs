@@ -15,7 +15,11 @@ namespace Jobtastic
 			var builder = WebApplication.CreateBuilder(args);
 
 			// Add services to the container.
-			var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+			// appsettings.Development.json carries a LocalDB fallback so the project runs
+			// after a plain clone; a user-secret connection string takes precedence.
+			var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+			if (string.IsNullOrWhiteSpace(connectionString))
+				throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 			builder.Services.AddDbContext<ApplicationDbContext>(options =>
 				options.UseSqlServer(connectionString));
 			builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -39,13 +43,24 @@ namespace Jobtastic
             });
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddScoped<ApiJobpostingService>();
+            builder.Services.AddScoped<DemoDataSeeder>();
 
             var app = builder.Build();
 
 			using (var scope = app.Services.CreateScope())
 			{
+				// Applying migrations here means a fresh clone needs no CLI step before
+				// the first run.
+				var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+				await context.Database.MigrateAsync();
+
 				var setupService = scope.ServiceProvider.GetRequiredService<SetupService>();
 				await setupService.SeedRolesAsync();
+
+				// Demo accounts carry a published password, so they must never reach a
+				// deployed environment.
+				if (app.Environment.IsDevelopment())
+					await scope.ServiceProvider.GetRequiredService<DemoDataSeeder>().SeedAsync();
 			}
 
 			// Configure the HTTP request pipeline.

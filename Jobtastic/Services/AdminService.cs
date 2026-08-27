@@ -81,11 +81,6 @@ namespace Jobtastic.Services
             if (!result.Succeeded)
                 return null;
 
-            // Accounts created before roles became additive may hold Admin without the
-            // baseline role; dropping Admin would leave them with none at all.
-            if (!isAdmin && !await _userManager.IsInRoleAsync(user, RoleNames.User))
-                await _userManager.AddToRoleAsync(user, RoleNames.User);
-
             await _userManager.UpdateSecurityStampAsync(user);
 
             return isAdmin;
