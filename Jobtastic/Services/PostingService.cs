@@ -147,6 +147,17 @@ namespace Jobtastic.Services
             var entitiesCreated = await _context.SaveChangesAsync();
             return entitiesCreated >= 1;
         }
+        /// <summary>
+        /// Permanently removes a posting. Nothing references JobPosting, so this needs
+        /// no cleanup of dependent rows.
+        /// </summary>
+        public async Task<bool> DeleteJob_Successfully(JobPosting job)
+        {
+            _context.Postings.Remove(job);
+            var entitiesDeleted = await _context.SaveChangesAsync();
+            return entitiesDeleted >= 1;
+        }
+
         public async Task<bool> EditJob_Successfully(JobPostingInputModel input, JobPosting dbJob)
         {
             dbJob.JobTitle = input.JobTitle;
