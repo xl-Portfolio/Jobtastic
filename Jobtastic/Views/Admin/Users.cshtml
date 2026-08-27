@@ -9,7 +9,7 @@
 <h1>@ViewData["Title"]</h1>
 <partial name="_AdminNav" />
 <p class="text-muted">@Model.Count Konten</p>
-@* Exists only to carry the antiforgery token for the fetch calls in adminUsers.js. *@
+
 <form id="adminActionForm">@Html.AntiForgeryToken()</form>
 
 <table id="allUsers" class="table table-striped align-top" style="width:100%">
@@ -29,7 +29,10 @@
         @foreach (AdminUserListModel user in Model)
         {
             <tr id="userRow_@user.Id" data-user-id="@user.Id" data-email="@user.Email">
-                <td>@user.Email</td>
+                <td>
+                    <a asp-area="Identity" asp-page="/Account/Manage/Index" asp-route-userId="@user.Id"
+                       title="Nutzerkonto dieses Kontos anzeigen">@user.Email</a>
+                </td>
                 @* Roles are stored additively; only the highest one is shown, so each
                    account reads as having exactly one role. *@
                 <td data-role="roles">
@@ -48,17 +51,7 @@
                     }
                 </td>
                 <td>@user.CreatedAt.ToString("dd.MM.yyyy")</td>
-                <td>
-                    @if (user.MandateCount > 0)
-                    {
-                        <a asp-area="Identity" asp-page="/Account/Manage/CompanyMandate" asp-route-userId="@user.Id"
-                           title="Mandate dieses Kontos anzeigen">@user.MandateCount</a>
-                    }
-                    else
-                    {
-                        @user.MandateCount
-                    }
-                </td>
+                <td>@user.MandateCount</td>
                 <td>
                     @if (user.ContactCount > 0)
                     {

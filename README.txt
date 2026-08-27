@@ -97,3 +97,37 @@ Meldung – die übrigen Formulare nutzen bereits SweetAlert.
 Datenbankgebundene Tests fehlen noch (Rollenvergabe, Mandatsprüfungen,
 Benutzerübersicht). Die vorhandenen Tests decken die reine Berechtigungs- und
 Sichtbarkeitslogik ab.
+
+
+
+## Setup
+
+Diese App braucht eine SQL-Server-Verbindung. Derzeit ist sie lokal eingerichtet:
+
+/*bash
+dotnet user-secrets init
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Data Source=localhost;Initial Catalog=JobtasticDb;User ID=sa;Password=DEIN_PASSWORT;TrustServerCertificate=True"
+*/
+
+
+
+
+appsettings.json: //hier könnte angepasst werden, dass beim Start zB ms azure keyvault geladen wird (um keine credentials in git zu pushen)
+
+
+Model: //1 Kontakt gehört zu einem User. 1 User kann mehrere Kontaktseiten betreuen
+
+
+
+Die API veröffentlicht ausschließlich das öffentliche Stellenportal. Verwaltungsfunktionen sind nicht per API erreichbar.
+Das ist als bewusste Entscheidung im README mehr wert als eine halbe CRUD-API —
+
+Idee der Mandate: Müsste eigentlich verifiziert werden
+
+
+Eine Ehrlichkeit noch: Ohne „Ownership übertragen" ist der Eigentümer dauerhaft festgelegt. Für ein Portfolio-Projekt halte ich das für völlig in Ordnung — es ist die konsequentere Haltung als ein halbgarer Übertragungs-Flow. In der Doku wäre es ein sauberer Satz („Ownership-Transfer nicht implementiert, Eigentümer wird beim Seeding gesetzt").
+
+Der Owner-Schutz adressiert nicht „das System hat keinen Admin mehr" — das verhindert schon die Selbst-Regel. Er adressiert, dass ein beförderter Admin den Gründer absetzt. Das ist genau das Modell von GitHub und Discord
+
+
+Kontolöschung ist bewusst nicht implementiert. Die Fremdschlüssel für Anzeigen und Kontakte stehen auf Restrict — ein Konto mit Inhalten lässt sich nicht löschen, ohne entweder die Inhalte mitzulöschen (fachlich falsch, sie gehören der Firma) oder verwaisen zu lassen. Der saubere Weg wäre Anonymisierung plus dauerhafte Sperre; das wurde aus Zeitgründen zurückgestellt.

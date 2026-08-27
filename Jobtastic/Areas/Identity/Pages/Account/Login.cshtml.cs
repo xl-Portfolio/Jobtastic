@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using Jobtastic.Authorization;
 using Jobtastic.Models;
 
 namespace Jobtastic.Areas.Identity.Pages.Account
@@ -104,6 +105,11 @@ namespace Jobtastic.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
+            // Distinguished from the fallback below: a caller redirected here from a
+            // specific protected page (e.g. a bookmarked admin link) should land back
+            // there, not on the admin landing page - only the plain "/Login" case is
+            // ambiguous enough to decide by role.
+            var hadExplicitReturnUrl = !string.IsNullOrEmpty(returnUrl);
             returnUrl ??= Url.Action("Index", "Posting");
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
@@ -116,6 +122,16 @@ namespace Jobtastic.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+
+                    if (!hadExplicitReturnUrl)
+                    {
+                        // Same lookup PasswordSignInAsync just used, so it matches
+                        // whichever account actually signed in.
+                        var user = await _signInManager.UserManager.FindByNameAsync(Input.Email);
+                        if (user != null && await _signInManager.UserManager.IsInRoleAsync(user, RoleNames.Admin))
+                            return LocalRedirect(Url.Action("Users", "Admin"));
+                    }
+
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
