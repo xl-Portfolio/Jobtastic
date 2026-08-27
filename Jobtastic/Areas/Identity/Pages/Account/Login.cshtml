@@ -1,9 +1,23 @@
 @page
+@using Jobtastic.Services
+@inject IWebHostEnvironment Environment
 @model LoginModel
 
 @{
     ViewData["Title"] = "Login";
     Layout = "_AuthLayout";
+}
+
+@* Demo credentials are seeded in Development only, so this hint follows the same
+   condition and can never appear in a deployed environment. *@
+@if (Environment.IsDevelopment())
+{
+    <div class="alert alert-info small">
+        <strong>Demo-Zugang</strong><br />
+        Administrator: <code>@DemoDataSeeder.OwnerEmail</code><br />
+        Recruiter: <code>@DemoDataSeeder.RecruiterEmail</code><br />
+        Passwort jeweils: <code>@DemoDataSeeder.Password</code>
+    </div>
 }
 
 <form id="account" method="post">
