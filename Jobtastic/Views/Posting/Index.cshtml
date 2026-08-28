@@ -9,7 +9,6 @@
    data-mandate-url="@Url.Page("/Account/Manage/CompanyMandate", new { area = "Identity" })">
     Jobangebot posten
 </a>
-@* Exists only to carry the antiforgery token for the fetch call in postingDelete.js. *@
 <form id="postingActionForm">@Html.AntiForgeryToken()</form>
 
 @if (Model == null || !Model.Any())

@@ -27,8 +27,6 @@ namespace Jobtastic.Authorization
         /// <summary>
         /// Publicly visible postings: published and not yet expired.
         /// Applies to both the job portal and the public API.
-        /// Defined once as an expression so the SQL filter and the in-memory
-        /// check below cannot drift apart.
         /// </summary>
         private static readonly Expression<Func<JobPosting, bool>> PubliclyVisibleRule =
             p => p.IsOnline && p.ExpiryDate > DateTime.Now;
@@ -39,13 +37,13 @@ namespace Jobtastic.Authorization
             postings.Where(PubliclyVisibleRule);
 
         /// <summary>
-        /// Same rule, applied to a posting that has already been loaded.
+        /// Publicly visible postings: published and not yet expired.
+        /// Applied to a posting that has already been loaded.
         /// </summary>
         public static bool IsPubliclyVisible(this JobPosting posting) => PubliclyVisibleCheck(posting);
 
         /// <summary>
-        /// Postings still flagged online whose expiry date has passed - the gap
-        /// between the persisted IsOnline flag and the actual rule above.
+        /// Postings still flagged online whose expiry date has passed.
         /// </summary>
         public static IQueryable<JobPosting> Expired(this IQueryable<JobPosting> postings) =>
             postings.Where(p => p.IsOnline && p.ExpiryDate <= DateTime.Now);
