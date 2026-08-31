@@ -1,5 +1,7 @@
 # Jobtastic
 
+**[English](README.md)**
+
 ## Über das Projekt
 
 Jobtastic ist im Rahmen meiner Umschulung zur Fachinformatikerin für Anwendungsentwicklung
