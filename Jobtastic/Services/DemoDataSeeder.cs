@@ -16,21 +16,11 @@ namespace Jobtastic.Services
     /// </summary>
     public class DemoDataSeeder
     {
-        /// <summary>Shared by every demo account; documented in the README and on the login page.</summary>
+        /// <summary>Valid for every demo account;.</summary>
         public const string Password = "Demo!2026";
 
         public const string OwnerEmail = "admin@jobtastic.demo";
         public const string RecruiterEmail = "recruiter1@firma.demo";
-
-        /// <summary>
-        /// A deterministic placeholder logo (initials on a colored background) for a
-        /// company name. The previous placeholder, fakelogo.com/api/random, returned a
-        /// JSON payload rather than an image - an &lt;img&gt; tag pointed at it just
-        /// shows a broken-image icon - and being random, a fixed URL from it would
-        /// have changed on every re-seed anyway. DiceBear's initials generator returns
-        /// an actual SVG and is stable for the same seed, so re-seeding always
-        /// reproduces the same logo per company.
-        /// </summary>
         private static string LogoUrlFor(string companyName) =>
             "https://api.dicebear.com/9.x/initials/svg?seed=" + Uri.EscapeDataString(companyName);
 
@@ -58,8 +48,7 @@ namespace Jobtastic.Services
             var owner = await CreateAccountAsync(OwnerEmail, RoleNames.User, RoleNames.Admin, RoleNames.Owner);
             var recruiter1 = await CreateAccountAsync(RecruiterEmail, RoleNames.User);
             var recruiter2 = await CreateAccountAsync("recruiter2@firma.demo", RoleNames.User);
-            // Deliberately left without mandates: shows the "profile incomplete" state
-            // and gives an admin an account to try locking on.
+            //shows the "profile incomplete" state
             await CreateAccountAsync("recruiter3@firma.demo", RoleNames.User);
 
             var futuriva = new Company
@@ -95,8 +84,6 @@ namespace Jobtastic.Services
                 LogoImageSource = LogoUrlFor("Kessler Logistik")
             };
 
-            // Nordlicht is held by both recruiters, so the many-to-many mandate relation
-            // is visible in the demo rather than only in the schema.
             recruiter1.Companies.AddRange(new[] { futuriva, nordlicht });
             recruiter2.Companies.AddRange(new[] { greennest, nordlicht, kessler });
             await _context.SaveChangesAsync();
@@ -250,8 +237,7 @@ namespace Jobtastic.Services
                         "Verfügbarkeit von etwa 16 Stunden pro Woche"
                     }),
 
-                // Published, but its expiry has already passed: demonstrates that expired
-                // postings disappear from the board while staying visible to their owner.
+                // Published, expired
                 NewPosting(recruiter1, nordlicht, tarek,
                     "Social-Media-Redakteur", "Social-Media-Redakteur (m/w/d) (abgelaufen)", "Hamburg",
                     38000, Mode.FullRemote, Experience.Junior, DateTime.Today.AddMonths(-5), online: true,
@@ -302,12 +288,7 @@ namespace Jobtastic.Services
             };
 
         /// <summary>
-        /// Start dates are relative to the seeding date, not fixed, so the data set does
-        /// not age: a fresh clone always gets current postings. They sit three to six
-        /// months out, which puts the resulting expiry (start date plus three months)
-        /// six to nine months ahead - far enough that a demo run months after seeding
-        /// still shows every published posting on the board, with its start date in the
-        /// future rather than the past.
+        /// Start dates are relative to the seeding date.
         /// </summary>
         private static JobPosting NewPosting(User owner, Company company, JobContact contact,
             string jobTitle, string header, string location, double salary, Mode mode, Experience experience,
@@ -333,8 +314,6 @@ namespace Jobtastic.Services
 
             if (online)
             {
-                // Mirrors PostingService: publishing stamps the upload date, and the
-                // expiry hangs off the start date.
                 posting.UploadDate = DateTime.Now;
                 posting.ExpiryDate = startDate.AddMonths(3);
             }
