@@ -66,8 +66,7 @@ namespace Jobtastic.Controllers
         }
 
         /// <summary>
-        /// Deletes a posting for good. GetJobById is scoped to what the caller may
-        /// manage, so a foreign id is indistinguishable from a missing one.
+        /// Deletes a posting from db. Returns JSON with success status and the id of the deleted posting.
         /// </summary>
         [HttpPost]
         public async Task<IActionResult> DeleteJob(int id)
@@ -85,9 +84,6 @@ namespace Jobtastic.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateEditJob(JobPostingInputModel input)
         {
-            // Plain form post, so errors belong back in the form rather than in a raw
-            // JSON response. The dropdowns are populated per request and have to be
-            // restored before re-rendering.
             if (!ModelState.IsValid)
                 return await RedisplayFormAsync(input);
 

@@ -38,16 +38,14 @@ namespace Jobtastic.Services
             return user!.Companies.ToList();
         }
         /// <summary>
-        /// Checks against the posting's owner, not the caller - so the same rule holds
-        /// whether you're editing your own posting or, as an admin, someone else's: the
-        /// assigned company must be among the owner's mandates.
+        /// Checks against the posting's owner, not the caller.
         /// </summary>
         public async Task<bool> OwnerHoldsMandate(string? ownerId, int companyId) =>
             ownerId is not null &&
             await _context.Users.AnyAsync(u => u.Id == ownerId && u.Companies.Any(c => c.ID == companyId));
 
         /// <summary>
-        /// Like <see cref="OwnerHoldsMandate"/>, for the assigned contact: it must
+        /// Like <see cref="OwnerHoldsMandate"/>, the assigned contact must
         /// belong to the owner and to the same company.
         /// </summary>
         public async Task<bool> OwnerHoldsContact(string? ownerId, int contactId, int companyId) =>
@@ -56,10 +54,7 @@ namespace Jobtastic.Services
 
         /// <summary>
         /// Marks postings in the given scope offline once their expiry date has
-        /// passed. Called only from owner-facing reads (dashboard, edit form),
-        /// where a stale IsOnline=true would otherwise mislead the owner - the
-        /// public board already hides expired postings via PubliclyVisible()
-        /// regardless of this flag, so it doesn't need the write on every hit.
+        /// passed.
         /// </summary>
         private async Task ExpireStalePostings(IQueryable<JobPosting> scope)
         {
@@ -74,7 +69,8 @@ namespace Jobtastic.Services
         }
 
         /// <summary>
-        /// Load a specific post for editing. The scope is limited to the current user and admins. Returns null if not found or not authorized.
+        /// Load a specific post for editing. The scope is limited to the current user and admins. 
+        /// Returns null if not found or not authorized.
         /// </summary>
         public async Task<JobPosting?> GetJobById(int id)
         {
@@ -84,7 +80,8 @@ namespace Jobtastic.Services
         }
 
         /// <summary>
-        /// Detail view: publicly visible posts and owned posts (preview for owners and admins). Otherwise null.
+        /// Detail view: publicly visible posts and owned posts (preview for owners and admins). 
+        /// Otherwise null.
         /// </summary>
         public async Task<JobPosting?> GetJobDetailsById(int id)
         {
@@ -147,8 +144,7 @@ namespace Jobtastic.Services
             return entitiesCreated >= 1;
         }
         /// <summary>
-        /// Permanently removes a posting. Nothing references JobPosting, so this needs
-        /// no cleanup of dependent rows.
+        /// Permanently removes a posting.
         /// </summary>
         public async Task<bool> DeleteJob_Successfully(JobPosting job)
         {

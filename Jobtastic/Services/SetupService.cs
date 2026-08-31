@@ -25,7 +25,6 @@ namespace Jobtastic.Services
                     await _roleManager.CreateAsync(new IdentityRole(role));
             }
         }
-
         public async Task AssignRoleAsync(User user, string role)
         {
             if (!await _userManager.IsInRoleAsync(user, role))
