@@ -171,10 +171,9 @@ Unter „Mein Profil" werden Kontodaten, Firmenmandate und Ansprechpartner für 
 verwaltet. Eingeloggte Nutzer, die mindestens ein Firmenmandat hinterlegt haben, können selbst Anzeigen
 inserieren, bearbeiten und wieder löschen. „Meine Inserate" zeigt eine Übersicht aller selbst erstellten
 Jobpostings (auch Entwürfe und abgelaufene Anzeigen, welche nicht öffentlich sichtbar sind).
-![Firmenmandate verwalten](Screenshots/company_mandates.png)
-![Ansprechpartner verwalten](Screenshots/managed_contacts.png)
-![Übersicht der eigenen Anzeigen](Screenshots/owned_listings.png)
 ![Anzeigenformular](Screenshots/posting_form.png)
+![Übersicht der eigenen Anzeigen](Screenshots/owned_listings.png)
+![Firmenmandate verwalten](Screenshots/company_mandates.png)
 
 **Administratoren** (`admin@jobtastic.demo`)
 Administratoren haben Zugriff auf alle Funktionen eines regulären Userkontos und zusätzlich auf den
@@ -292,29 +291,29 @@ dotnet test
 ### Funktional
 
 **E-Mail-Funktionen**
-Die in ASP.NET Core Identity angelegten Funktionen Registrierungsbestätigung, Passwort-Reset und Benachrichtigungen
+- Die in ASP.NET Core Identity angelegten Funktionen Registrierungsbestätigung, Passwort-Reset und Benachrichtigungen
 sind gerade noch schlicht auskommentiert. Dadurch gibt es aktuell auch keinen Weg, ein vergessenes Passwort
 zurückzusetzen. Dies wäre durch das Einbinden eines E-Mail-Servers zu beheben.
 
 **Kontoschließung**
-Nicht implementiert. Die Fremdschlüssel für Anzeigen und Kontakte stehen auf `Restrict`, weshalb ein Konto
+- Nicht implementiert. Die Fremdschlüssel für Anzeigen und Kontakte stehen auf `Restrict`, weshalb ein Konto
 mit Inhalten sich nicht löschen lässt. Eine mögliche Lösung wäre die Anonymisierung der abhängigen Entitäten
 plus dauerhafte Sperre des Kontos.
 
 **Verifizierung von Mandaten**
-Jedes Konto kann jede Firma als Mandat beanspruchen. In einem echten System müsste die Berechtigung, für ein
+- Jedes Konto kann jede Firma als Mandat beanspruchen. In einem echten System müsste die Berechtigung, für ein
 Unternehmen zu inserieren, nachgewiesen werden.
 
 **Geteilte Firmen ohne Änderungsschutz**
-Gerade kann jeder Mandatsträger die Firmendaten als Konsequenz des geteilten Modells still für alle ändern.
+- Gerade kann jeder Mandatsträger die Firmendaten als Konsequenz des geteilten Modells still für alle ändern.
 Mögliche Lösungen wären eine Historie und Benachrichtigungen oder das Einrichten einer Freigabe.
 
 **Klick-Zähler**
-Das Feld `Klicks` existiert am Modell und wird in der Admin-Übersicht angezeigt. Allerdings ist das Zählen noch
+- Das Feld `Klicks` existiert am Modell und wird in der Admin-Übersicht angezeigt. Allerdings ist das Zählen noch
 nirgends implementiert, weshalb der Zähler dauerhaft 0 anzeigt.
 
 **Admin-Funktionen**
-Eine dringende Ergänzung des Admin-Bereichs wäre ein Audit-Log, um administrative Eingriffe nachvollziehbar zu machen.
+- Eine dringende Ergänzung des Admin-Bereichs wäre ein Audit-Log, um administrative Eingriffe nachvollziehbar zu machen.
 Geplant, aber aus Zeitgründen ausgespart wurden z. B. auch ein Ownership-Transfer von Postings und Kontakten, sowie ein
 Firmen-Merge, um mögliche Firmen-Duplikate zusammenzuführen.
 
@@ -322,27 +321,27 @@ Firmen-Merge, um mögliche Firmen-Duplikate zusammenzuführen.
 ### Technisch
 
 **Nutzeroberfläche**
-Das Layout, insbesondere in Bezug auf Barrierefreiheit, bedarf weiterer Ausarbeitung.
+- Das Layout, insbesondere in Bezug auf Barrierefreiheit, bedarf weiterer Ausarbeitung.
 
 **API rudimentär**
-Ursprünglich war das Erstellen einer Api nicht geplant. Sie ist bei einem Exkurs im Unterricht entstanden
+- Ursprünglich war das Erstellen einer Api nicht geplant. Sie ist bei einem Exkurs im Unterricht entstanden
 und im aktuellen Zustand noch unvollständig. Insbesondere ist kein JsonStringEnumConverter registriert.
 System.Text.Json serialisiert die Enums also als ihre Ordinalwerte, wobei die zugeordneten Werte verloren gehen.
 Auch gibt es noch keine Versionierung, Paging, Rate-Begrenzung oder eigene Dokumentation.
 
 **Anbindung an Secret-Store**
-Für eine echte Bereitstellung wäre statt User-Secrets z. B. Azure Key Vault beim Start einzubinden.
+- Für eine echte Bereitstellung wäre statt User-Secrets z. B. Azure Key Vault beim Start einzubinden.
 
 **Keine datenbankgebundenen Tests**
-Rollenvergabe, Mandatsprüfungen, Sperrlogik und die Admin-Übersichten sind bisher nur manuell verifiziert.
+- Rollenvergabe, Mandatsprüfungen, Sperrlogik und die Admin-Übersichten sind bisher nur manuell verifiziert.
 
 **ungetesteter LocalDB-Pfad**
-Auf dem Entwicklungsrechner überschreibt ein User-Secret die Verbindung, sodass tatsächlich immer gegen
+- Auf dem Entwicklungsrechner überschreibt ein User-Secret die Verbindung, sodass tatsächlich immer gegen
 eine SQL-Server-Instanz gearbeitet wurde. Der im Schnellstart beschriebene Weg ist plausibel, aber aus
 Zeitgründen noch nicht ausgeführt worden.
 
 **Sprachmischung im Projekt**
-Die Oberfläche wurde entsprechend der Zielgruppe des Projektes auf Deutsch gestaltet. Der Code
+- Die Oberfläche wurde entsprechend der Zielgruppe des Projektes auf Deutsch gestaltet. Der Code
 inkl. Benennungen und Kommentaren wurde übungshalber auf Englisch verfasst. Insbesondere in den
 Commit-Statements auf GitHub kam es jedoch zu sprachlichen Inkonsistenzen, die es in Zukunft
 zu vermeiden gilt.
