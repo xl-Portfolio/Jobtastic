@@ -1,5 +1,7 @@
 # Jobtastic
 
+**[Deutsch](README_deu.md)**
+
 ## About
 
 Jobtastic was developed as part of my retraining as a software developer (IHK). The project
