@@ -174,10 +174,9 @@ Under "Mein Profil", account data, company mandates and the contact persons for 
 entered and managed. Signed-in users who hold at least one company mandate can publish, edit and
 delete postings themselves. "Meine Inserate" shows an overview of all postings they created
 (including drafts and expired postings, which are not publicly visible).
-![Managing company mandates](Screenshots/company_mandates.png)
-![Managing contact persons](Screenshots/managed_contacts.png)
-![Overview of own postings](Screenshots/owned_listings.png)
 ![Posting form](Screenshots/posting_form.png)
+![Overview of own postings](Screenshots/owned_listings.png)
+![Managing company mandates](Screenshots/company_mandates.png)
 
 **Administrators** (`admin@jobtastic.demo`)
 Administrators have access to every function of a regular user account and additionally to the
@@ -296,30 +295,30 @@ dotnet test
 ### Functional
 
 **E-mail Functions**
-The functions created by ASP.NET Core Identity, registration confirmation, password reset and
+- The functions created by ASP.NET Core Identity, registration confirmation, password reset and
 notifications, are currently simply commented out. As a result there is currently no way to
 reset a forgotten password. This could be fixed by integrating an e-mail server.
 
 **Account Closure**
-Not implemented. The foreign keys for postings and contacts are set to `Restrict`, which is why
+- Not yet implemented. The foreign keys for postings and contacts are set to `Restrict`, which is why
 an account holding content cannot be deleted. A possible solution would be anonymising the
 dependent entities plus a permanent lock on the account.
 
 **Verification of Mandates**
-Every account can claim every company as a mandate. In a real system, the right to advertise on
+- Every account can claim every company as a mandate. In a real system, the right to advertise on
 behalf of a company would have to be proven.
 
 **Shared Companies Without Change Protection**
-Currently, every mandate holder can silently change the company data for everyone else, a
+- Currently, every mandate holder can silently change the company data for everyone else, a
 consequence of the shared model. Possible solutions would be a history and notifications, or
 setting up an approval step.
 
 **Click Counter**
-The `Klicks` field exists on the model and is displayed in the admin overview. However, the
+- The `Klicks` field exists on the model and is displayed in the admin overview. However, the
 counting is not implemented anywhere yet, which is why the counter permanently shows 0.
 
 **Admin Functions**
-An urgent addition to the admin area would be an audit log, to make administrative interventions
+- An urgent addition to the admin area would be an audit log, to make administrative interventions
 traceable. Planned but left out for time reasons are, e.g., also an ownership transfer of
 postings and contacts, as well as a company merge to combine possible company duplicates.
 
@@ -327,29 +326,29 @@ postings and contacts, as well as a company merge to combine possible company du
 ### Technical
 
 **User Interface**
-The layout, especially with respect to accessibility, needs further work.
+- The layout, especially with respect to accessibility, needs further work.
 
 **API Rudimentary**
-Building an API was not originally planned. It came about as a digression during class and is
+- Building an API was not originally planned. It came about as a digression during class and is
 still incomplete in its current state. In particular, no JsonStringEnumConverter is registered.
 System.Text.Json therefore serialises the enums as their ordinal values, losing the associated
 values. There is also no versioning, paging, rate limiting or dedicated documentation yet.
 
 **Connection to a Secret Store**
-For a real deployment, something like Azure Key Vault would have to be integrated at startup
+- For a real deployment, something like Azure Key Vault would have to be integrated at startup
 instead of user secrets.
 
 **No Database-Bound Tests**
-Role assignment, mandate checks, locking logic and the admin overviews have so far only been
+- Role assignment, mandate checks, locking logic and the admin overviews have so far only been
 verified manually.
 
 **Untested LocalDB Path**
-On the development machine, a user secret overrides the connection, so work has actually always
+- On the development machine, a user secret overrides the connection, so work has actually always
 been done against a SQL Server instance. The route described in the quick start is plausible,
 but has not been executed yet, for time reasons.
 
-**Mixed Languages in the Project**
-The interface was designed in German to match the project's target audience. The code, including
+**Mixed Languages in the Project:**
+- The interface was designed in German to match the project's target audience. The code, including
 naming and comments, was written in English for practice. In the commit statements on GitHub in
 particular, however, linguistic inconsistencies crept in that should be avoided in the future.
 
