@@ -187,6 +187,7 @@ accounts can be locked and unlocked and the admin role granted and revoked. Mand
 of foreign accounts are reachable through a link in the user overview to the respective account
 page. Access to a foreign account is marked by a warning banner.
 ![Admin dashboard](Screenshots/admin_dashboard.png)
+![Admin on behalf of recruiter](Screenshots/admin_on_behalf_of_recruiter1.png)
 
 ## Project Structure
 
