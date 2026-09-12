@@ -179,6 +179,7 @@ delete postings themselves. "Meine Inserate" shows an overview of all postings t
 ![Posting form](Screenshots/posting_form.png)
 ![Overview of own postings](Screenshots/owned_listings.png)
 ![Managing company mandates](Screenshots/company_mandates.png)
+![Posting restriction](Screenshots/recruiter3_posting_without_mandate.png)
 
 **Administrators** (`admin@jobtastic.demo`)
 Administrators have access to every function of a regular user account and additionally to the
