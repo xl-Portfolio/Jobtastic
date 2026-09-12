@@ -176,6 +176,7 @@ Jobpostings (auch Entwürfe und abgelaufene Anzeigen, welche nicht öffentlich s
 ![Anzeigenformular](Screenshots/posting_form.png)
 ![Übersicht der eigenen Anzeigen](Screenshots/owned_listings.png)
 ![Firmenmandate verwalten](Screenshots/company_mandates.png)
+![Posting benötigt Mandat](Screenshots/recruiter3_posting_without_mandate.png)
 
 **Administratoren** (`admin@jobtastic.demo`)
 Administratoren haben Zugriff auf alle Funktionen eines regulären Userkontos und zusätzlich auf den
@@ -185,6 +186,9 @@ werden. Auf Mandate und Kontakte fremder Konten kann über einen Link in der Ben
 jeweiligen Kontoseite direkt zugegriffen werden. Der Zugriff auf ein fremdes Konto ist durch ein Warnbanner
 kenntlich gemacht.
 ![Admin-Dashboard](Screenshots/admin_dashboard.png)
+![Admin auf Recruiter-Seite](Screenshots/admin_on_behalf_of_recruiter1.png)
+
+
 
 ## Projektstruktur
 
