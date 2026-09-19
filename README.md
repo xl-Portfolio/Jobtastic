@@ -56,7 +56,7 @@ The first start automatically:
 2. creates the roles `Owner`, `Admin` and `User`
 3. seeds sample data
 
-Step 3 runs **in the development environment only** and **only while the database is empty**.
+Step 3 runs **in the development environment if the a database is empty**.
 
 
 ### Demo Access
