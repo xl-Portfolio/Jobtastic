@@ -10,7 +10,7 @@ Model-View-Controller architecture commonly used for web applications.
 
 AI support took place at the following points: Claude AI for researching concepts and for
 debugging in the early development phase, later Claude Code to implement the AJAX JavaScript,
-the administration area including the central access/permission check, and the tests quickly.
+the administration area including the central access/permission check, and the tests more quickly.
 
 ## Features
 
