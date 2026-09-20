@@ -2,15 +2,37 @@
 
 **[English](README.md)**
 
+
+## Inhaltsverzeichnis
+
+1. [Über das Projekt](#über-das-projekt)
+2. [Funktionen](#funktionen)
+3. [Technologien](#technologien)
+4. [Voraussetzungen](#voraussetzungen)
+5. [Schnellstart (Demo mit localDB)](#schnellstart-demo-mit-localdb)
+   - [Demo-Zugang](#demo-zugang)
+6. [Konfiguration](#konfiguration)
+   - [Datenbank (eigene SQL-Server-Instanz)](#datenbank-eigene-sql-server-instanz)
+   - [API-Key](#api-key)
+   - [Endpunkte](#endpunkte)
+7. [Benutzerdokumentation](#benutzerdokumentation)
+8. [Projektstruktur](#projektstruktur)
+9. [Architektur & Designentscheidungen](#architektur--designentscheidungen)
+   - [Schichtung: MVC, Services und Entscheidungslogik](#schichtung-mvc-services-und-entscheidungslogik)
+   - [Das grundlegende Datenmodell](#das-grundlegende-datenmodell)
+   - [Zentrale Berechtigungsprüfung auf zwei Ebenen](#zentrale-berechtigungsprüfung-auf-zwei-ebenen)
+   - [Rollenmodell](#rollenmodell)
+   - [Frontend](#frontend)
+10. [Tests](#tests)
+11. [Bekannte Einschränkungen & nötige Verbesserungen](#bekannte-einschränkungen--nötige-verbesserungen)
+    - [Funktional](#funktional)
+    - [Technisch](#technisch)
+    - [KI-Disclaimer](#ki-disclaimer)
+
 ## Über das Projekt
 
-Jobtastic ist im Rahmen meiner Umschulung zur Fachinformatikerin für Anwendungsentwicklung
-(IHK) entstanden. Das Projekt zeigt die Anwendung objektorientierter Programmierprinzipien
-sowie der Model-View-Controller-Architektur, die für Webanwendungen üblich ist.
-
-KI-Unterstützung fand an folgenden Stellen statt: Claude AI zur
-Recherche von Konzepten und zum Debuggen in der frühen Entwicklungsphase, später Claude Code, um das
-AJAX-JavaScript, den Administrationsbereich inklusive zentraler Zugriffs-/Berechtigungsprüfung und die Tests zügig umzusetzen.
+Jobtastic ist eine Stellenportal-Webanwendung.
+Als Übungsprojekt erhebt es keinen Anspruch auf Vollständigkeit und ist offen für Feedback.
 
 ## Funktionen
 
@@ -27,7 +49,7 @@ Stellenportal mit
 - ASP.NET Core 8 / Entity Framework Core / ASP.NET Core Identity
 - C# / JavaScript / HTML5
 - MVC + Razor Pages
-- SQL Server / LocalDB
+- MS SQL Server / LocalDB
 - CSS / Bootstrap 5 / DataTables.net
 - AJAX
 - jQuery Validation Unobtrusive / SweetAlert2
@@ -351,5 +373,10 @@ Zeitgründen noch nicht ausgeführt worden.
 inkl. Benennungen und Kommentaren wurde übungshalber auf Englisch verfasst. Insbesondere in den
 Commit-Statements auf GitHub kam es jedoch zu sprachlichen Inkonsistenzen, die es in Zukunft
 zu vermeiden gilt.
+
+
+### KI-Disclaimer
+KI-Unterstützung durch Claude AI wurde zur Recherche von Konzepten und zum Debuggen genutzt. Claude Code wurde in
+späteren Phasen genutzt, um beim zügigen Umsetzen von AJAX im Administrationsbereich zu helfen sowie um Unit-Tests zu schreiben.
 
 
