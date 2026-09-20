@@ -2,15 +2,37 @@
 
 **[Deutsch](README_deu.md)**
 
+
+## Table of Contents
+
+1. [About](#about)
+2. [Features](#features)
+3. [Technologies](#technologies)
+4. [Requirements](#requirements)
+5. [Getting Started (demo with LocalDB)](#getting-started-demo-with-localdb)
+   - [Demo Access](#demo-access)
+6. [Configuration](#configuration)
+   - [Database (your own SQL Server instance)](#database-your-own-sql-server-instance)
+   - [API Key](#api-key)
+   - [Endpoints](#endpoints)
+7. [User Documentation](#user-documentation)
+8. [Project Structure](#project-structure)
+9. [Architecture & Design Decisions](#architecture--design-decisions)
+   - [Layering: MVC, Services and Decision Logic](#layering-mvc-services-and-decision-logic)
+   - [The Basic Data Model](#the-basic-data-model)
+   - [Central Permission Check on Two Levels](#central-permission-check-on-two-levels)
+   - [Role Model](#role-model)
+   - [Frontend](#frontend)
+10. [Tests](#tests)
+11. [Known Limitations & Necessary Improvements](#known-limitations--necessary-improvements)
+    - [Functional](#functional)
+    - [Technical](#technical)
+    - [AI-Disclaimer](#ai-disclaimer)
+
 ## About
 
-Jobtastic was developed as part of my retraining as a software developer (IHK). The project
-demonstrates the use of object-oriented programming principles as well as the
-Model-View-Controller architecture commonly used for web applications.
-
-AI support took place at the following points: Claude AI for researching concepts and for
-debugging in the early development phase, later Claude Code to implement the AJAX JavaScript,
-the administration area including the central access/permission check, and the tests more quickly.
+Jobtastic is Job portal web-application.
+Being a practice project, it does not claim to be finished and is open for feedback.
 
 ## Features
 
@@ -356,3 +378,7 @@ but has not been executed yet, for time reasons.
 naming and comments, was written in English for practice. In the commit statements on GitHub in
 particular, however, linguistic inconsistencies crept in that should be avoided in the future.
 
+
+### AI-Disclaimer
+AI support by Claude AI was used for researching concepts and debugging. Claude Code was used in the 
+later stages to help implement AJAX in the administration area quickly and to write Unit-Tests.
