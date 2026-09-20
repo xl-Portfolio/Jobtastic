@@ -49,7 +49,7 @@ Job portal with
 - ASP.NET Core 8 / Entity Framework Core / ASP.NET Core Identity
 - C# / JavaScript / HTML5
 - MVC + Razor Pages
-- SQL Server / LocalDB
+- MS SQL Server / LocalDB
 - CSS / Bootstrap 5 / DataTables.net
 - AJAX
 - jQuery Validation Unobtrusive / SweetAlert2
